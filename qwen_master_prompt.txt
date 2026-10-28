@@ -1,0 +1,316 @@
+=====================================================================
+MASTER PROMPT — Convert my existing deck into "Can You Trust Your Own Brain?"
+(Paste everything below this line into Qwen. Attach my current index.html.)
+=====================================================================
+
+ROLE
+You are a senior front-end engineer and a careful science communicator. You write complete, working, production-quality code. You never abbreviate, summarize, or skip code.
+
+THE TASK
+I have attached `index.html`: a finished, working, single-file, 10-slide interactive presentation called "Algorithmic Persuasion". I need you to turn it into a NEW 10-slide deck called "Can You Trust Your Own Brain?" — a short, interactive talk about how perception, attention, memory and judgement can mislead us, built around live experiments the audience does with their own brains.
+
+You must KEEP the existing deck engine, design identity and plumbing (listed in section 3) and REPLACE the slide content, per-slide JavaScript and a few strings (listed in section 4). Return the complete new `index.html`.
+
+If you cannot see the attached file, STOP and tell me. Do not guess its contents and do not rebuild the deck from scratch.
+
+---------------------------------------------------------------------
+1. CONTEXT (this decides every design choice)
+---------------------------------------------------------------------
+- Presenter: Lalit Mehta. College classroom, mixed audience (different majors, NO psychology background assumed). Talk length 8–12 minutes (target ~11 min).
+- Display: an 80-inch 4K (3840x2160) 60 Hz Q-Infinity smart board running Android Chrome. Viewers sit up to ~10 m away. The presenter uses a Bluetooth clicker (sends PageUp/PageDown/arrow keys, sometimes Space/Enter) and/or his phone as a remote via the existing MQTT room.
+- Priority order: (1) scientific accuracy, (2) clarity for non-specialists, (3) audience participation, (4) visual polish. Never trade accuracy for spectacle.
+- The audience takes part by "hands up" and by silently counting/looking. No student devices are involved.
+- The board may report a device-pixel-ratio of 1, 2 or 3 depending on firmware. Everything must be sized in vw / vh / clamp() / SVG viewBox units. NO fixed-pixel caps on stimulus size. It must look right at 1920x1080, 3840x2160 and 1280x720.
+
+---------------------------------------------------------------------
+2. OUTPUT RULES — READ TWICE
+---------------------------------------------------------------------
+a) Output COMPLETE code. Never write "...rest unchanged", "same as before", "// existing code here", or any placeholder. Every blank must be filled.
+b) Unchanged blocks (CSS atoms, HUD, AudioEngine, MQTT, makeField, etc.) must be copied CHARACTER-FOR-CHARACTER from my attached file. Do not "improve", reformat or rename them.
+c) The finished file will be long (roughly 2,800–3,600 lines). Deliver it in contiguous PARTS so nothing is cut off. I will concatenate the parts in order into one file, so the cut points must be exact:
+   - PART 1: from `<!DOCTYPE html>` to just before the first slide section (i.e. everything through the shared SVG defs, stage wrapper start, click zones).
+   - PART 2: all 10 slide sections, through `</div><!-- /stage-inner -->`, then the HUD, modal, remote-UI and toast markup, up to just before the first `<script>`.
+   - PART 3 (and 3b, 3c if needed): all `<script>` blocks to `</html>`. If you must split Part 3, split ONLY at a clean top-level boundary (between two top-level functions/IIFEs) and tell me exactly where.
+   Put each part in ONE code block. No commentary inside code blocks. At the end of each part write only: "END OF PART n — reply 'continue'". Then wait.
+d) Do not stop early to ask questions. If something is ambiguous, pick the most reasonable reading, and list your assumptions in 5 bullet points AFTER the last part.
+e) After the last part, give a short "How I verified it" checklist (section 11) and the assumptions list. Nothing else.
+
+---------------------------------------------------------------------
+3. KEEP EXACTLY (do not alter behaviour or look)
+---------------------------------------------------------------------
+- All CSS variables, fonts, neumorphic/glassmorphic atoms (.neu-pod, .glass-card, .neu-btn, .tag, .eyebrow, .pill-neu, .kbd-hint, .pod-label, .pod-note, etc.), the stage, the slide transition system (.slide / .is-active / .is-exit-*, .stagger .stg-N), HUD (top bar, nav buttons, segmented progress dock `.pseg`, sync pill), toast, modal, remote UI styles.
+- Light theme. Lucide icons only (`<i data-lucide>`), ZERO emoji anywhere. Keep `lucide.createIcons()` calls, including the 2.5 s re-run.
+- GPU-safe motion rules: slide and entrance transitions animate ONLY transform (translate3d) and opacity. Keep that for anything new except the stimuli themselves (the stimuli are SVG and may animate however they need to).
+- The `AudioEngine` IIFE and all its SFX names (tap, toggle, forward, back, jump, reveal, open, close, morph, kinetic, chime), BGM off by default, `AudioEngine.pronounce()`. Use these SFX for the new interactions where it makes sense (e.g. "reveal" when an answer is shown, "tap" for button presses). Do not add new sounds that play DURING a perception task.
+- MQTT zero-backend sync: broker wss://broker.emqx.io:8084/mqtt, `roomTopic`, `publishNav`, the `{type:'NAV', slideIndex, timestamp, src}` message format, phone remote at `?mode=remote` (`#remote-ui`, `CUES`, timer), QR code via api.qrserver.com, the sync modal.
+- Navigation: `TOTAL = 10`, `slideIndex`, `goTo()`, `updateHUD()`, keyboard (PageUp/PageDown/arrows/Space/Enter/N/P, F = fullscreen, digits 1–0 jump), wheel/touch swipe, presenter click zones.
+- Author block on slide 1 (profile picture `Profilepicture.jpg` with the LM fallback, name LALIT MEHTA, pronunciation button with `accesskey="v"`).
+- The per-slide generative SVG backgrounds via `makeField(n, build, step)` and `setActiveField(idx)`. Only the active slide animates.
+- The runtime timers block labelled "Slide 10 + remote — runtime timers" (Q&A runtime clock, etc.).
+- `init()` structure, except for removing calls to functions you delete.
+
+---------------------------------------------------------------------
+4. CHANGE (and only this)
+---------------------------------------------------------------------
+- `<title>`: "Can You Trust Your Own Brain? — Live Experiments".
+- Replace the 10 `<section class="slide">` contents (specs in section 8). Keep ids s1..s10, the `.slide-field` svg element in each, `aria-label="Slide n of 10"`, and the stagger classes.
+- Delete the old per-slide JS ("PER-SLIDE INTERACTIVE TELEMETRY": attention-decay counter, friction meters, loop pulse, hook comparator, retention bars, kinetic word, etc.) and every reference to it in `init()`, `onSlideEnter`, `goTo`. Keep the "Slide 10 + remote — runtime timers" block.
+- Default room topic: change BOTH the `roomTopic` fallback and the modal input's default value from `qinfinity/lalit/algo-persuasion-2026` to `qinfinity/lalit/trust-brain-2026`.
+- Remote UI subtitle: "Can You Trust Your Own Brain? · 2026".
+- Rewrite the `CUES` array (section 9).
+- Add the "demo action system" (section 5) and the new slide logic (section 8).
+
+---------------------------------------------------------------------
+5. NEW GLOBAL MECHANISM — the DEMO ACTION SYSTEM
+---------------------------------------------------------------------
+Slides 1–7 each have a live experiment that the presenter steps through with ONE action button. Build this once, centrally.
+
+5.1 Data model
+`const DEMO = {}` keyed by 0-based slide index. Each entry is an object:
+  - `label()` → string for the next action, e.g. "Start the 12-second task", or `null` when the demo is finished/has nothing left to do.
+  - `act()` → performs the next step (advances an internal step counter).
+  - `reset()` → returns the slide to its pristine pre-experiment state (stops timers/RAF, hides reveals, restores neutral title, clears logs). Must be safe to call at any time, repeatedly.
+Slides 8, 9, 10 (indices 7, 8, 9) have no DEMO entry.
+
+5.2 Triggers (all call `triggerActiveSlideAction()`, which looks up `DEMO[slideIndex]`)
+  - On-board button: every demo slide has a `.act-btn` (large, ≥56 px tall at 1080p, neu-btn styling, Lucide icon + a `.act-label` span whose text always equals `DEMO[i].label()`). Show the hint "or press A".
+  - Keyboard: `A` or `Tab` (call `preventDefault()` on Tab). Do NOT use Space/Enter/PageDown for actions — those stay as "next slide" so the clicker never triggers an experiment by accident.
+  - Phone remote: a third big button "ACT" on the remote UI (under the Prev/Next row, same `.rmu-big` style). Its text mirrors the board's current label. Details in 5.4.
+  - Ignore ALL deck keyboard shortcuts (including digits, A, Tab, Space, arrows) when the keydown target is an `input`, `textarea` or `[contenteditable]`.
+
+5.3 Lifecycle
+  - In `goTo()`, when leaving a slide call `DEMO[old]?.reset()`. This guarantees every demo can be replayed from the Replay buttons on slide 10.
+  - On entering a slide, update the `.act-label`, then publish STATE (5.4).
+  - Spoiler-free titles: each slide's `<section>` has a neutral `data-title` (HUD/progress/remote name read it) such as "Experiment 1 · Perception". The visible `<h2 class="slide-title">` starts with a neutral question and carries a `data-after` attribute holding the revealed headline HTML. When the demo reveals, swap `innerHTML` from the question to `data-after` (fade via opacity only); `reset()` swaps back. The `data-title` never reveals the answer.
+  - Reveal rows: the right-hand step list has rows tagged "Ask" (visible from the start) and "Reveal / Why / Careful" (class `rv`, hidden until the demo reveals them with an opacity + translate3d transition). Each DEMO specifies which `rv` rows appear on which action.
+
+5.4 MQTT messages (additive; keep NAV as is)
+  - Remote → board: `{type:'ACT', slideIndex, timestamp, src:'remote'}`. The board ignores it unless `msg.slideIndex === slideIndex` and `src === 'remote'`, then calls `triggerActiveSlideAction()`.
+  - Board → remote: `{type:'STATE', slideIndex, label, hasDemo, timestamp, src:'board'}` published (a) after every `goTo`, (b) after every action, (c) after every reset. The remote UI shows `label` on its ACT button; when `hasDemo` is false or `label` is null the button is disabled and reads "No demo on this slide" or "Done — press Next".
+  - The board must not process its own STATE messages, and the remote must not process its own ACT messages (use `src`).
+  - Existing NAV handling and its loop-protection stay as they are.
+
+5.5 Background fields
+  - For slides 2–7 (indices 1–6) draw the field ONCE (static, no animation loop; add a `st.once` flag or equivalent inside `makeField`'s step logic) so moving backgrounds never compete with the stimuli. Slides 1, 8, 9, 10 keep their normal animated fields.
+  - Stage sheen: `#stage::before` is a gradient overlay that would tint stimuli unevenly. While any of slides 1–7 is active, set a body class (e.g. `body.stim-on`) that sets `#stage::before{opacity:0}`. Stimulus cards (`.stim-card`) must be SOLID white (`#FFFFFF`): no backdrop-filter, no sheen pseudo-element, no opacity, no CSS filter, no mix-blend-mode on or above the stimulus.
+
+5.6 Self-test
+Add `window.__selfTest()` that runs once ~1.5 s after load inside try/catch and prints "[deck self-test] PASS" or a list of failures to `console`. It must check: 10 slide sections exist; every demo slide has an `.act-btn`; the two slide-1 gray patches have identical `fill` attribute values; the arena simulation (section 8, slide 4) returns exactly 15 white-disc wall bounces; the Ebbinghaus target circles have identical `r`.
+
+---------------------------------------------------------------------
+6. SCIENTIFIC ACCURACY RULES (non-negotiable)
+---------------------------------------------------------------------
+Allowed, evidence-based claims only. Use hedged wording exactly in the spirit below.
+
+DO say:
+- "Your visual system judges brightness and size by comparison with the surroundings." (context effects)
+- "Perception combines the image with expectation; one drawing can support two readings."
+- "When attention is busy, unexpected things can go unnoticed." Not noticing is different from forgetting.
+- "Memory keeps the gist and rebuilds the details; the rebuild can feel like a real memory."
+- "A question can carry information, and that information can blend into what we remember."
+- "We tend to test examples that should get a 'yes'." (positive test strategy)
+- "Confidence can be wrong. That is not the same as confidence always being wrong."
+- "Habits that change the PROCESS reduce errors; knowing about biases is not enough. We spot bias in others more easily than in ourselves."
+
+DO NOT say or imply:
+- That the brain is "broken", "lies", or is "unreliable overall". Frame it as fast, efficient shortcuts with predictable blind spots.
+- That everyone fails these tasks. Say "many people", "can", "often", "varies from person to person".
+- That memory is "like a video recording that gets edited", that false memories prove all memories are false, or that eyewitnesses are "always wrong".
+- That confidence is always misleading, or that "overconfident people are the least competent". No Dunning–Kruger curve. No "you only use 10% of your brain". No "left-brain/right-brain". No "learning styles". No "System 1/System 2 explains everything".
+- Any statistic that is not in the list below. No invented percentages, no "studies show" without a citation.
+- That Wason's or DRM's classroom adaptation here is an exact replication. Label it "classroom demonstration, not an exact replication".
+- Any percentage for the strength of an optical illusion.
+
+Verified numbers you may use (and no others):
+- Loftus & Palmer (1974), Experiment 1: 45 students watched 7 short car-crash film clips, then were asked "About how fast were the cars going when they ___ each other?" Mean estimates (mph): contacted 31.8, hit 34.0, bumped 38.1, collided 39.3, smashed 40.8. Difference contacted-vs-smashed = 9.0 mph. Experiment 2: 150 students; one week later asked "Did you see any broken glass?" — "smashed" group 32% yes, "hit" group 14%, control (not asked about speed) 12%. There was no broken glass in the film. (Do NOT use 40.5 for "smashed"; use 40.8.)
+- Drew, Võ & Wolfe (2013): 24 radiologists searched lung CT scans for nodules; a gorilla image ~48 times the size of a typical nodule was inserted into one case; 20 of 24 did not report it, and eye-tracking showed 12 of those 20 had looked directly at its location.
+- Wason (1960): in the 2-4-6 task only about 1 in 5 participants (6 of 29) announced the correct rule on their first announcement.
+- Brugger & Brugger (1993): when the duck-rabbit figure was shown to people around Easter, "rabbit" was the most common first answer; shown in October, "bird/duck" was. Present it as "one study found…".
+- DRM (Roediger & McDermott, 1995): use ONLY this wording: "In the original studies, many people falsely recalled the missing word — about 40% in free recall — and in recognition tests they said 'yes' to it about as often as to words actually shown. Rates in one classroom will vary." (Flag in your assumptions list that this sentence should be double-checked by me against the paper.)
+
+---------------------------------------------------------------------
+7. DESIGN PATTERN FOR THE EXPERIMENT SLIDES (2–7)
+---------------------------------------------------------------------
+Layout on the 16:9 stage: header (eyebrow chip, neutral H2 question, one-line instruction) on top; below it a two-column "demo grid":
+  - Left (about 60% width): a SOLID white stimulus card containing the experiment (SVG). The stimulus is the hero: at 1080p it should be at least ~40% of the stage width and fully visible without scrolling.
+  - Right (about 40%): a "step list" in four labelled rows with colored chips — "Ask" (cobalt), "Reveal" (coral), "Why" (indigo), "Careful" (slate) — followed by the action bar (the `.act-btn` plus a "or press A" kbd-hint). Reveal/Why/Careful rows are hidden until revealed.
+  - Bottom of each slide: a small, low-contrast "Evidence · authors (year)" source line inside the slide (not in the HUD).
+Typography must stay readable from 10 m: step text >= ~1.1vw, headings per the existing clamp() scale. Nothing may overflow the stage at 1280x720, 1920x1080 or 3840x2160; use `min-height:0`, flex/grid and clamp() sizing so the stimulus shrinks before text clips. All tap targets >= 56 px tall at 1080p.
+
+---------------------------------------------------------------------
+8. THE TEN SLIDES (exact content and behaviour)
+---------------------------------------------------------------------
+Use the exact wording given in quotes. Keep the author-voice friendly and plain.
+
+--- SLIDE 1 — Title + 10-second hook (animated field stays; DEMO index 0)
+Left column: eyebrow "Live Experiments · 2026"; H1 "Can You Trust" / gradient "Your Own Brain?"; subtitle "Your brain isn't broken — it's fast, and fast comes with predictable blind spots. Let's find a few together."; the existing author block (unchanged); three pills: "Perception", "Attention & Memory", "Judgement".
+Right column: solid white stimulus card, label "Quick test · 10 seconds", question "Do these two gray squares look the same?".
+Stimulus (SVG viewBox 0 0 400 220, `shape-rendering="crispEdges"`): left half background #1F1F1F (x 0–200), right half #EBEBEB (x 200–400); square A at x=55,y=65,90x90 and square B at x=255,y=65,90x90, BOTH filled exactly #7A7A7A. A "bridge" rect (x=145,y=90,w=110,h=40, fill #7A7A7A, class `bridge`) starts at opacity 0.
+Readout line: "Hands up: left looks lighter · right looks lighter · they look the same."
+DEMO: one action, label "Bridge the two squares": fade the bridge in over 0.6 s; readout becomes "Same gray. Identical pixel values. Your brain judged each square by what surrounds it." Reset: bridge back to opacity 0, readout restored.
+Source line: "Simultaneous contrast · Adelson (2000)".
+Note: the stage sheen must be off here (5.5), otherwise the two identical squares are tinted differently.
+
+--- SLIDE 2 — Experiment 1 · Perception: size by comparison (DEMO index 1)
+Neutral title: "Which Orange Circle Is Bigger?" → `data-after`: "Your Eyes Judge Size by Comparison". Sub: "Decide first. Hands up: left is bigger, right is bigger, or the same?"
+Stimulus (SVG viewBox 0 0 870 460), Ebbinghaus/Titchener illusion with CORRECT non-overlapping geometry:
+  - Target circles: both r=40, fill #EA580C, at cy=230; left cx=230, right cx=640.
+  - Left inducers: 6 circles r=60, fill #94A3B8, centred on a ring of radius 132 around (230,230) at angles 0°,60°,120°,180°,240°,300° (adjacent inducers do not touch: neighbour spacing 132 > 120).
+  - Right inducers: 8 circles r=16, same fill, on a ring of radius 78 around (640,230) at angles k·45° (neighbour spacing ≈ 59.7 > 32).
+  - Calipers group (opacity 0 initially): two thin dashed dark lines at y=190 and y=270 spanning x=190…680, and a bold "=" between the circles.
+DEMO: action 1, label "Verify the size": inducer circles fade to 10% opacity over 0.8 s, calipers fade in, title swaps, reveal "Reveal" + "Why" + "Careful" rows. Texts:
+  Ask: "Compare the two orange circles. No ruler yet — go with what you see."
+  Reveal: "They are identical. The rings fade and the lines show the same width."
+  Why: "Your visual system judges size by comparison with neighbours — a smart strategy in a 3-D world."
+  Careful: "This doesn't mean vision is 'broken', and the effect varies from person to person."
+Source line: "Evidence · Massaro & Anderson (1971); Roberts, Harris & Yates (2005)".
+
+--- SLIDE 3 — Experiment 2 · Interpretation: duck or rabbit (DEMO index 2)
+Neutral title: "Duck or Rabbit?" → `data-after`: "One Drawing, Two Interpretations". Sub: "Which animal did you see first? Keep it to yourself — then try to find the other one."
+Stimulus: the classic Jastrow duck–rabbit ambiguous drawing (public domain; original 1892 Fliegende Blätter, popularised by Jastrow 1899), drawn as ONE fixed line drawing in SVG viewBox 0 0 600 440. USE THIS EXACT OUTLINE PATH (stroke #0F172A, width 7, round joins/caps, fill none; it is deliberately left open at the bottom — apply an SVG mask with a vertical linear gradient that fades the lower 25% of the neck lines to transparent so no bottom line shows):
+  d="M 330 112 C 270 98, 160 98, 64 124 C 48 130, 50 150, 68 152 C 150 160, 235 168, 300 182 L 300 192 C 235 190, 160 186, 92 182 C 74 182, 70 200, 90 204 C 160 212, 250 226, 308 262 C 316 300, 330 340, 336 400 L 492 400 C 486 340, 492 300, 500 262 C 540 258, 552 214, 538 178 C 524 140, 480 108, 420 104 C 385 102, 355 106, 330 112"
+  Mouth line (stroke only, width 6, round cap): "M 462 254 C 490 258, 520 250, 537 233". Eye: filled circle (378,180) r=14 in #0F172A plus a white highlight circle (383,175) r=4.5.
+  Reading A (duck, facing LEFT): the two left projections are the bill. Reading B (rabbit, facing RIGHT): the same two projections are the ears, the short curve on the right is the mouth.
+The line drawing must NEVER change between states. Only translucent colour overlays (placed BEHIND the lines, clipped to x<250 to highlight the two left projections) and text labels may appear.
+Controls: two small buttons under the card: "Duck reading" and "Rabbit reading" (toggle labels/overlay: amber overlay + labels "BILL" and "Duck: looks LEFT"; rose overlay + labels "EARS", "MOUTH" and "Rabbit: looks RIGHT").
+DEMO: action 1, label "Show the duck reading" (amber overlay, title swap, reveal rows "Reveal"); action 2, label "Show the rabbit reading" (rose overlay; reveal "Why" + "Careful"); then label null. Texts:
+  Ask: "Hands up on my count: duck first, or rabbit first? Now try to flip it."
+  Reveal: "Same lines, two readings: a bill facing left, or ears and a mouth facing right."
+  Why: "Perception blends the lines with what you expect. In one study, 'rabbit' was the most common first answer around Easter, and 'bird' in October."
+  Careful: "Not 'anything goes': the lines allow only these two readings, and you usually see one at a time."
+Source line: "Evidence · Jastrow (1899); Brugger & Brugger (1993); Kornmeier & Bach (2012)".
+
+--- SLIDE 4 — Experiment 3 · Attention: count the white bounces (DEMO index 3)
+Neutral title: "Count the White Bounces" → `data-after`: "You Can Miss What Is Right in Front of You". Sub: "Silently count how many times a WHITE disc bounces off a wall for 12 seconds. Ignore the dark discs."
+Stimulus: SVG viewBox "-12 -12 984 524" containing an arena of W=960 by H=500 (rect 0,0,960,500, fill #64748B, rx 14, stroke #334155 width 4). 8 discs of radius R=26: four WHITE (#FFFFFF) and four DARK (#0F172A).
+DETERMINISTIC PHYSICS (so the correct answer is exact and identical every run):
+  - Time-based, NOT frame-based. Use `performance.now()` and compute each position analytically with triangle-wave folding, so dropped frames never change the count: for an axis with bounds lo=R, hi=W-R (x) or lo=R, hi=H-R (y), L=hi-lo, u=(p0-lo)+v*t, m=((u % (2L))+2L)%(2L), pos=lo+(m<=L ? m : 2L-m). Same for y.
+  - A "wall bounce" is the instant a disc centre reaches R or W-R (x), or R or H-R (y) — i.e. the disc edge touches a wall. Discs pass through each other and do not interact.
+  - No sound, flash, ring, or any other cue on a bounce. Task length T = 12.0 s.
+  - WHITE discs (start x0,y0 in arena coordinates, velocity vx,vy in px/s):
+      W1: x0=210.2033, y0=108.5417, vx=133.1217, vy=60.7708
+      W2: x0=135.4850, y0=341.4616, vx=-207.5515, vy=-100.7433
+      W3: x0=166.9922, y0=385.6760, vx=-148.8655, vy=-101.5090
+      W4: x0=140.9494, y0=175.4572, vx=197.9411, vy=-54.7522
+    These give EXACTLY 15 white-disc wall bounces in 12 s: W1=2, W2=5, W3=4, W4=4. Expected bounce times (s): [0.53, 0.95, 2.73, 3.13, 3.54, 4.01, 4.90, 5.44, 6.01, 7.05, 7.58, 7.96, 8.59, 9.28, 10.91]. Minimum gap between any two bounces is 0.378 s; none occur in the first or last 0.4 s. The self-test must recompute this and assert 15.
+  - DARK discs (any bounces; not counted):
+      D1: x0=480, y0=250, vx=-160, vy=120
+      D2: x0=700, y0=120, vx=-140, vy=-95
+      D3: x0=300, y0=400, vx=185,  vy=-70
+      D4: x0=820, y0=380, vx=-120, vy=-150
+UNEXPECTED EVENTS (during the first run only):
+  - A dark five-pointed star (outer radius 30, fill #0F172A) enters at x=-40 and crosses horizontally at y=250 at constant speed, reaching x=1000 at t=8.5 s (it enters at t=3.5 s). Drawn above the discs.
+  - At t=6.0 s the arena border changes from #334155 to crimson #E11D48 over 0.3 s and stays crimson until the end.
+  - At t=8.0 s dark disc D1 morphs from circle to square (side 46, same centre, same motion, fill unchanged) over 0.4 s and stays a square. (Keep its wall-collision bounds as for R=26.)
+Progress: a thin time bar under the arena fills linearly over 12 s (`aria-hidden`). At t=12.0 s freeze all motion and show a veil over the arena: "Time! How many white-disc bounces?" (hands up for the numbers in ranges).
+DEMO: action 1, label "Start the 12-second task": run the task as above. Action 2 (available after the task ends), label "Reveal and replay": replay the same 12 s with highlights — orange rings around the star, border and morphing disc with small labels ("star", "border", "square"), and a live white-bounce counter in the side panel that ticks 1…15; swap the title; reveal rows. Then label null. Texts:
+  Ask: "Eyes on the arena. Count white-disc wall bounces only. Keep the number to yourself."
+  Reveal: "White discs hit the walls 15 times. Did you also see… a dark star crossing the middle · the border turn from slate to crimson · a dark disc turn into a square"
+  Why: "When attention is busy, unexpected things can go unnoticed. In one study, 20 of 24 radiologists searching lung scans missed a gorilla image — and 12 of those 20 looked right at it."
+  Careful: "Not everyone misses these, and it isn't carelessness. Not noticing is different from forgetting."
+  Make sure nothing about "gorilla/extras" appears before the reveal.
+Reduced-motion: this arena is the experiment itself, so do NOT disable it under `prefers-reduced-motion`; only decorative animations are disabled.
+Source line: "Evidence · Simons & Chabris (1999); Drew, Võ & Wolfe (2013); Mack & Rock (1998)".
+
+--- SLIDE 5 — Experiment 4 · Memory: DRM false memory (DEMO index 4)
+Neutral title: "Memorize the Words" → `data-after`: "Memory Rebuilds. It Doesn't Replay." Sub: "Words will appear one at a time. Read silently — don't write, don't speak."
+Never display, say, or hint at the word "sleep" or the theme before the reveal (no sleep icons, no moon, no "tired" in the instructions).
+Stimulus stage with 4 views (only one visible at a time, cross-fade by opacity): idle hint "Press start. Words appear for about a second each." → single big centred word → poll view → results grid.
+Word list (12 words, in this order): bed, rest, awake, tired, dream, wake, snooze, blanket, doze, slumber, snore, nap. Each word is shown for 1.0 s followed by 0.3 s blank, uppercase, very large (about 9vw), with a row of 12 small progress dots under the stage. (These come from the standard "sleep" list of Roediger & McDermott 1995; the missing word is "sleep".)
+After the 12th word the poll view appears automatically: question "Which of these were on the screen?" with four word-chips: TIRED, BLANKET, SLEEP, WINDOW, and the line "Hands up for each word you remember seeing." The presenter polls by hand count (no tallying UI needed).
+DEMO: action 1, label "Start the word list" (plays the list, then shows the poll). Action 2, label "Reveal which were shown": chips flip — TIRED and BLANKET get a green "was shown" mark; WINDOW gets a grey "not shown"; SLEEP gets a coral "NEVER shown" pulse. Title swaps; "Reveal" row appears. Action 3, label "Show the full list": results grid with 12 tiles of the real words plus a dashed coral tile "SLEEP — never on the screen"; "Why" and "Careful" rows appear. Then label null. Texts:
+  Ask: "After the list: show of hands for each word. Did you see it?"
+  Reveal: "'Sleep' was never shown. Every word you did see points toward it."
+  Why: "Memory keeps the gist, and the gist can feel like a real memory. In the original studies, many people falsely recalled the missing word — about 40% in free recall — and in recognition tests they said 'yes' to it about as often as to words actually shown. Rates in one room will vary."
+  Careful: "A hand up for 'sleep' isn't a bad memory — it's normal, gist-based memory."
+Source line: "Evidence · Roediger & McDermott (1995); Deese (1959); Gallo (2010) · classroom demonstration, not an exact replication".
+Make the timing robust: use a cancellable sequence (timeouts or RAF with an id stored on the demo object) so `reset()` or leaving the slide stops it immediately.
+
+--- SLIDE 6 — Evidence · Suggestion: Loftus & Palmer (DEMO index 5)
+Static title (no spoiler problem here): "Can One Word Change a Memory?" Sub: "Same film of a car crash. Same question. Only one word changes."
+Left card: the question sentence "About how fast were the cars going when they ____ each other?" with a blank that shows the current verb in bold; a verb chip row (contacted, hit, bumped, collided, smashed — chips appear as they are revealed); a horizontal bar chart (0–45 mph axis, label "Average estimated speed (mph)") with bars for each revealed verb, bar value printed at the bar end (31.8, 34.0, 38.1, 39.3, 40.8). Bars animate with transform: scaleX only (transform-origin left).
+DEMO: action 1, label "Show the first word": verb "contacted", bar 31.8. Action 2, label "Now change one word": verb "smashed", bar 40.8, and the "Reveal" row: "About 9 mph apart, from a single word. (45 students watched crash films.)" Action 3, label "Show the other three words": hit 34.0, bumped 38.1, collided 39.3 appear in order. Action 4, label "One week later": a glass card appears — "One week later · 'Did you see any broken glass?'" with three tiles: "32% asked 'smashed'", "14% asked 'hit'", "12% never asked about speed", and the note "There was no broken glass in the film." and the "Why"/"Careful" rows. Then label null. Texts:
+  Ask: "Predict: how far apart will the average guesses be for 'contacted' and 'smashed'?"
+  Why: "A question can carry information, and that information can blend into what we think we remember."
+  Careful: "Not 'witnesses are always wrong'. Researchers still debate exactly how the effect works."
+Source line: "Evidence · Loftus & Palmer (1974); Loftus (2005)".
+
+--- SLIDE 7 — Experiment 5 · Judgement: guess the secret rule (DEMO index 6)
+Neutral title: "Guess the Secret Rule" → `data-after`: "Why We Lock Onto a Wrong Guess". Sub: "The triple 2 – 4 – 6 fits a secret rule. Suggest triples to test — I'll say yes or no."
+Left card: a seed row "Fits the rule: 2 – 4 – 6 [YES]"; four large test buttons: "8 – 10 – 12", "20 – 22 – 24", "3 – 17 – 104", "10 – 8 – 6"; a "Your own triple" section made of THREE touch steppers (− / value / +, range -99…999, default 1, 2, 3, no soft keyboard needed) with a "Test it" button; a "Tested so far" log showing each triple and a green YES / grey NO tag; a hidden banner "Rule: any three numbers in ascending order (a < b < c)".
+Rule logic: YES iff a < b < c. So the presets answer YES, YES, YES, NO. Tapping a preset or "Test it" appends to the log with a short animation.
+DEMO: this slide uses the action button as a "guided run" for the presenter, in five steps. Labels and actions: 1 "Test 8 – 10 – 12" (YES), 2 "Test 20 – 22 – 24" (YES), 3 "Test 3 – 17 – 104" (YES — surprise!), 4 "Test 10 – 8 – 6" (NO), 5 "Reveal the rule" (banner, title swap, reveal rows). Then label null. Manual button taps and steppers work at any time and also write to the log. `reset()` clears the log and hides the banner. Presenter script: before each press, ask the room "yes or no?" Texts:
+  Ask: "Say your guess for the rule — then pick the test you think is most useful."
+  Reveal: "Any ascending numbers fit. '+2' and 'even numbers' were just guesses that happened to work."
+  Why: "We tend to test examples that should get a 'yes'. That builds confidence in a guess that may be too narrow."
+  Careful: "Not stubbornness or dishonesty — it's a natural default. In Wason's 1960 study only about 1 in 5 got it right on the first announcement."
+Source line: "Evidence · Wason (1960); Klayman & Ha (1987); Nickerson (1998)".
+Keyboard safety: the steppers are buttons, not text inputs, so digits never trigger slide jumps.
+
+--- SLIDE 8 — Calibration: confidence ≠ accuracy (no demo; animated field)
+Eyebrow "Calibration · 08". Title: "Confidence Does Not Guarantee Accuracy". Sub: "Feeling sure and being right are different things — but they are not opposites."
+Three numbered rows in the existing "rules" layout (.rule-row style):
+  01 icon gauge — "Confidence is a feeling, not a measurement" / "It reflects how smoothly the story fits together in your head — not how much evidence you checked." tag "Koriat 2012".
+  02 icon badge-check — "A clean first impression is often reliable" / "Under fair conditions, with nothing nudging it, a confident first judgement tends to be accurate — for example, a first eyewitness identification." tag "Wixted & Wells 2017".
+  03 icon triangle-alert — "Illusions and nudges can inflate certainty" / "Misleading context, leading questions and feedback can make a wrong answer feel as sure as a right one — like confident hands for the missing word." tag "Slides 2 · 4 · 5 · 6 · 7".
+Callout bar: "Confidence can be wrong. That is not the same as confidence always being wrong."
+Source line: "Evidence · Koriat (2012); Wixted & Wells (2017); Kahneman & Klein (2009)".
+
+--- SLIDE 9 — Habits: how to check yourself (no demo)
+Eyebrow "Habits · 09". Title: "How to Check Yourself". Sub: "Knowing about biases isn't enough. Changing the process helps."
+Reuse the existing before/after table styling with four rows (columns: Where | The brain's shortcut | → | A habit that helps):
+  Seeing | Judges by surroundings | Measure it, don't eyeball it: a ruler, a number, a second look.
+  Attention | Filters out the unexpected | Don't multitask when it matters; pause and scan on purpose.
+  Memory | Fills gaps with what fits | Write it down early, and ask neutral questions, not leading ones.
+  Judgement | Tests only for "yes" | Ask what would prove you wrong — then test that.
+Footer line: "These habits reduce errors in studies; they don't remove bias. We spot bias in others more easily than in ourselves."
+Source line: "Evidence · Lord, Lepper & Preston (1984); Pronin, Lin & Ross (2002); Milkman, Chugh & Bazerman (2009)".
+
+--- SLIDE 10 — Closing (keep the existing right-hand telemetry panel and buttons)
+Eyebrow "Closing · 10". Title: "What Else Might You Be Missing?" (accent on the last words). Thesis: "You can trust your brain to get you through a complex world. Just check what it skips, fills in, and assumes."
+Three pillar rows: "Perception & Attention — it compares, and it filters." / "Memory — it reconstructs." / "Judgement — it looks for 'yes', and feels sure."
+A "Replay an experiment" button row: Size → goTo(1), Duck / rabbit → goTo(2), Attention → goTo(3), Memory → goTo(4), Secret rule → goTo(6) (use `data-goto` attributes and one delegated click handler; because `goTo()` resets the slide being left and entering a slide always starts from the reset state, every replay starts clean).
+Keep the existing right column exactly: "Live Deck Telemetry" pod (MQTT sync, room topic, active slide, presentation runtime with ids `tele-mqtt`, `tele-room`, `tele-slide`, `qa-timer`), the "Live Remote Sync" and "Replay From Slide 1" buttons, and change the last note to "Thank you. Questions?".
+Source line: "Synthesis of the evidence on slides 2–9".
+
+---------------------------------------------------------------------
+9. PHONE REMOTE — NEW `CUES` ARRAY (10 entries, same structure as the current array)
+---------------------------------------------------------------------
+Each entry: a short `name` and a presenter cue (2–3 sentences, includes the ANSWER and a time budget; the phone is private, so spoilers are fine here). Cumulative time ~11 minutes.
+ 1 "Title + bridge test" (0:45) — Ask the room which square looks lighter; press ACT to bridge them; "same gray, judged by surroundings".
+ 2 "Size by comparison" (1:15) — Hands up before pressing ACT; the circles are identical; one line on context.
+ 3 "Duck or rabbit" (1:15) — Hands for duck vs rabbit first; ACT shows duck then rabbit; mention the Easter/October study as "one study".
+ 4 "Attention arena" (1:45) — Stress: count WHITE bounces only; 12 s; collect answers by hands; the answer is 15; ACT again to replay with highlights and ask who saw the star/border/square.
+ 5 "Memory words" (1:45) — Do not say the theme; after the poll the lure "sleep" was never shown; keep the tone friendly, it's normal memory.
+ 6 "Loftus & Palmer" (1:15) — Ask for a prediction before the reveal; use the verbs in order; the broken-glass follow-up has no glass in the film; add "debated mechanism".
+ 7 "Secret rule" (1:30) — Ask yes/no before each press; the surprise is 3-17-104 = YES; rule = ascending.
+ 8 "Confidence ≠ accuracy" (0:45) — Say both halves: can be wrong, not always wrong.
+ 9 "Check yourself" (0:45) — Four habits; stress process over willpower.
+10 "Closing + Q&A" (0:30 + Q&A) — Thesis line; offer a replay of any experiment from the buttons.
+Remote UI changes: add the ACT button (5.2/5.4), keep Prev/Next, jump grid (1–10), timer, progress, status dot.
+
+---------------------------------------------------------------------
+10. QUALITY BAR
+---------------------------------------------------------------------
+- No emoji anywhere (including inside JS strings, comments or alt text).
+- No horizontal or vertical page scroll. No text clipped at 1280x720.
+- Every interactive element is keyboard reachable and has an `aria-label` or visible text. Stimulus SVGs have `role="img"` and a descriptive `aria-label` that does NOT reveal the answer.
+- No console errors. No unhandled promise rejections. No global leaks other than `DEMO`, `window.__selfTest` and what the original already exposes.
+- Timers and RAF loops for a slide are always cancelled in that slide's `reset()` and when the tab becomes hidden (`visibilitychange`), so nothing runs when it shouldn't.
+- Performance on the board: ONE animation loop at most at a time (the active slide's field or the active demo), `will-change` only where the original already uses it.
+- Keep the code style of the original (comment banners like `/* ---- Slide n — ... ---- */`).
+
+---------------------------------------------------------------------
+11. WHEN YOU FINISH — verification checklist (answer each in one line)
+---------------------------------------------------------------------
+1. Do slides 1–10 exist with ids s1..s10 and `TOTAL=10`?
+2. Does every unchanged block match my attached file character-for-character (list any block you were forced to touch and why)?
+3. Is the arena result exactly 15 bounces by your own hand-trace of W1..W4 (state the per-disc counts 2/5/4/4)?
+4. Are both slide-1 patches the same `#7A7A7A`, and are the two Ebbinghaus targets both r=40?
+5. Does Tab/A trigger the demo, while Space/Enter/PageDown still only navigate?
+6. Does leaving any slide call its `reset()`, so Replay buttons on slide 10 start clean?
+7. Do MQTT `ACT` and `STATE` messages ignore their own echoes and wrong slide indexes?
+8. Which of the numbers in section 6 appear on slides, and where?
+Then list your assumptions (max 5 bullets).
+
+NOW START: Reply with "PART 1" and the code. Do not summarize. Do not ask questions first.
