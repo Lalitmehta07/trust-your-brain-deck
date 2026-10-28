@@ -1,0 +1,34 @@
+
+/* ---------------------------------------------------------------------------
+   REMOTE SYNC MODAL + QR
+--------------------------------------------------------------------------- */
+function remoteURL() {
+  const u = new URL(location.href);
+  u.searchParams.set('mode', 'remote');
+  u.searchParams.set('room', roomTopic);
+  return u.toString();
+}
+function refreshModalLinks() {
+  const url = remoteURL();
+  $('#remote-url').textContent = url;
+  $('#open-remote-tab').href = url;
+  const qr = $('#qr-img');
+  if (qr) qr.src = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&color=0f172a&bgcolor=ffffff&data=' + encodeURIComponent(url);
+  $('#topic-preview').textContent = roomTopic;
+  $('#room-input').value = roomTopic;
+  const tr = $('#tele-room'); if (tr) tr.textContent = roomTopic;
+}
+function openModal() { refreshModalLinks(); $('#remote-modal-overlay').classList.add('open'); }
+function closeModal() { $('#remote-modal-overlay').classList.remove('open'); }
+$('#sync-btn').addEventListener('click', openModal);
+$('#reveal-sync-btn').addEventListener('click', openModal);
+$('#modal-close-x').addEventListener('click', closeModal);
+$('#remote-modal-overlay').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeModal(); });
+$('#copy-url-btn').addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText(remoteURL()); showToast('Remote link copied'); }
+  catch (e) { showToast('Copy blocked — long-press the link'); }
+});
+$('#apply-room-btn').addEventListener('click', () => {
+  const v = $('#room-input').value.trim();
+  if (v) { roomTopic = v; refreshModalLinks(); setSyncStatus('linking'); connectMQTT(); showToast('Broker reconnected on new topic'); }
+});

@@ -1,0 +1,57 @@
+  fields.forEach((fl, i) => { if (!fl) return; if (i === idx) fl.start(); else fl.stop(); });
+}
+
+/* ---------------------------------------------------------------------------
+   SLIDE ENGINE — transitions animate ONLY translate3d + opacity (GPU-safe)
+--------------------------------------------------------------------------- */
+const slides = $$('.slide');
+let transitioning = false;
+
+function goTo(idx, opts) {
+  opts = opts || {};
+  idx = clamp(idx, 0, TOTAL - 1);
+  if (idx === slideIndex && document.querySelector('.slide.is-active') && !opts.force) return;
+  const prevIdx = slideIndex;
+  const goingForward = idx >= prevIdx;
+  slides.forEach((s, i) => {
+    s.classList.remove('is-active', 'is-exit-up', 'is-exit-down');
+    if (i === idx) {
+      s.classList.add('is-active');
+    } else if (i === prevIdx && i !== idx) {
+      s.classList.add(goingForward ? 'is-exit-up' : 'is-exit-down');
+    }
+  });
+  slideIndex = idx;
+  setFocusForSlide(idx);
+  setActiveField(idx);
+  updateHUD();
+  onSlideEnter(idx);
+  if (!opts.silent) AudioEngine.play(goingForward ? 'forward' : 'back');
+  if (!IS_REMOTE) publishNav(idx);
+}
+function next() { goTo(slideIndex + 1); }
+function prev() { goTo(slideIndex - 1); }
+
+function updateHUD() {
+  const x = slideIndex + 1;
+  $('#chip-num').textContent = String(x).padStart(2, '0');
+  /* segmented dock: single authoritative state pass driven by slideIndex */
+  $$('#progress-track .pseg').forEach((el, i) => {
+    el.classList.toggle('done', i < slideIndex);
+    el.classList.toggle('current', i === slideIndex);
+  });
+  $('#tel-x').textContent = x;
+  $('#tel-left').textContent = (x === TOTAL) ? 'Final Slide' : ((TOTAL - x) + ' slides left');
+  const mini = $('#mini-prog-fill'); if (mini) mini.style.transform = `scaleX(${x / TOTAL})`;
+  /* remote UI sync */
+  if (IS_REMOTE) {
+    $('#rmu-idx').textContent = `SLIDE ${x} / ${TOTAL} · BOARD VIEW`;
+    $('#rmu-name').textContent = slides[slideIndex].dataset.title.replace(/&amp;/g, '&');
+    $('#rmu-cue').textContent = CUES[slideIndex];
+    $('#rmu-prog-fill').style.transform = `scaleX(${x / TOTAL})`;
+    $$('#rmu-jump button').forEach((b, i) => b.classList.toggle('current', i === slideIndex));
+  }
+  const ts = $('#tele-slide'); if (ts) ts.textContent = `${x} / ${TOTAL}`;
+}
+
+/* ---------------------------------------------------------------------------

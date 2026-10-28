@@ -1,0 +1,50 @@
+   INPUT HARDWARE: keyboard (Bluetooth HID), wheel, swipe, click zones, buttons
+--------------------------------------------------------------------------- */
+window.addEventListener('keydown', (e) => {
+  const k = e.key, c = e.code, kc = e.keyCode;
+  /* never hijack typing inside the room input */
+  if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
+    if (k === 'Escape') closeModal();
+    return;
+  }
+  const isNext = (k === 'PageDown' || c === 'PageDown' || kc === 34 ||
+                  k === 'ArrowRight' || k === 'ArrowDown' || c === 'ArrowRight' || c === 'ArrowDown' ||
+                  k === ' ' || c === 'Space' || kc === 32 ||
+                  k === 'Enter' || kc === 13 || c === 'KeyN' || kc === 78);
+  const isPrev = (k === 'PageUp' || c === 'PageUp' || kc === 33 ||
+                  k === 'ArrowLeft' || k === 'ArrowUp' || c === 'ArrowLeft' || c === 'ArrowUp' ||
+                  k === 'Backspace' || kc === 8 || c === 'KeyP' || kc === 80);
+  if (isNext) { e.preventDefault(); next(); return; }
+  if (isPrev) { e.preventDefault(); prev(); return; }
+  if (c === 'KeyF' || kc === 70 || k === 'F11' || kc === 122) { e.preventDefault(); toggleFullscreen(); return; }
+  if (c === 'Escape' || kc === 27) { closeModal(); return; }
+  /* direct jump: digits 1..9 -> slides 1..9 ; 0 -> slide 10 */
+  let n = -1;
+  if (/^[1-9]$/.test(k)) n = parseInt(k, 10) - 1;
+  else if (k === '0') n = 9;
+  else if (c && /^Digit[1-9]$/.test(c)) n = parseInt(c.slice(5), 10) - 1;
+  else if (c === 'Digit0') n = 9;
+  if (n >= 0) { e.preventDefault(); goTo(n); }
+}, { passive: false });
+
+/* debounced mouse wheel navigation */
+let wheelLock = 0;
+window.addEventListener('wheel', (e) => {
+  if (IS_REMOTE) return;
+  const nowT = Date.now();
+  if (nowT - wheelLock < 650) return;
+  if (Math.abs(e.deltaY) < 12) return;
+  wheelLock = nowT;
+  if (e.deltaY > 0) next(); else prev();
+}, { passive: true });
+
+/* touch swipe (board + phone both use this file) */
+let touchX = null, touchY = null;
+window.addEventListener('touchstart', (e) => {
+  if (IS_REMOTE) return;
+  if (e.touches.length !== 1) return;
+  touchX = e.touches[0].clientX; touchY = e.touches[0].clientY;
+}, { passive: true });
+window.addEventListener('touchend', (e) => {
+  if (!IS_REMOTE && touchX !== null) {
+    const dx = e.changedTouches[0].clientX - touchX;

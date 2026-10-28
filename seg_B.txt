@@ -1,0 +1,57 @@
+<body>
+
+<!-- ============ SHARED SVG DEFS — gradients + generative motifs referenced by every slide field ============ -->
+<svg id="field-defs" width="0" height="0" style="position:absolute;left:-9999px;top:0;" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="rgA" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2563EB" stop-opacity="0.05"/>
+      <stop offset="55%" stop-color="#2563EB" stop-opacity="0.34"/>
+      <stop offset="100%" stop-color="#4F46E5" stop-opacity="0.10"/>
+    </linearGradient>
+    <linearGradient id="rgB" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4F46E5" stop-opacity="0.06"/>
+      <stop offset="60%" stop-color="#4F46E5" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#E11D48" stop-opacity="0.12"/>
+    </linearGradient>
+    <linearGradient id="rgC" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#E11D48" stop-opacity="0.05"/>
+      <stop offset="60%" stop-color="#E11D48" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#2563EB" stop-opacity="0.10"/>
+    </linearGradient>
+    <radialGradient id="attractorGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2563EB" stop-opacity="0.16"/>
+      <stop offset="60%" stop-color="#4F46E5" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#4F46E5" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="coralGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#E11D48" stop-opacity="0.14"/>
+      <stop offset="60%" stop-color="#E11D48" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#E11D48" stop-opacity="0"/>
+    </radialGradient>
+    <!-- reticle rings motif -->
+    <g id="sym-reticle">
+      <circle r="34" fill="none" stroke="#2563EB" stroke-opacity="0.28" stroke-width="1.2" vector-effect="non-scaling-stroke"/>
+      <circle r="62" fill="none" stroke="#2563EB" stroke-opacity="0.18" stroke-width="1.2" stroke-dasharray="3 9" vector-effect="non-scaling-stroke"/>
+      <circle r="104" fill="none" stroke="#E11D48" stroke-opacity="0.16" stroke-width="1.2" vector-effect="non-scaling-stroke"/>
+      <path d="M -18 0 H 18 M 0 -18 V 18" stroke="#4F46E5" stroke-opacity="0.45" stroke-width="1.2" fill="none" vector-effect="non-scaling-stroke"/>
+    </g>
+    <!-- attractor core motif -->
+    <g id="sym-core">
+      <circle r="170" fill="url(#attractorGlow)"/>
+      <circle r="7" fill="#2563EB" opacity="0.9"/>
+    </g>
+    <!-- waveform cycle motif (one period, baseline y=0) -->
+    <path id="sym-wavecycle" d="M 0 0 C 80 -120, 160 -120, 240 0 C 320 120, 400 120, 480 0" fill="none" vector-effect="non-scaling-stroke"/>
+    <!-- speech burst motif -->
+    <path id="sym-burst" d="M 0 -46 L 12 -18 L 42 -26 L 20 -6 L 46 14 L 14 12 L 8 44 L -4 14 L -34 34 L -20 4 L -46 -8 L -14 -12 Z" fill="none" vector-effect="non-scaling-stroke"/>
+  </defs>
+</svg>
+
+<!-- =================== GLASSMORPHIC STAGE =================== -->
+<main id="stage" role="region" aria-label="Presentation stage">
+  <div id="slide-chip"><span class="chip-num mono" id="chip-num">01</span><span>/ 10 &nbsp;·&nbsp; Algorithmic Persuasion</span></div>
+  <div id="stage-inner">
+    <div class="clickzone" id="zone-prev" title="Previous slide"><span class="zone-glyph"><i data-lucide="chevron-left" stroke-width="2"></i></span></div>
+    <div class="clickzone" id="zone-next" title="Next slide"><span class="zone-glyph"><i data-lucide="chevron-right" stroke-width="2"></i></span></div>
+
+<!-- ============ SLIDE 1 : TITLE & PROVOCATION ============ -->

@@ -1,0 +1,58 @@
+  if (idx === 1) primeFrictionMeters();
+  if (idx === 2) loopPulse();
+  if (idx === 3) renderHook();
+}
+
+/* ---------------------------------------------------------------------------
+   REMOTE UI BOOT (phone view)
+--------------------------------------------------------------------------- */
+function bootRemoteUI() {
+  document.body.classList.add('remote-mode');
+  const jumpWrap = $('#rmu-jump');
+  for (let i = 0; i < TOTAL; i++) {
+    const b = document.createElement('button');
+    b.textContent = i + 1;
+    b.addEventListener('click', () => publishNav(i));
+    jumpWrap.appendChild(b);
+  }
+  $('#rmu-next').addEventListener('click', () => publishNav(clamp(slideIndex + 1, 0, TOTAL - 1)));
+  $('#rmu-prev').addEventListener('click', () => publishNav(clamp(slideIndex - 1, 0, TOTAL - 1)));
+  updateHUD();
+}
+
+/* ---------------------------------------------------------------------------
+   INIT
+--------------------------------------------------------------------------- */
+function init() {
+  /* build the ten progress segments once, from TOTAL — single source of truth */
+  const track = $('#progress-track');
+  if (track && !track.children.length) {
+    for (let i = 0; i < TOTAL; i++) {
+      const s = document.createElement('span');
+      s.className = 'pseg';
+      track.appendChild(s);
+    }
+  }
+  setActiveField(0);
+  setFocusForSlide(0);
+  buildRetentionBars();
+  renderHook();
+  decayLoop();
+  if (IS_REMOTE) {
+    bootRemoteUI();
+  } else {
+    slides.forEach((s, i) => {
+      if (i !== 0) s.classList.remove('is-active');
+    });
+    goTo(0, { force: true });
+  }
+  connectMQTT();
+  refreshModalLinks();
+  if (window.lucide) lucide.createIcons();
+  /* re-run icon creation after dynamic innerHTML swaps */
+  setInterval(() => { if (window.lucide) lucide.createIcons(); }, 2500);
+}
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

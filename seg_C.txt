@@ -1,0 +1,30 @@
+  <button class="neu-btn icon-only" id="presenter-toggle" accesskey="c" title="Toggle presenter click zones (accesskey: c)" aria-label="Toggle presenter click mode"><i data-lucide="mouse-pointer-click" stroke-width="2"></i></button>
+  <button class="neu-btn" id="sync-btn" accesskey="r" title="Open phone remote sync modal (accesskey: r)" aria-haspopup="dialog">
+    <span id="sync-dot" aria-hidden="true"></span><span id="sync-label">SYNC</span>
+  </button>
+  <button class="neu-btn icon-only" id="fullscreen-btn" accesskey="f" title="Toggle fullscreen (accesskey: f)" aria-label="Toggle fullscreen"><i data-lucide="maximize-2" stroke-width="2"></i></button>
+</div>
+
+<!-- =================== HUD : BOTTOM-LEFT NAVIGATION =================== -->
+<div class="hud" id="navctl">
+  <button class="neu-btn icon-only" id="prev-btn" accesskey="p" title="Previous slide (accesskey: p)" aria-label="Previous slide"><i data-lucide="chevron-left" stroke-width="2"></i></button>
+  <button class="neu-btn icon-only" id="next-btn" accesskey="n" title="Next slide (accesskey: n)" aria-label="Next slide"><i data-lucide="chevron-right" stroke-width="2"></i></button>
+  <span class="kbd-hint">PgUp / PgDn</span>
+</div>
+
+<!-- =================== HUD : BOTTOM-CENTER PROGRESS DOCK =================== -->
+<div class="hud" id="progress-dock" role="group" aria-label="Progression">
+  <div id="progress-track" aria-hidden="true"><!-- TOTAL segments built once at init --></div>
+  <div id="progress-telemetry" aria-live="polite">Slide <b id="tel-x">1</b> of 10 • <span id="tel-left">9 slides left</span></div>
+</div>
+
+<!-- Slide jump buttons (hidden, keyboard/HID accessible via accesskeys 1–0) -->
+<nav id="jump-nav" aria-label="Direct slide jump" style="position:fixed;left:-9999px;top:0;width:1px;height:1px;overflow:hidden;">
+  <button accesskey="1" data-jump="0">1</button><button accesskey="2" data-jump="1">2</button>
+  <button accesskey="3" data-jump="2">3</button><button accesskey="4" data-jump="3">4</button>
+  <button accesskey="5" data-jump="4">5</button><button accesskey="6" data-jump="5">6</button>
+  <button accesskey="7" data-jump="6">7</button><button accesskey="8" data-jump="7">8</button>
+  <button accesskey="9" data-jump="8">9</button><button accesskey="0" data-jump="9">10</button>
+</nav>
+
+<!-- =================== REMOTE SYNC MODAL =================== -->

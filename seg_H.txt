@@ -1,0 +1,116 @@
+    const dy = e.changedTouches[0].clientY - touchY;
+    if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy)) { if (dx < 0) next(); else prev(); }
+    touchX = null;
+  }
+}, { passive: true });
+
+/* HUD buttons */
+$('#next-btn').addEventListener('click', next);
+$('#prev-btn').addEventListener('click', prev);
+const restartBtn = $('#restart-btn');
+if (restartBtn) restartBtn.addEventListener('click', () => goTo(0, { force: true }));
+$$('[data-jump]').forEach(b => b.addEventListener('click', () => goTo(parseInt(b.dataset.jump, 10))));
+
+/* presenter click-mode toggle + right/left zone clicks */
+$('#presenter-toggle').addEventListener('click', () => {
+  document.body.classList.toggle('presenter-click');
+  $('#presenter-toggle').classList.toggle('is-on');
+});
+$('#zone-next').addEventListener('click', next);
+$('#zone-prev').addEventListener('click', prev);
+
+/* ---------------------------------------------------------------------------
+   FULLSCREEN (Android Chrome webkit fallback + dynamic icon/label)
+--------------------------------------------------------------------------- */
+function enterFS() {
+  const el = document.documentElement;
+  if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
+  else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+  else if (el.webkitRequestFullScreen) el.webkitRequestFullScreen();
+}
+function exitFS() {
+  if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+  else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+}
+function isFS() { return !!(document.fullscreenElement || document.webkitFullscreenElement); }
+function toggleFullscreen() { isFS() ? exitFS() : enterFS(); }
+function refreshFSIcon() {
+  const btn = $('#fullscreen-btn');
+  btn.innerHTML = `<i data-lucide="${isFS() ? 'minimize-2' : 'maximize-2'}" stroke-width="2"></i>`;
+  btn.setAttribute('aria-label', isFS() ? 'Exit fullscreen' : 'Enter fullscreen');
+  if (window.lucide) lucide.createIcons();
+}
+$('#fullscreen-btn').addEventListener('click', toggleFullscreen);
+document.addEventListener('fullscreenchange', refreshFSIcon);
+document.addEventListener('webkitfullscreenchange', refreshFSIcon);
+
+/* ---------------------------------------------------------------------------
+   MQTT ZERO-BACKEND PHONE SYNC (broker.emqx.io over WSS)
+--------------------------------------------------------------------------- */
+const BROKER = 'wss://broker.emqx.io:8084/mqtt';
+let mqttClient = null, mqttOnline = false;
+
+function setSyncStatus(state) {
+  const dot = $('#sync-dot'), lbl = $('#sync-label');
+  const ms = $('#modal-status'), tm = $('#tele-mqtt');
+  const rdot = $('#rmu-dot'), rt = $('#rmu-status-txt');
+  if (dot) { dot.className = ''; dot.classList.add(state === 'online' ? 'online' : (state === 'offline' ? 'offline' : '')); }
+  const txt = state === 'online' ? 'SYNCED' : (state === 'offline' ? 'OFFLINE' : 'LINKING');
+  if (lbl) lbl.textContent = txt;
+  if (ms) { ms.textContent = state.toUpperCase(); ms.style.color = state === 'online' ? 'var(--emerald)' : (state === 'offline' ? 'var(--coral)' : 'var(--ink-c)'); }
+  if (tm) { tm.textContent = state === 'online' ? 'ONLINE · WSS' : txt; tm.classList.toggle('online', state === 'online'); }
+  if (rdot) rdot.style.background = state === 'online' ? '#059669' : (state === 'offline' ? '#E11D48' : '#94A3B8');
+  if (rt) rt.textContent = txt;
+}
+
+function connectMQTT() {
+  if (typeof mqtt === 'undefined') { setSyncStatus('offline'); return; }
+  try {
+    if (mqttClient) { try { mqttClient.end(true); } catch (e) {} }
+    mqttClient = mqtt.connect(BROKER, {
+      clientId: 'qp-' + Math.random().toString(16).slice(2, 10),
+      keepalive: 30, reconnectPeriod: 2500, connectTimeout: 6000
+    });
+    mqttClient.on('connect', () => {
+      mqttOnline = true; setSyncStatus('online');
+      mqttClient.subscribe(roomTopic, { qos: 0 }, () => {
+        /* announce presence so late joiners sync to our view */
+        publishNav(slideIndex, true);
+      });
+    });
+    mqttClient.on('reconnect', () => setSyncStatus('linking'));
+    mqttClient.on('close', () => { mqttOnline = false; setSyncStatus('offline'); });
+    mqttClient.on('error', () => setSyncStatus('offline'));
+    mqttClient.on('message', (topic, payload) => {
+      if (topic !== roomTopic) return;
+      let msg;
+      try { msg = JSON.parse(payload.toString()); } catch (e) { return; }
+      if (!msg || msg.type !== 'NAV' || typeof msg.slideIndex !== 'number') return;
+      if (IS_REMOTE) {
+        /* phone view mirrors the board's authoritative index */
+        slideIndex = clamp(msg.slideIndex, 0, TOTAL - 1);
+        updateHUD();
+      } else {
+        /* board obeys inbound remote commands (<50ms transition budget) */
+        goTo(clamp(msg.slideIndex, 0, TOTAL - 1), { silent: true });
+        showToast(`Remote jump → Slide ${msg.slideIndex + 1}`);
+      }
+    });
+  } catch (e) { setSyncStatus('offline'); }
+}
+
+function publishNav(idx, isAnnounce) {
+  if (!IS_REMOTE && !isAnnounce && mqttClient == null) return;
+  if (!mqttClient || !mqttOnline) return;
+  try {
+    mqttClient.publish(roomTopic, JSON.stringify({ type: 'NAV', slideIndex: idx, timestamp: Date.now(), src: IS_REMOTE ? 'remote' : 'board' }), { qos: 0 });
+  } catch (e) {}
+}
+
+let toastTimer = null;
+function showToast(msg) {
+  const t = $('#toast'); $('#toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+}
