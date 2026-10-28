@@ -1,0 +1,2367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F4F6FB">
+<title>Algorithmic Persuasion: How Short-Form Feeds Rewire Human Communication</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   ALGORITHMIC PERSUASION — LIGHT-THEME ARCHITECTURAL DECK
+   Porcelain/Alabaster base, Neumorphism + Glassmorphism hybrid
+   Zero emoji. Lucide icons only. 4K 60fps GPU-safe animation.
+   ============================================================ */
+:root{
+  --base-1:#F4F6FB;
+  --base-2:#EEF2F9;
+  --white:#FFFFFF;
+  --ink-h:#0F172A;
+  --ink-b:#334155;
+  --ink-c:#64748B;
+  --cobalt:#2563EB;
+  --indigo:#4F46E5;
+  --coral:#E11D48;
+  --emerald:#059669;
+  --amber:#D97706;
+  --glass-bg:rgba(255,255,255,0.68);
+  --glass-border:rgba(255,255,255,0.85);
+  --glass-shadow:0 20px 50px rgba(15,23,42,0.06);
+  --glass-blur:blur(18px) saturate(160%);
+  /* Apple-grade specular sheen for glass surfaces (static — never animated) */
+  --apple-sheen:linear-gradient(142deg,rgba(255,255,255,0.92) 0%,rgba(255,255,255,0.30) 22%,rgba(255,255,255,0.06) 46%,rgba(255,255,255,0.02) 70%,rgba(255,255,255,0.22) 100%);
+  --neu-bg:#EEF2F9;
+  --neu-out:6px 6px 14px rgba(166,180,200,0.55), -6px -6px 14px rgba(255,255,255,0.95);
+  --neu-out-sm:4px 4px 10px rgba(166,180,200,0.5), -4px -4px 10px rgba(255,255,255,0.92);
+  --neu-in:inset 4px 4px 8px rgba(166,180,200,0.6), inset -4px -4px 8px rgba(255,255,255,0.9);
+  --font-display:'Plus Jakarta Sans',system-ui,sans-serif;
+  --font-body:'Inter',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+  --slide-ease:cubic-bezier(0.22,1,0.36,1);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html,body{
+  width:100%;height:100%;
+  overflow:hidden;
+  background:linear-gradient(155deg,var(--base-1) 0%,var(--base-2) 100%);
+  font-family:var(--font-body);
+  color:var(--ink-b);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+  touch-action:none;
+  -webkit-tap-highlight-color:transparent;
+}
+body{width:100dvw;height:100dvh;position:fixed;inset:0;}
+h1,h2,h3,h4,.display{font-family:var(--font-display);color:var(--ink-h);}
+.mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums;}
+button{font-family:inherit;border:none;background:none;cursor:pointer;color:inherit;}
+i[data-lucide]{display:inline-flex;}
+::selection{background:rgba(37,99,235,0.18);color:var(--ink-h);}
+
+/* ---------- Generative SVG field — now hosted INSIDE the slide stage.
+   One independent vector layer per slide (10 themes), clipped by the stage. ---------- */
+.slide-field{
+  position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+  border-radius:inherit;
+  opacity:0;transition:opacity 0.45s ease;
+  backface-visibility:hidden;transform:translateZ(0);
+}
+.slide.is-active .slide-field{opacity:1;}
+.slide-field svg{width:100%;height:100%;display:block;}
+.slide > *:not(.slide-field){position:relative;z-index:1;}
+.slide > .clickzone{z-index:40;}
+
+/* ---------- Glassmorphic main stage (single static backdrop-filter) ---------- */
+#stage{
+  position:fixed;z-index:10;
+  top:50%;left:50%;
+  width:min(92dvw,2600px);
+  height:min(82dvh,1420px);
+  transform:translate(-50%,-50%) translateZ(0);
+  background:var(--glass-bg);
+  -webkit-backdrop-filter:var(--glass-blur);
+  backdrop-filter:var(--glass-blur);
+  border:1px solid var(--glass-border);
+  border-radius:clamp(20px,1.6vw,34px);
+  box-shadow:var(--glass-shadow),0 2px 6px rgba(15,23,42,0.04);
+  overflow:hidden;
+  backface-visibility:hidden;
+}
+/* Apple-style specular sheen — static pseudo-element layered over the frosted glass */
+#stage::before{
+  content:"";position:absolute;inset:0;z-index:3;pointer-events:none;border-radius:inherit;
+  background:var(--apple-sheen);opacity:0.55;mix-blend-mode:soft-light;
+}
+#stage::after{
+  content:"";position:absolute;top:0;left:8%;right:8%;height:1px;z-index:3;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.95) 30%,rgba(255,255,255,0.95) 70%,transparent);
+}
+#stage-inner{position:relative;width:100%;height:100%;overflow:hidden;border-radius:inherit;}
+
+/* Slide views animate ONLY transform:translate3d + opacity */
+.slide{
+  position:absolute;inset:0;
+  padding:clamp(26px,3.2vh,56px) clamp(34px,3.6vw,72px) clamp(96px,9vh,130px);
+  display:flex;flex-direction:column;
+  opacity:0;
+  transform:translate3d(0,54px,0);
+  pointer-events:none;
+  visibility:hidden;
+  transition:transform 0.55s var(--slide-ease),opacity 0.45s ease,visibility 0s linear 0.55s;
+  backface-visibility:hidden;
+  will-change:transform,opacity;
+  overflow:hidden;
+}
+.slide.is-active{opacity:1;transform:translate3d(0,0,0);pointer-events:auto;visibility:visible;transition-delay:0s;z-index:2;}
+.slide.is-exit-up{opacity:0;transform:translate3d(0,-54px,0);}
+.slide.is-exit-down{opacity:0;transform:translate3d(0,54px,0);}
+
+/* ---------- Shared slide typography & atoms ---------- */
+.eyebrow{
+  display:inline-flex;align-items:center;gap:0.55em;
+  font-family:var(--font-mono);font-size:clamp(11px,0.85vw,16px);
+  letter-spacing:0.22em;text-transform:uppercase;color:var(--cobalt);
+  background:rgba(37,99,235,0.07);border:1px solid rgba(37,99,235,0.16);
+  padding:0.5em 1em;border-radius:999px;width:max-content;
+}
+.eyebrow.coral{color:var(--coral);background:rgba(225,29,72,0.06);border-color:rgba(225,29,72,0.16);}
+.eyebrow.indigo{color:var(--indigo);background:rgba(79,70,229,0.07);border-color:rgba(79,70,229,0.16);}
+.eyebrow i[data-lucide]{width:1em;height:1em;}
+.slide-title{
+  font-weight:800;color:var(--ink-h);
+  font-size:clamp(26px,3.4vw,64px);line-height:1.06;letter-spacing:-0.02em;
+  margin-top:clamp(8px,1.2vh,16px);
+}
+.slide-title .accent{color:var(--cobalt);}
+.slide-title .accent-c{color:var(--coral);}
+.slide-title .accent-i{color:var(--indigo);}
+.slide-sub{
+  font-size:clamp(13px,1.15vw,22px);color:var(--ink-c);line-height:1.55;
+  max-width:62ch;margin-top:clamp(6px,1vh,14px);font-weight:400;
+}
+.slide-head{flex:0 0 auto;}
+.slide-body{flex:1 1 auto;display:flex;min-height:0;margin-top:clamp(14px,2.4vh,34px);}
+
+/* Neumorphic pod */
+.neu-pod{
+  background:var(--neu-bg);border-radius:clamp(14px,1.2vw,24px);
+  box-shadow:var(--neu-out);
+  padding:clamp(14px,1.6vh,26px) clamp(16px,1.6vw,28px);
+  border:1px solid rgba(255,255,255,0.6);
+}
+.neu-pod.pressed{box-shadow:var(--neu-in);}
+.glass-card{
+  background:rgba(255,255,255,0.62);
+  -webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
+  border:1px solid var(--glass-border);border-radius:clamp(14px,1.2vw,24px);
+  box-shadow:var(--glass-shadow);
+  padding:clamp(14px,1.6vh,26px) clamp(16px,1.6vw,28px);
+  position:relative;
+}
+/* Apple-style inner specular rim on glass cards (static, GPU-safe) */
+.glass-card::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.95),inset 0 0 26px rgba(255,255,255,0.35);
+  background:var(--apple-sheen);opacity:0.30;mix-blend-mode:soft-light;
+}
+.glass-card > *{position:relative;z-index:1;}
+.pod-label{
+  font-family:var(--font-mono);font-size:clamp(10px,0.72vw,14px);
+  letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-c);
+  display:flex;align-items:center;gap:0.5em;
+}
+.pod-value{
+  font-family:var(--font-mono);font-weight:700;color:var(--ink-h);
+  font-size:clamp(22px,2.4vw,46px);line-height:1.1;margin-top:0.35em;
+  font-variant-numeric:tabular-nums;
+}
+.pod-value .unit{font-size:0.45em;color:var(--ink-c);font-weight:500;margin-left:0.15em;}
+.pod-note{font-size:clamp(11px,0.85vw,16px);color:var(--ink-c);margin-top:0.55em;line-height:1.45;}
+.tag{
+  display:inline-flex;align-items:center;gap:0.45em;font-family:var(--font-mono);
+  font-size:clamp(10px,0.7vw,13px);letter-spacing:0.08em;padding:0.45em 0.9em;
+  border-radius:999px;text-transform:uppercase;
+}
+.tag.cobalt{color:var(--cobalt);background:rgba(37,99,235,0.08);}
+.tag.coral{color:var(--coral);background:rgba(225,29,72,0.07);}
+.tag.emerald{color:var(--emerald);background:rgba(5,150,105,0.08);}
+.tag.amber{color:var(--amber);background:rgba(217,119,6,0.09);}
+.tag.slate{color:var(--ink-c);background:rgba(100,116,139,0.09);}
+
+/* Tactile neumorphic buttons */
+.neu-btn{
+  background:var(--neu-bg);box-shadow:var(--neu-out-sm);
+  border-radius:999px;border:1px solid rgba(255,255,255,0.65);
+  color:var(--ink-b);font-weight:600;
+  font-size:clamp(12px,0.9vw,17px);
+  padding:0.72em 1.4em;display:inline-flex;align-items:center;gap:0.55em;
+  transition:transform 0.18s ease,box-shadow 0.18s ease,color 0.18s ease;
+  backface-visibility:hidden;
+}
+.neu-btn:hover{color:var(--cobalt);transform:translateY(-1px);}
+.neu-btn:active,.neu-btn.is-on{box-shadow:var(--neu-in);transform:translateY(0);color:var(--cobalt);}
+.neu-btn:focus-visible{outline:2px solid var(--cobalt);outline-offset:3px;}
+.neu-btn.icon-only{padding:0.7em;justify-content:center;}
+.neu-btn.icon-only i[data-lucide]{width:clamp(18px,1.3vw,24px);height:clamp(18px,1.3vw,24px);}
+
+/* HUD fixed chrome */
+.hud{position:fixed;z-index:100;}
+#topbar{top:clamp(16px,2.2vh,28px);right:clamp(20px,2.4vw,40px);display:flex;gap:14px;align-items:center;}
+#navctl{bottom:clamp(20px,2.8vh,34px);left:clamp(24px,2.8vw,44px);display:flex;gap:14px;align-items:center;}
+#progress-dock{
+  bottom:clamp(20px,2.8vh,34px);left:50%;transform:translateX(-50%) translateZ(0);
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  background:var(--glass-bg);
+  -webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
+  border:1px solid var(--glass-border);border-radius:999px;
+  box-shadow:var(--glass-shadow);
+  padding:12px clamp(18px,1.8vw,30px) 11px;
+}
+/* FIX (PRIORITY 1 — ten-step segmented progress): one authoritative
+   implementation — exactly TOTAL segments generated once at init from the
+   slide index inside updateHUD(). The old single continuous #progress-fill
+   (fixed clip-path vs. JS scaleX conflict) has been removed entirely. */
+#progress-track{
+  width:clamp(220px,30vw,560px);height:7px;
+  display:flex;gap:4px;align-items:stretch;
+}
+.pseg{
+  flex:1 1 0;min-width:0;border-radius:99px;background:rgba(148,163,184,0.25);
+  transform:translateZ(0);backface-visibility:hidden;
+  transition:background-color 0.45s ease, box-shadow 0.45s ease;
+}
+.pseg.done{background:linear-gradient(90deg,var(--cobalt),var(--indigo));}
+.pseg.current{
+  background:linear-gradient(90deg,var(--indigo),var(--coral));
+  box-shadow:0 0 0 1px rgba(79,70,229,0.22), 0 2px 8px rgba(79,70,229,0.32);
+}
+@media (max-width:900px){
+  #progress-dock{max-width:calc(100dvw - 24px);}
+  #topbar{flex-wrap:wrap;justify-content:flex-end;max-width:calc(100dvw - 24px);}
+}
+#progress-telemetry{
+  font-family:var(--font-mono);font-size:clamp(10px,0.72vw,14px);
+  letter-spacing:0.1em;color:var(--ink-c);text-transform:uppercase;
+}
+#progress-telemetry b{color:var(--ink-h);font-weight:700;}
+.kbd-hint{
+  font-family:var(--font-mono);font-size:clamp(9px,0.62vw,12px);color:var(--ink-c);
+  background:var(--neu-bg);box-shadow:var(--neu-out-sm);border-radius:8px;
+  padding:0.5em 0.8em;letter-spacing:0.08em;border:1px solid rgba(255,255,255,0.6);
+}
+/* Sync pill */
+#sync-btn{display:inline-flex;align-items:center;gap:0.6em;}
+#sync-dot{width:10px;height:10px;border-radius:50%;background:#94A3B8;flex:0 0 auto;position:relative;}
+#sync-dot.online{background:var(--emerald);animation:pulse-dot 1.8s ease-in-out infinite;}
+#sync-dot.offline{background:var(--coral);}
+@keyframes pulse-dot{
+  0%,100%{box-shadow:0 0 0 0 rgba(5,150,105,0.45);}
+  55%{box-shadow:0 0 0 8px rgba(5,150,105,0);}
+}
+#sync-label{font-family:var(--font-mono);font-size:clamp(10px,0.72vw,14px);letter-spacing:0.08em;text-transform:uppercase;}
+
+/* ---------- HUD : audio controls (top-right) ---------- */
+#sync-dot{width:10px;height:10px;border-radius:50%;background:#94A3B8;flex:0 0 auto;position:relative;}
+#audio-group{display:inline-flex;align-items:center;gap:6px;background:var(--neu-bg);box-shadow:var(--neu-out-sm);border:1px solid rgba(255,255,255,0.65);border-radius:999px;padding:4px;}
+#audio-group .neu-btn.icon-only{box-shadow:none;background:transparent;}
+#audio-group .neu-btn.icon-only:hover{box-shadow:none;}
+#audio-group .neu-btn.icon-only:active,#audio-group .neu-btn.icon-only.is-on{box-shadow:var(--neu-in);}
+#audio-group .neu-btn.icon-only.muted{color:#CBD5E1;}
+#audio-group .neu-btn.icon-only.muted i[data-lucide]{color:#CBD5E1;}
+#audio-group .sep{width:1px;height:22px;background:rgba(148,163,184,0.35);}
+
+/* Slide number chip top-left inside stage */
+#slide-chip{
+  position:absolute;top:clamp(18px,2.2vh,30px);left:clamp(24px,2.6vw,44px);z-index:5;
+  font-family:var(--font-mono);font-size:clamp(10px,0.7vw,14px);letter-spacing:0.2em;
+  color:var(--ink-c);text-transform:uppercase;display:flex;align-items:center;gap:0.7em;
+  pointer-events:none;
+}
+#slide-chip .chip-num{color:var(--cobalt);font-weight:700;}
+
+/* Click zones for presenter mode */
+.clickzone{position:absolute;top:0;bottom:0;width:18%;z-index:40;cursor:pointer;background:transparent;opacity:0;pointer-events:none;transition:opacity 0.3s ease;}
+body.presenter-click .clickzone{pointer-events:auto;}
+body.presenter-click .clickzone:hover{opacity:1;}
+#zone-prev{left:0;background:linear-gradient(90deg,rgba(37,99,235,0.05),transparent);}
+#zone-next{right:0;background:linear-gradient(270deg,rgba(37,99,235,0.05),transparent);}
+.clickzone .zone-glyph{position:absolute;top:50%;transform:translateY(-50%);color:var(--cobalt);opacity:0.55;display:flex;}
+#zone-prev .zone-glyph{left:18px;} #zone-next .zone-glyph{right:18px;}
+.clickzone i[data-lucide]{width:clamp(22px,1.8vw,34px);height:clamp(22px,1.8vw,34px);}
+body.presenter-click .clickzone{opacity:1;}
+
+/* ============================================================
+   SLIDE-SPECIFIC LAYOUTS
+   ============================================================ */
+
+/* ---- Slide 1: Title ---- */
+#s1 .slide-body{flex-direction:column;justify-content:center;}
+#s1 .title-hero{font-size:clamp(40px,6.2vw,120px);line-height:1.0;letter-spacing:-0.03em;font-weight:800;color:var(--ink-h);}
+#s1 .title-hero .grad{background:linear-gradient(92deg,var(--cobalt) 10%,var(--indigo) 55%,var(--coral) 105%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+#s1 .title-sub{font-size:clamp(15px,1.5vw,30px);color:var(--ink-b);margin-top:clamp(10px,1.4vh,20px);font-weight:500;max-width:58ch;line-height:1.5;}
+#s1 .s1-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:clamp(20px,2.4vw,44px);align-items:end;margin-top:clamp(22px,3.4vh,52px);}
+#decay-pod{min-width:0;}
+#decay-track{position:relative;height:14px;border-radius:99px;background:rgba(148,163,184,0.22);box-shadow:var(--neu-in);margin-top:1.1em;overflow:hidden;}
+#decay-marker{position:absolute;top:50%;left:0;width:22px;height:22px;border-radius:50%;background:var(--white);box-shadow:var(--neu-out-sm),0 0 0 2px rgba(37,99,235,0.35);transform:translate(-50%,-50%) translateZ(0);will-change:transform;}
+#decay-fillbar{position:absolute;inset:0;background:linear-gradient(90deg,rgba(37,99,235,0.35),rgba(225,29,72,0.4));transform-origin:left center;transform:scaleX(0);}
+#decay-scale{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:clamp(9px,0.62vw,13px);color:var(--ink-c);margin-top:0.7em;letter-spacing:0.06em;}
+.feature-pills{display:flex;flex-wrap:wrap;gap:clamp(10px,1vw,18px);margin-top:clamp(18px,2.4vh,36px);}
+.pill-neu{
+  display:inline-flex;align-items:center;gap:0.65em;background:var(--neu-bg);
+  box-shadow:var(--neu-out);border-radius:999px;padding:0.8em 1.35em;
+  font-family:var(--font-display);font-weight:700;color:var(--ink-h);
+  font-size:clamp(12px,1vw,20px);border:1px solid rgba(255,255,255,0.65);
+}
+.pill-neu i[data-lucide]{width:1.15em;height:1.15em;color:var(--cobalt);}
+.pill-neu:nth-child(2) i[data-lucide]{color:var(--indigo);}
+.pill-neu:nth-child(3) i[data-lucide]{color:var(--coral);}
+/* Author identity block — profile picture + name + phonetics */
+#s1 .author-block{display:flex;align-items:center;gap:clamp(14px,1.6vw,28px);margin-top:clamp(16px,2.2vh,30px);}
+#s1 .avatar-ring{
+  position:relative;width:clamp(74px,7.2vw,128px);height:clamp(74px,7.2vw,128px);flex:0 0 auto;
+  border-radius:50%;padding:5px;background:conic-gradient(from 140deg,var(--cobalt),var(--indigo),var(--coral),var(--cobalt));
+  box-shadow:0 14px 34px rgba(37,99,235,0.22);
+}
+/* gentle static halo pulse — opacity-only keyframes (GPU-composited, no repaint) */
+#s1 .avatar-ring::after{
+  content:"";position:absolute;inset:-8px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(closest-side,rgba(37,99,235,0.20),rgba(79,70,229,0.06) 60%,transparent 75%);
+  animation:avatarHalo 4.5s ease-in-out infinite;z-index:-1;
+}
+@keyframes avatarHalo{0%,100%{opacity:0.45;}50%{opacity:1;}}
+@media (prefers-reduced-motion:reduce){#s1 .avatar-ring::after{animation:none;}}
+#s1 .avatar-core{
+  width:100%;height:100%;border-radius:50%;overflow:hidden;background:var(--white);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:inset 0 0 0 3px rgba(255,255,255,0.9);
+}
+#s1 .avatar-core img.avatar-img{width:100%;height:100%;object-fit:cover;display:block;}
+#s1 .avatar-fallback{font-family:var(--font-display);font-weight:800;font-size:clamp(22px,2.1vw,42px);color:var(--cobalt);letter-spacing:-0.02em;}
+#s1 .author-meta{display:flex;flex-direction:column;gap:0.18em;min-width:0;}
+#s1 .author-name{font-family:var(--font-display);font-weight:800;font-size:clamp(19px,1.9vw,38px);color:var(--ink-h);letter-spacing:0.01em;line-height:1.1;}
+#s1 .pronounce-btn{
+  display:inline-flex;align-items:center;gap:0.5em;margin-top:0.35em;width:max-content;
+  font-family:var(--font-mono);font-size:clamp(11px,0.82vw,16px);color:var(--cobalt);
+  background:rgba(37,99,235,0.07);border:1px solid rgba(37,99,235,0.18);border-radius:999px;
+  padding:0.42em 0.95em;transition:transform 0.15s ease,background 0.2s ease;
+}
+#s1 .pronounce-btn:hover{background:rgba(37,99,235,0.12);}
+#s1 .pronounce-btn:active{transform:scale(0.97);}
+#s1 .pronounce-btn i[data-lucide]{width:1.05em;height:1.05em;}
+#s1 .author-role{font-size:clamp(10px,0.78vw,15px);color:var(--ink-c);letter-spacing:0.06em;text-transform:uppercase;font-family:var(--font-mono);}
+
+/* ---- Slide 2: Comparison grid ---- */
+.compare-grid{display:grid;grid-template-columns:1fr clamp(60px,6vw,120px) 1fr;gap:0;width:100%;align-items:stretch;}
+.compare-col{display:flex;flex-direction:column;gap:clamp(10px,1.3vh,18px);min-width:0;}
+.compare-head{display:flex;align-items:center;gap:0.7em;font-family:var(--font-display);font-weight:800;font-size:clamp(15px,1.35vw,27px);color:var(--ink-h);margin-bottom:0.3em;}
+.compare-head i[data-lucide]{width:1.3em;height:1.3em;}
+.col-legacy .compare-head i{color:var(--ink-c);}
+.col-feed .compare-head i{color:var(--coral);}
+.compare-arrow{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;}
+.compare-arrow i[data-lucide]{width:clamp(24px,2.2vw,44px);height:clamp(24px,2.2vw,44px);color:var(--cobalt);}
+.compare-arrow .arrow-label{writing-mode:vertical-rl;font-family:var(--font-mono);font-size:clamp(9px,0.6vw,12px);letter-spacing:0.28em;text-transform:uppercase;color:var(--ink-c);}
+.row-item{font-size:clamp(12px,0.95vw,18px);line-height:1.5;display:flex;gap:0.75em;align-items:flex-start;color:var(--ink-b);}
+.row-item i[data-lucide]{width:1.2em;height:1.2em;flex:0 0 auto;margin-top:0.15em;}
+.col-legacy .row-item i{color:var(--ink-c);}
+.col-feed .row-item i{color:var(--coral);}
+.row-item b{color:var(--ink-h);font-weight:600;}
+.friction-meter{margin-top:auto;display:flex;align-items:center;gap:0.8em;font-family:var(--font-mono);font-size:clamp(10px,0.7vw,14px);letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-c);}
+.meter-bar{flex:1;height:8px;border-radius:99px;background:rgba(148,163,184,0.22);box-shadow:var(--neu-in);overflow:hidden;}
+.meter-fill{height:100%;border-radius:99px;transform-origin:left center;transition:transform 0.9s var(--slide-ease);}
+.meter-fill.slate{background:linear-gradient(90deg,#94A3B8,var(--ink-c));}
+.meter-fill.coralg{background:linear-gradient(90deg,var(--cobalt),var(--coral));}
+
+/* ---- Slide 3: Dopamine loop flow ---- */
+#s3 .slide-body{flex-direction:column;}
+.flow-row{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;align-items:stretch;gap:clamp(6px,0.8vw,14px);width:100%;}
+.flow-node{display:flex;flex-direction:column;align-items:center;text-align:center;gap:clamp(8px,1vh,14px);padding:clamp(14px,1.8vh,28px) clamp(10px,1.1vw,20px);position:relative;}
+.flow-icon{width:clamp(52px,4.6vw,90px);height:clamp(52px,4.6vw,90px);border-radius:24px;background:var(--neu-bg);box-shadow:var(--neu-out);display:flex;align-items:center;justify-content:center;}
+.flow-icon i[data-lucide]{width:46%;height:46%;}
+.flow-node.n-eye .flow-icon i{color:var(--cobalt);}
+.flow-node.n-zap .flow-icon i{color:var(--amber);}
+.flow-node.n-gift .flow-icon i{color:var(--indigo);}
+.flow-node.n-repeat .flow-icon i{color:var(--coral);}
+.flow-stage{font-family:var(--font-mono);font-size:clamp(9px,0.6vw,12px);letter-spacing:0.2em;color:var(--ink-c);text-transform:uppercase;}
+.flow-name{font-family:var(--font-display);font-weight:800;font-size:clamp(13px,1.15vw,23px);color:var(--ink-h);line-height:1.2;}
+.flow-desc{font-size:clamp(10px,0.8vw,15px);color:var(--ink-c);line-height:1.45;}
+.flow-link{display:flex;align-items:center;justify-content:center;width:clamp(20px,2.4vw,56px);}
+.flow-link i[data-lucide]{width:clamp(18px,1.5vw,30px);height:clamp(18px,1.5vw,30px);color:var(--cobalt);opacity:0.7;}
+#loop-svg-wrap{margin-top:clamp(12px,2vh,26px);flex:1;min-height:0;display:flex;align-items:center;justify-content:center;}
+#loop-svg{width:min(90%,1200px);height:100%;}
+.loop-caption{display:flex;justify-content:center;gap:clamp(14px,1.6vw,30px);flex-wrap:wrap;margin-top:clamp(6px,1vh,14px);}
+
+/* ---- Slide 4: Hook comparator ---- */
+#s4 .slide-body{flex-direction:column;}
+.hook-stage{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;}
+.hook-card{width:min(100%,1500px);position:relative;overflow:hidden;}
+.hook-quote{font-family:var(--font-display);font-weight:700;color:var(--ink-h);font-size:clamp(19px,2.3vw,44px);line-height:1.32;letter-spacing:-0.015em;transition:opacity 0.4s ease;}
+.hook-quote em{font-style:normal;color:var(--cobalt);}
+.hook-card.state-strong .hook-quote em{color:var(--coral);}
+.hook-meta{display:flex;align-items:center;gap:clamp(12px,1.4vw,26px);margin-top:clamp(12px,1.8vh,24px);flex-wrap:wrap;}
+.hook-controls{display:flex;align-items:center;gap:clamp(10px,1.2vw,20px);margin-top:clamp(14px,2vh,26px);flex-wrap:wrap;}
+.retention-bars{display:flex;align-items:flex-end;gap:clamp(4px,0.5vw,9px);height:clamp(34px,4.4vh,64px);}
+.rbar{width:clamp(10px,0.9vw,20px);border-radius:5px 5px 2px 2px;background:rgba(148,163,184,0.3);transform-origin:bottom center;transform:scaleY(0.12);transition:transform 0.7s var(--slide-ease),background 0.5s ease;}
+.hook-card.state-strong .rbar{background:linear-gradient(180deg,var(--coral),rgba(225,29,72,0.35));}
+.timing-strip{display:flex;gap:clamp(6px,0.7vw,12px);margin-top:clamp(10px,1.4vh,18px);font-family:var(--font-mono);font-size:clamp(9px,0.62vw,12px);color:var(--ink-c);letter-spacing:0.05em;flex-wrap:wrap;}
+.timing-strip span{background:rgba(148,163,184,0.14);padding:0.4em 0.8em;border-radius:7px;}
+
+/* ---- Slide 5: Progressive disclosure / Zeigarnik ---- */
+#s5 .slide-body{gap:clamp(18px,2.2vw,40px);}
+.zeig-left{flex:1.1;display:flex;flex-direction:column;gap:clamp(12px,1.6vh,22px);min-width:0;}
+.zeig-right{flex:1;display:flex;flex-direction:column;gap:clamp(12px,1.6vh,22px);min-width:0;}
+.loop-diagram{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;}
+.loop-diagram svg{width:100%;height:100%;max-height:420px;}
+.open-loop-list{display:flex;flex-direction:column;gap:clamp(8px,1.1vh,14px);}
+.ol-item{display:flex;align-items:center;gap:0.9em;font-size:clamp(11px,0.9vw,17px);color:var(--ink-b);}
+.ol-item .ol-dot{width:10px;height:10px;border-radius:50%;flex:0 0 auto;background:var(--indigo);box-shadow:0 0 0 4px rgba(79,70,229,0.12);}
+.ol-item.closed .ol-dot{background:var(--emerald);box-shadow:0 0 0 4px rgba(5,150,105,0.12);}
+.self-ref{display:flex;align-items:flex-start;gap:clamp(10px,1.2vw,20px);}
+.self-ref i[data-lucide]{width:clamp(26px,2.2vw,44px);height:clamp(26px,2.2vw,44px);color:var(--cobalt);flex:0 0 auto;}
+.self-ref p{font-size:clamp(11px,0.9vw,17px);line-height:1.5;color:var(--ink-b);}
+.mini-progress{width:100%;height:8px;border-radius:99px;background:rgba(148,163,184,0.22);box-shadow:var(--neu-in);overflow:hidden;margin-top:0.8em;}
+.mini-progress i{display:block;height:100%;background:linear-gradient(90deg,var(--cobalt),var(--indigo));transform-origin:left center;transform:scaleX(0.5);}
+
+/* ---- Slide 6: Micro-interactions ---- */
+.mi-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:min-content;gap:clamp(14px,1.6vw,28px);width:100%;align-content:start;}
+.mi-card{display:flex;flex-direction:column;gap:0.7em;}
+.mi-card .mi-icon{width:clamp(40px,3.2vw,62px);height:clamp(40px,3.2vw,62px);border-radius:16px;background:var(--neu-bg);box-shadow:var(--neu-out-sm);display:flex;align-items:center;justify-content:center;}
+.mi-card .mi-icon i[data-lucide]{width:44%;height:44%;color:var(--cobalt);}
+.mi-card h3{font-size:clamp(14px,1.2vw,24px);font-weight:800;color:var(--ink-h);}
+.mi-card p{font-size:clamp(11px,0.88vw,17px);line-height:1.5;color:var(--ink-c);}
+.kinetic-demo{grid-column:span 3;display:flex;align-items:center;gap:clamp(16px,2vw,34px);flex-wrap:wrap;}
+#kinetic-word{font-family:var(--font-display);font-weight:800;font-size:clamp(24px,2.8vw,56px);color:var(--ink-h);letter-spacing:-0.02em;min-width:6ch;}
+#kinetic-word .k-accent{color:var(--cobalt);}
+.kinetic-caption{font-size:clamp(11px,0.85vw,16px);color:var(--ink-c);max-width:44ch;line-height:1.5;}
+.orienting-clock{margin-left:auto;display:flex;align-items:center;gap:0.8em;}
+.orienting-clock i[data-lucide]{width:clamp(20px,1.5vw,28px);height:clamp(20px,1.5vw,28px);color:var(--indigo);}
+.orienting-clock .mono{font-size:clamp(11px,0.85vw,16px);color:var(--ink-b);}
+
+/* ---- Slide 7: Trade-off matrix ---- */
+.matrix-wrap{width:100%;display:flex;flex-direction:column;gap:clamp(12px,1.6vh,20px);min-height:0;}
+.matrix-table{width:100%;border-collapse:separate;border-spacing:0 clamp(6px,0.8vh,10px);}
+.matrix-table th{font-family:var(--font-mono);font-size:clamp(9px,0.66vw,13px);letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-c);text-align:left;padding:0 clamp(10px,1.1vw,20px) 4px;font-weight:500;}
+.matrix-table th:first-child{width:20%;}
+.matrix-table td{background:rgba(255,255,255,0.55);border-top:1px solid rgba(255,255,255,0.8);border-bottom:1px solid rgba(226,232,240,0.8);padding:clamp(8px,1.1vh,15px) clamp(10px,1.1vw,20px);font-size:clamp(11px,0.9vw,17px);line-height:1.45;color:var(--ink-b);vertical-align:middle;}
+.matrix-table tr td:first-child{border-left:1px solid rgba(226,232,240,0.8);border-radius:14px 0 0 14px;font-family:var(--font-display);font-weight:700;color:var(--ink-h);font-size:clamp(11px,0.92vw,18px);}
+.matrix-table tr td:last-child{border-right:1px solid rgba(226,232,240,0.8);border-radius:0 14px 14px 0;}
+.cell-neg{color:var(--coral);}
+.ethics-band{display:flex;gap:clamp(12px,1.4vw,24px);align-items:stretch;flex-wrap:wrap;}
+.ethics-band .neu-pod{flex:1;min-width:240px;display:flex;align-items:center;gap:0.9em;}
+.ethics-band .neu-pod p{font-size:clamp(11px,0.85vw,16px);line-height:1.45;color:var(--ink-b);}
+.ethics-band i[data-lucide]{width:clamp(22px,1.8vw,34px);height:clamp(22px,1.8vw,34px);flex:0 0 auto;}
+
+/* ---- Slide 8: Three rules ---- */
+.rules-col{display:flex;flex-direction:column;gap:clamp(12px,1.7vh,24px);width:100%;justify-content:center;flex:1;}
+.rule-row{display:grid;grid-template-columns:clamp(64px,6vw,110px) clamp(56px,5vw,90px) 1fr auto;gap:clamp(12px,1.6vw,28px);align-items:center;}
+.rule-num{font-family:var(--font-mono);font-weight:700;font-size:clamp(26px,2.8vw,58px);color:transparent;-webkit-text-stroke:1.5px var(--cobalt);letter-spacing:-0.02em;}
+.rule-row.r-ind .rule-num{-webkit-text-stroke-color:var(--indigo);}
+.rule-row.r-cor .rule-num{-webkit-text-stroke-color:var(--coral);}
+.rule-icon{width:clamp(44px,3.8vw,72px);height:clamp(44px,3.8vw,72px);border-radius:18px;background:var(--neu-bg);box-shadow:var(--neu-out-sm);display:flex;align-items:center;justify-content:center;}
+.rule-icon i[data-lucide]{width:44%;height:44%;color:var(--cobalt);}
+.rule-row.r-ind .rule-icon i{color:var(--indigo);}
+.rule-row.r-cor .rule-icon i{color:var(--coral);}
+.rule-text h3{font-size:clamp(15px,1.35vw,28px);font-weight:800;color:var(--ink-h);}
+.rule-text p{font-size:clamp(11px,0.9vw,17px);color:var(--ink-c);line-height:1.5;margin-top:0.35em;max-width:70ch;}
+.rule-aud{display:flex;flex-direction:column;gap:0.4em;align-items:flex-end;}
+
+/* ---- Slide 9: Before/After table ---- */
+.ba-scroll{width:100%;display:flex;flex-direction:column;min-height:0;}
+.ba-table{width:100%;border-collapse:separate;border-spacing:0 clamp(5px,0.7vh,9px);table-layout:fixed;}
+.ba-table th{font-family:var(--font-mono);font-size:clamp(9px,0.64vw,13px);letter-spacing:0.16em;text-transform:uppercase;padding:0 clamp(10px,1.1vw,18px) 4px;text-align:left;font-weight:500;}
+.ba-table th:nth-child(1){width:17%;color:var(--ink-c);}
+.ba-table th:nth-child(2){width:36%;color:var(--ink-c);}
+.ba-table th:nth-child(3){width:6%;}
+.ba-table th:nth-child(4){width:41%;color:var(--cobalt);}
+.ba-table td{padding:clamp(7px,1vh,14px) clamp(10px,1.1vw,18px);font-size:clamp(10.5px,0.85vw,16.5px);line-height:1.42;vertical-align:middle;background:rgba(255,255,255,0.55);border-top:1px solid rgba(255,255,255,0.85);border-bottom:1px solid rgba(226,232,240,0.85);}
+.ba-table td:nth-child(1){border-left:1px solid rgba(226,232,240,0.85);border-radius:12px 0 0 12px;font-family:var(--font-display);font-weight:700;color:var(--ink-h);}
+.ba-table td:nth-child(2){color:var(--ink-c);}
+.ba-table td:nth-child(4){border-right:1px solid rgba(226,232,240,0.85);border-radius:0 12px 12px 0;color:var(--ink-b);}
+.ba-table td:nth-child(4) b{color:var(--cobalt);font-weight:600;}
+.ba-table .shift-cell{text-align:center;background:transparent;border:none;}
+.ba-table .shift-cell i[data-lucide]{width:clamp(16px,1.2vw,24px);height:clamp(16px,1.2vw,24px);color:var(--cobalt);}
+.ba-foot{margin-top:clamp(8px,1.2vh,16px);display:flex;align-items:center;gap:0.8em;font-size:clamp(11px,0.85vw,16px);color:var(--ink-c);}
+.ba-foot i[data-lucide]{width:1.3em;height:1.3em;color:var(--emerald);flex:0 0 auto;}
+
+/* ---- Slide 10: Closing ---- */
+#s10 .slide-body{gap:clamp(18px,2.4vw,44px);}
+.close-left{flex:1.2;display:flex;flex-direction:column;min-width:0;}
+.close-right{flex:1;display:flex;flex-direction:column;gap:clamp(12px,1.6vh,22px);min-width:0;}
+.thesis{font-family:var(--font-display);font-weight:800;font-size:clamp(20px,2.2vw,44px);line-height:1.28;letter-spacing:-0.02em;color:var(--ink-h);}
+.thesis .accent{color:var(--cobalt);}
+.thesis .accent-c{color:var(--coral);}
+.pillar-stack{display:flex;flex-direction:column;gap:clamp(8px,1.1vh,15px);margin-top:clamp(16px,2.2vh,30px);}
+.pillar{display:flex;align-items:center;gap:0.9em;background:var(--neu-bg);box-shadow:var(--neu-out-sm);border-radius:14px;padding:clamp(8px,1.1vh,14px) clamp(12px,1.2vw,20px);border:1px solid rgba(255,255,255,0.6);}
+.pillar i[data-lucide]{width:clamp(18px,1.4vw,26px);height:clamp(18px,1.4vw,26px);color:var(--indigo);flex:0 0 auto;}
+.pillar b{font-family:var(--font-display);font-weight:700;color:var(--ink-h);font-size:clamp(12px,0.95vw,18px);}
+.pillar span{font-size:clamp(10px,0.8vw,15px);color:var(--ink-c);}
+.telemetry-stack{display:flex;flex-direction:column;gap:clamp(10px,1.4vh,18px);}
+.tele-row{display:flex;justify-content:space-between;align-items:center;gap:1em;}
+.tele-row .k{font-family:var(--font-mono);font-size:clamp(9px,0.66vw,13px);letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-c);display:flex;align-items:center;gap:0.5em;}
+.tele-row .v{font-family:var(--font-mono);font-weight:700;font-size:clamp(13px,1.1vw,22px);color:var(--ink-h);}
+.tele-row .v.online{color:var(--emerald);}
+#qa-timer{font-size:clamp(24px,2.6vw,52px);letter-spacing:0.02em;}
+.reveal-btn-row{margin-top:auto;display:flex;gap:14px;flex-wrap:wrap;}
+
+/* ============================================================
+   MODAL — Phone Remote Sync (Glassmorphic)
+   ============================================================ */
+#remote-modal-overlay{
+  position:fixed;inset:0;z-index:200;display:none;
+  background:rgba(241,245,252,0.55);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  align-items:center;justify-content:center;padding:24px;
+}
+#remote-modal-overlay.open{display:flex;}
+#remote-modal{
+  position:relative;
+  width:min(940px,94vw);max-height:88dvh;overflow:auto;
+  background:var(--glass-bg);
+  -webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
+  border:1px solid var(--glass-border);border-radius:26px;
+  box-shadow:var(--glass-shadow),0 4px 14px rgba(15,23,42,0.06);
+  padding:clamp(22px,3vw,40px);
+}
+#remote-modal h3{font-size:clamp(18px,1.6vw,30px);font-weight:800;color:var(--ink-h);display:flex;align-items:center;gap:0.6em;}
+#remote-modal h3 i[data-lucide]{color:var(--cobalt);width:1.1em;height:1.1em;}
+.rm-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,2vw,32px);margin-top:clamp(16px,2vh,26px);}
+.rm-block{display:flex;flex-direction:column;gap:12px;min-width:0;}
+.rm-label{font-family:var(--font-mono);font-size:clamp(9px,0.66vw,13px);letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-c);}
+#qr-box{background:var(--white);border-radius:18px;padding:14px;box-shadow:var(--neu-out-sm);align-self:center;}
+#qr-box img{display:block;width:220px;height:220px;image-rendering:pixelated;}
+#remote-url{
+  font-family:var(--font-mono);font-size:clamp(10px,0.8vw,15px);color:var(--ink-b);
+  background:var(--neu-bg);box-shadow:var(--neu-in);border-radius:12px;
+  padding:0.9em 1em;word-break:break-all;line-height:1.5;border:1px solid rgba(226,232,240,0.9);
+}
+#room-input{
+  font-family:var(--font-mono);font-size:clamp(11px,0.85vw,16px);color:var(--ink-h);
+  background:var(--white);border:1px solid rgba(203,213,225,0.8);border-radius:12px;
+  padding:0.8em 1em;outline:none;transition:border-color 0.2s ease,box-shadow 0.2s ease;
+}
+#room-input:focus{border-color:var(--cobalt);box-shadow:0 0 0 4px rgba(37,99,235,0.12);}
+.rm-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px;}
+#modal-close-x{position:absolute;top:16px;right:18px;}
+#remote-modal .topic-mono{font-family:var(--font-mono);font-size:clamp(10px,0.75vw,14px);color:var(--indigo);background:rgba(79,70,229,0.07);padding:0.5em 0.9em;border-radius:9px;word-break:break-all;}
+.rm-hint{font-size:clamp(10px,0.8vw,15px);color:var(--ink-c);line-height:1.55;}
+
+/* ============================================================
+   MOBILE PRESENTER REMOTE (?mode=remote)
+   ============================================================ */
+body.remote-mode{height:auto;min-height:100dvh;position:relative;overflow-y:auto;touch-action:auto;}
+body.remote-mode #stage,body.remote-mode #navctl,body.remote-mode #progress-dock,body.remote-mode #topbar,body.remote-mode #remote-modal-overlay{display:none !important;}
+#remote-ui{display:none;}
+body.remote-mode #remote-ui{display:flex;flex-direction:column;gap:clamp(14px,2.4vh,22px);padding:clamp(16px,3.4vw,26px) clamp(14px,4vw,28px) clamp(28px,5vh,44px);max-width:760px;margin:0 auto;}
+.rmu-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+.rmu-title{font-family:var(--font-display);font-weight:800;font-size:clamp(17px,4.6vw,26px);color:var(--ink-h);line-height:1.15;}
+.rmu-sub{font-family:var(--font-mono);font-size:clamp(9px,2.6vw,12px);letter-spacing:0.14em;text-transform:uppercase;color:var(--cobalt);margin-top:4px;}
+.rmu-status{display:flex;align-items:center;gap:0.5em;font-family:var(--font-mono);font-size:clamp(9px,2.6vw,12px);color:var(--ink-c);letter-spacing:0.08em;text-transform:uppercase;}
+.rmu-now{background:var(--glass-bg);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);border-radius:22px;box-shadow:var(--glass-shadow);padding:clamp(14px,3.6vw,22px);}
+.rmu-now .idx{font-family:var(--font-mono);font-size:clamp(9px,2.6vw,12px);letter-spacing:0.2em;color:var(--ink-c);text-transform:uppercase;}
+.rmu-now .name{font-family:var(--font-display);font-weight:800;font-size:clamp(17px,4.8vw,26px);color:var(--ink-h);margin-top:6px;line-height:1.2;}
+.rmu-cue{font-size:clamp(12px,3.4vw,16px);color:var(--ink-b);line-height:1.55;margin-top:10px;border-left:3px solid var(--cobalt);padding-left:0.9em;}
+.rmu-timer-row{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--neu-bg);box-shadow:var(--neu-out);border-radius:18px;padding:12px 18px;}
+.rmu-timer-row .lbl{font-family:var(--font-mono);font-size:clamp(9px,2.6vw,12px);letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-c);}
+.rmu-timer-row .t{font-family:var(--font-mono);font-weight:700;font-size:clamp(20px,6vw,32px);color:var(--ink-h);}
+.rmu-timer-row .t.over{color:var(--coral);}
+.rmu-bigrow{display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,3vw,18px);}
+.rmu-big{
+  background:var(--neu-bg);box-shadow:var(--neu-out);border-radius:24px;
+  padding:clamp(20px,6vw,34px) 10px;font-family:var(--font-display);font-weight:800;
+  font-size:clamp(17px,5vw,26px);color:var(--ink-h);display:flex;flex-direction:column;
+  align-items:center;gap:10px;user-select:none;-webkit-user-select:none;
+  transition:box-shadow 0.12s ease,transform 0.12s ease;
+}
+.rmu-big i[data-lucide]{width:clamp(26px,7vw,38px);height:clamp(26px,7vw,38px);color:var(--cobalt);}
+.rmu-big:active{box-shadow:var(--neu-in);transform:translateY(1px);}
+.rmu-jump-lbl{font-family:var(--font-mono);font-size:clamp(9px,2.6vw,12px);letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-c);}
+.rmu-jump{display:grid;grid-template-columns:repeat(5,1fr);gap:clamp(8px,2.2vw,12px);}
+.rmu-jump button{
+  aspect-ratio:1;border-radius:16px;background:var(--neu-bg);box-shadow:var(--neu-out-sm);
+  font-family:var(--font-mono);font-weight:700;font-size:clamp(13px,3.8vw,18px);color:var(--ink-b);
+  transition:box-shadow 0.15s ease,color 0.15s ease;
+}
+.rmu-jump button.current{box-shadow:var(--neu-in);color:var(--cobalt);}
+.rmu-prog{height:8px;border-radius:99px;background:rgba(148,163,184,0.25);overflow:hidden;}
+.rmu-prog i{display:block;height:100%;background:linear-gradient(90deg,var(--cobalt),var(--indigo));transform-origin:left center;transform:scaleX(0.1);transition:transform 0.4s var(--slide-ease);}
+
+/* Toast for remote nav events */
+#toast{
+  position:fixed;top:clamp(16px,2.2vh,28px);left:50%;transform:translate(-50%,-70px) translateZ(0);
+  z-index:150;background:var(--glass-bg);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
+  border:1px solid var(--glass-border);border-radius:999px;box-shadow:var(--glass-shadow);
+  font-family:var(--font-mono);font-size:clamp(10px,0.72vw,14px);letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--ink-b);padding:0.7em 1.3em;display:flex;align-items:center;gap:0.6em;
+  transition:transform 0.4s var(--slide-ease);pointer-events:none;
+}
+#toast.show{transform:translate(-50%,0) translateZ(0);}
+#toast i[data-lucide]{width:1.1em;height:1.1em;color:var(--indigo);}
+
+/* Entrance stagger for active slide content (transform+opacity only) */
+.slide .stagger{opacity:0;transform:translate3d(0,22px,0);transition:transform 0.6s var(--slide-ease),opacity 0.5s ease;}
+.slide.is-active .stagger{opacity:1;transform:translate3d(0,0,0);}
+.slide.is-active .stg-1{transition-delay:0.06s;}
+.slide.is-active .stg-2{transition-delay:0.14s;}
+.slide.is-active .stg-3{transition-delay:0.22s;}
+.slide.is-active .stg-4{transition-delay:0.3s;}
+.slide.is-active .stg-5{transition-delay:0.38s;}
+
+@media (max-width:900px){
+  #stage{width:100dvw;height:100dvh;border-radius:0;top:0;left:0;transform:none;}
+  .flow-row{grid-template-columns:1fr;}
+  .flow-link{transform:rotate(90deg);height:20px;}
+  .compare-grid{grid-template-columns:1fr;}
+  .mi-grid{grid-template-columns:1fr;}
+  .kinetic-demo{grid-column:span 1;}
+  .rm-grid{grid-template-columns:1fr;}
+  .rule-row{grid-template-columns:auto auto 1fr;}
+  .rule-aud{display:none;}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition-duration:0.01ms !important;animation-duration:0.01ms !important;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ SHARED SVG DEFS — gradients + generative motifs referenced by every slide field ============ -->
+<svg id="field-defs" width="0" height="0" style="position:absolute;left:-9999px;top:0;" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="rgA" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2563EB" stop-opacity="0.05"/>
+      <stop offset="55%" stop-color="#2563EB" stop-opacity="0.34"/>
+      <stop offset="100%" stop-color="#4F46E5" stop-opacity="0.10"/>
+    </linearGradient>
+    <linearGradient id="rgB" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4F46E5" stop-opacity="0.06"/>
+      <stop offset="60%" stop-color="#4F46E5" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#E11D48" stop-opacity="0.12"/>
+    </linearGradient>
+    <linearGradient id="rgC" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#E11D48" stop-opacity="0.05"/>
+      <stop offset="60%" stop-color="#E11D48" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#2563EB" stop-opacity="0.10"/>
+    </linearGradient>
+    <radialGradient id="attractorGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2563EB" stop-opacity="0.16"/>
+      <stop offset="60%" stop-color="#4F46E5" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#4F46E5" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="coralGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#E11D48" stop-opacity="0.14"/>
+      <stop offset="60%" stop-color="#E11D48" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#E11D48" stop-opacity="0"/>
+    </radialGradient>
+    <!-- reticle rings motif -->
+    <g id="sym-reticle">
+      <circle r="34" fill="none" stroke="#2563EB" stroke-opacity="0.28" stroke-width="1.2" vector-effect="non-scaling-stroke"/>
+      <circle r="62" fill="none" stroke="#2563EB" stroke-opacity="0.18" stroke-width="1.2" stroke-dasharray="3 9" vector-effect="non-scaling-stroke"/>
+      <circle r="104" fill="none" stroke="#E11D48" stroke-opacity="0.16" stroke-width="1.2" vector-effect="non-scaling-stroke"/>
+      <path d="M -18 0 H 18 M 0 -18 V 18" stroke="#4F46E5" stroke-opacity="0.45" stroke-width="1.2" fill="none" vector-effect="non-scaling-stroke"/>
+    </g>
+    <!-- attractor core motif -->
+    <g id="sym-core">
+      <circle r="170" fill="url(#attractorGlow)"/>
+      <circle r="7" fill="#2563EB" opacity="0.9"/>
+    </g>
+    <!-- waveform cycle motif (one period, baseline y=0) -->
+    <path id="sym-wavecycle" d="M 0 0 C 80 -120, 160 -120, 240 0 C 320 120, 400 120, 480 0" fill="none" vector-effect="non-scaling-stroke"/>
+    <!-- speech burst motif -->
+    <path id="sym-burst" d="M 0 -46 L 12 -18 L 42 -26 L 20 -6 L 46 14 L 14 12 L 8 44 L -4 14 L -34 34 L -20 4 L -46 -8 L -14 -12 Z" fill="none" vector-effect="non-scaling-stroke"/>
+  </defs>
+</svg>
+
+<!-- =================== GLASSMORPHIC STAGE =================== -->
+<main id="stage" role="region" aria-label="Presentation stage">
+  <div id="slide-chip"><span class="chip-num mono" id="chip-num">01</span><span>/ 10 &nbsp;·&nbsp; Algorithmic Persuasion</span></div>
+  <div id="stage-inner">
+    <div class="clickzone" id="zone-prev" title="Previous slide"><span class="zone-glyph"><i data-lucide="chevron-left" stroke-width="2"></i></span></div>
+    <div class="clickzone" id="zone-next" title="Next slide"><span class="zone-glyph"><i data-lucide="chevron-right" stroke-width="2"></i></span></div>
+
+<!-- ============ SLIDE 1 : TITLE & PROVOCATION ============ -->
+<section class="slide" id="s1" data-title="Title &amp; Provocation" aria-label="Slide 1 of 10">
+  <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
+  <div class="slide-body">
+    <div class="stagger stg-1">
+      <span class="eyebrow"><i data-lucide="radio" stroke-width="2"></i> Q-Infinity Smart Board · Live Deck · 2026</span>
+    </div>
+    <h1 class="title-hero stagger stg-2">Algorithmic<br><span class="grad">Persuasion</span></h1>
+    <p class="title-sub stagger stg-3">How Short-Form Feeds Rewire Human Communication &amp; Attention — and how ethical communicators can take those rewired circuits back.</p>
+    <div class="author-block stagger stg-3">
+      <div class="avatar-ring">
+        <div class="avatar-core">
+          <img class="avatar-img" src="Profilepicture.jpg" alt="Portrait of Lalit Mehta"
+               onload="this.style.display='block';var f=this.parentNode.querySelector('.avatar-fallback');if(f)f.style.display='none';"
+               onerror="this.style.display='none';var f=this.parentNode.querySelector('.avatar-fallback');if(f)f.style.display='flex';">
+          <span class="avatar-fallback" style="display:none;">LM</span>
+        </div>
+      </div>
+      <div class="author-meta">
+        <span class="author-role">Presented by</span>
+        <span class="author-name">LALIT MEHTA</span>
+        <button class="pronounce-btn" id="pronounce-btn" type="button" title="Hear the pronunciation (accesskey: v)" accesskey="v" aria-label="Play phonetic pronunciation of Lalit">
+          <i data-lucide="volume-2" stroke-width="2"></i> /ləlɪt̪/ &nbsp;luh · lit
+        </button>
+      </div>
+    </div>
+    <div class="s1-grid stagger stg-4">
+      <div class="neu-pod" id="decay-pod">
+        <div class="pod-label"><i data-lucide="timer" stroke-width="2"></i> Attention Decay Counter · Mean Visual Fixation</div>
+        <div class="pod-value"><span id="decay-num" class="mono">12.0</span><span class="unit">sec</span></div>
+        <div id="decay-track">
+          <div id="decay-fillbar"></div>
+          <div id="decay-marker"></div>
+        </div>
+        <div id="decay-scale"><span>2004 · 12.0s</span><span>2012 · 8.0s</span><span>2026 · 2.7s</span></div>
+        <div class="pod-note">Live simulation: sustained visual fixation collapses as feed velocity rises. The counter loops every 9 seconds — exactly how long this slide will hold you.</div>
+      </div>
+      <div class="glass-card">
+        <div class="pod-label"><i data-lucide="scan-line" stroke-width="2"></i> Field Telemetry</div>
+        <div class="pod-value mono" style="font-size:clamp(15px,1.2vw,24px);">PHASE-SPACE v2.6</div>
+        <div class="pod-note">The ribbons behind this deck are parametric attention trajectories converging on an algorithmic attractor. They re-phase with every slide you turn.</div>
+      </div>
+    </div>
+    <div class="feature-pills stagger stg-5">
+      <span class="pill-neu"><i data-lucide="zap" stroke-width="2"></i> 3-Second Hooks</span>
+      <span class="pill-neu"><i data-lucide="dices" stroke-width="2"></i> Variable Rewards</span>
+      <span class="pill-neu"><i data-lucide="minimize-2" stroke-width="2"></i> Cognitive Compression</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 2 : THE CORE PROBLEM ============ -->
+<section class="slide" id="s2" data-title="The Linear Storytelling Collapse" aria-label="Slide 2 of 10">
+  <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
+  <header class="slide-head stagger stg-1">
+    <span class="eyebrow coral"><i data-lucide="triangle-alert" stroke-width="2"></i> Core Problem · 02</span>
+    <h2 class="slide-title">The <span class="accent-c">Linear Storytelling</span> Collapse</h2>
+    <p class="slide-sub">For ten thousand years, human ideas travelled slowly — setups, digressions, delayed payoffs. Feed-conditioned cognition now rejects that structure before it even loads.</p>
+  </header>
+  <div class="slide-body">
+    <div class="compare-grid stagger stg-2" style="width:100%;">
+      <div class="compare-col col-legacy neu-pod">
+        <div class="compare-head"><i data-lucide="book-open" stroke-width="2"></i> Legacy Communication</div>
+        <div class="row-item"><i data-lucide="hourglass" stroke-width="2"></i><span><b>Long setups:</b> context first, thesis at minute seven.</span></div>
+        <div class="row-item"><i data-lucide="file-text" stroke-width="2"></i><span><b>Delayed thesis:</b> the payoff lives in the conclusion nobody reaches.</span></div>
+        <div class="row-item"><i data-lucide="layers" stroke-width="2"></i><span><b>High cognitive friction:</b> the audience must build the frame themselves.</span></div>
+        <div class="row-item"><i data-lucide="door-open" stroke-width="2"></i><span><b>Zero-cost exit didn't exist:</b> leaving a lecture took effort, so staying was default.</span></div>
+        <div class="friction-meter"><span>Friction</span><div class="meter-bar"><div class="meter-fill slate" id="m-legacy" style="transform:scaleX(0);"></div></div><span>0.82</span></div>
+      </div>
+      <div class="compare-arrow">
+        <i data-lucide="arrow-right" stroke-width="2"></i>
+        <span class="arrow-label">Feed Conditioning</span>
+      </div>
+      <div class="compare-col col-feed glass-card">
+        <div class="compare-head"><i data-lucide="clapperboard" stroke-width="2"></i> Feed-Conditioned Cognition</div>
+        <div class="row-item"><i data-lucide="flashlight" stroke-width="2"></i><span><b>Instant stakes:</b> the brain asks "why should I care?" in under 800&nbsp;ms.</span></div>
+        <div class="row-item"><i data-lucide="milestone" stroke-width="2"></i><span><b>Thesis-first parsing:</b> conclusions arrive up front; evidence is optional scaffolding.</span></div>
+        <div class="row-item"><i data-lucide="waves" stroke-width="2"></i><span><b>Micro-segments:</b> meaning is consumed in 15–60 second packets, not arcs.</span></div>
+        <div class="row-item"><i data-lucide="log-out" stroke-width="2"></i><span><b>One-flick exit:</b> leaving costs nothing, so boredom is instantly fatal.</span></div>
+        <div class="friction-meter"><span>Friction</span><div class="meter-bar"><div class="meter-fill coralg" id="m-feed" style="transform:scaleX(0);"></div></div><span>0.11</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 3 : THE CORE MECHANISM ============ -->
+<section class="slide" id="s3" data-title="The Dopamine &amp; Prediction Error Loop" aria-label="Slide 3 of 10">
+  <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
+  <header class="slide-head stagger stg-1">
+    <span class="eyebrow indigo"><i data-lucide="activity" stroke-width="2"></i> Core Mechanism · 03</span>
+    <h2 class="slide-title">The <span class="accent-i">Dopamine</span> &amp; Prediction-Error Loop</h2>
+    <p class="slide-sub">Dopamine does not encode pleasure — it encodes <em>prediction error</em>. A feed that never fully surprises, never fully bores, keeps the loop firing indefinitely.</p>
+  </header>
+  <div class="slide-body">
+    <div style="display:flex;flex-direction:column;width:100%;height:100%;min-height:0;">
+      <div class="flow-row stagger stg-2">
+        <div class="flow-node n-eye neu-pod">
+          <div class="flow-icon"><i data-lucide="eye" stroke-width="2"></i></div>
+          <div class="flow-stage">Stage 01</div>
+          <div class="flow-name">Sensory Interrupt</div>
+          <div class="flow-desc">Motion, contrast, or dissonance hijacks the orienting response before conscious choice exists.</div>
+        </div>
+        <div class="flow-link"><i data-lucide="chevron-right" stroke-width="2"></i></div>
+        <div class="flow-node n-zap neu-pod">
+          <div class="flow-icon"><i data-lucide="zap" stroke-width="2"></i></div>
+          <div class="flow-stage">Stage 02</div>
+          <div class="flow-name">Micro-Curiosity Gap</div>
+          <div class="flow-desc">A withheld detail creates an open loop — the brain pays to close it.</div>
+        </div>
+        <div class="flow-link"><i data-lucide="chevron-right" stroke-width="2"></i></div>
+        <div class="flow-node n-gift neu-pod">
+          <div class="flow-icon"><i data-lucide="gift" stroke-width="2"></i></div>
+          <div class="flow-stage">Stage 03</div>
+          <div class="flow-name">Variable Reward</div>
+          <div class="flow-desc">Intermittent payoff spikes prediction error far harder than any guaranteed one.</div>
+        </div>
+        <div class="flow-link"><i data-lucide="chevron-right" stroke-width="2"></i></div>
+        <div class="flow-node n-repeat neu-pod">
+          <div class="flow-icon"><i data-lucide="repeat" stroke-width="2"></i></div>
+          <div class="flow-stage">Stage 04</div>
+          <div class="flow-name">Automatic Scroll Reflex</div>
+          <div class="flow-desc">The thumb pre-empts intention. The loop restarts before evaluation begins.</div>
+        </div>
+      </div>
+      <div id="loop-svg-wrap" class="stagger stg-3">
+        <svg id="loop-svg" viewBox="0 0 1200 190" preserveAspectRatio="xMidYMid meet" shape-rendering="geometricPrecision" aria-hidden="true">
+          <path d="M 60 150 C 260 20, 940 20, 1140 150" fill="none" stroke="url(#rgB)" stroke-width="2" vector-effect="non-scaling-stroke"/>
+          <path d="M 1140 150 C 940 250, 260 250, 60 150" fill="none" stroke="url(#rgC)" stroke-width="2" vector-effect="non-scaling-stroke" stroke-dasharray="6 8" opacity="0.7"/>
+          <circle cx="60" cy="150" r="7" fill="#2563EB" opacity="0.85"/>
+          <circle cx="1140" cy="150" r="7" fill="#E11D48" opacity="0.85"/>
+          <circle id="reward-pulse" r="10" fill="#4F46E5" opacity="0.75"/>
+          <text x="600" y="16" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" letter-spacing="3" fill="#64748B">REWARD EXPECTATION vs REALITY — ERROR SIGNAL SUSTAINS THE LOOP</text>
+          <text x="600" y="186" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" letter-spacing="3" fill="#94A3B8">INTERMITTENT REINFORCEMENT · THE MOST EXTINGUISH-RESISTANT SCHEDULE KNOWN</text>
+        </svg>
+      </div>
+      <div class="loop-caption stagger stg-4">
+        <span class="tag cobalt"><i data-lucide="cpu" stroke-width="2"></i> Prediction Error = Reality − Expectation</span>
+        <span class="tag amber"><i data-lucide="shuffle" stroke-width="2"></i> Randomised reward timing maximises error</span>
+        <span class="tag coral"><i data-lucide="infinity" stroke-width="2"></i> Loops resist extinction, not satisfaction</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 4 : USE CASE #1 — HOOK ============ -->
+<section class="slide" id="s4" data-title="The 3-Second Visual &amp; Semantic Hook" aria-label="Slide 4 of 10">
+  <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
+  <header class="slide-head stagger stg-1">
+    <span class="eyebrow"><i data-lucide="target" stroke-width="2"></i> Use Case 01 · The Hook</span>
+    <h2 class="slide-title">The <span class="accent">3-Second</span> Visual &amp; Semantic Hook</h2>
+    <p class="slide-sub">Top-performing communicators open <em>in medias res</em> — conflict or contrast inside the first frame. Toggle the comparator to feel the difference.</p>
+  </header>
+  <div class="slide-body">
+    <div style="display:flex;flex-direction:column;width:100%;min-height:0;">
+      <div class="hook-stage stagger stg-2">
+        <div class="hook-card glass-card" id="hook-card">
+          <div class="pod-label"><i data-lucide="quote" stroke-width="2"></i> Opening Line · <span id="hook-state-label">Weak Passive Opening</span></div>
+          <p class="hook-quote" id="hook-quote">"So, today I'm going to be talking a little bit about our quarterly metrics, and if everyone could please just give me two minutes of your time while I set up the context…"</p>
+          <div class="timing-strip" id="hook-timing">
+            <span>0.0s preamble</span><span>2.4s throat-clearing</span><span>5.8s still no stakes</span><span>9.1s exit threshold crossed</span>
+          </div>
+          <div class="hook-meta">
+            <div class="retention-bars" id="rbars" aria-hidden="true"></div>
+            <div>
+              <div class="pod-label">Simulated 10s retention</div>
+              <div class="pod-value" style="font-size:clamp(18px,1.8vw,36px);"><span id="hook-retention" class="mono">18</span><span class="unit">%</span></div>
+            </div>
+            <span class="tag slate" id="hook-verdict"><i data-lucide="thumbs-down" stroke-width="2"></i> Attention leak at second 4</span>
+          </div>
+        </div>
+      </div>
+      <div class="hook-controls stagger stg-3">
+        <button class="neu-btn" id="hook-toggle" title="Toggle hook state (Hook Comparator)"><i data-lucide="arrow-left-right" stroke-width="2"></i> Hook Comparator</button>
+        <span class="kbd-hint">tap to compare openings</span>
+        <span class="tag emerald" style="margin-left:auto;"><i data-lucide="flame" stroke-width="2"></i> Conflict-first openings retain ~3.2× longer</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 5 : USE CASE #2 — PROGRESSIVE DISCLOSURE ============ -->
+<section class="slide" id="s5" data-title="Progressive Disclosure &amp; Pacing Architecture" aria-label="Slide 5 of 10">
+  <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
+  <header class="slide-head stagger stg-1">
+    <span class="eyebrow indigo"><i data-lucide="route" stroke-width="2"></i> Use Case 02 · Pacing</span>
+    <h2 class="slide-title">Progressive Disclosure &amp; <span class="accent-i">Pacing Architecture</span></h2>
+    <p class="slide-sub">The Zeigarnik Effect: unfinished tasks occupy working memory until closed. Structure information as serial open loops — and always show where the audience is.</p>
+  </header>
+  <div class="slide-body">
+    <div class="zeig-left stagger stg-2">
+      <div class="loop-diagram neu-pod" style="flex:1;">
+        <svg viewBox="0 0 520 300" preserveAspectRatio="xMidYMid meet" shape-rendering="geometricPrecision" aria-hidden="true">
+          <defs>
+            <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#4F46E5" opacity="0.6"/>
+            </marker>
+          </defs>
+          <path d="M 70 210 C 70 90, 250 60, 260 60" fill="none" stroke="url(#rgB)" stroke-width="2.5" vector-effect="non-scaling-stroke" marker-end="url(#ah)"/>
+          <path d="M 260 60 C 330 60, 450 100, 450 210" fill="none" stroke="url(#rgA)" stroke-width="2.5" vector-effect="non-scaling-stroke" marker-end="url(#ah)"/>
+          <path d="M 450 210 C 450 268, 380 278, 300 278" fill="none" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5 7" vector-effect="non-scaling-stroke"/>
+          <circle cx="70" cy="210" r="8" fill="#2563EB"/>
+          <circle cx="260" cy="60" r="8" fill="#4F46E5"/>
+          <circle cx="450" cy="210" r="8" fill="#E11D48"/>
+          <text x="70" y="248" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" fill="#334155">LOOP OPENED</text>
+          <text x="260" y="38" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" fill="#334155">TENSION HELD</text>
+          <text x="450" y="248" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" fill="#334155">PAYOFF / CLOSE</text>
+          <text x="330" y="296" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#94A3B8">never leave more than one loop unclosed at the end</text>
+        </svg>
+      </div>
+      <div class="neu-pod">
+        <div class="pod-label"><i data-lucide="brain" stroke-width="2"></i> Zeigarnik Effect · Memory Persistence</div>
+        <div class="pod-value"><span class="mono">90</span><span class="unit">%</span><span style="font-size:0.5em;color:#64748B;"> vs </span><span class="mono">55</span><span class="unit">%</span></div>
+        <div class="pod-note">Recall of interrupted / unfinished sequences versus completed ones. Open loops are cognitive velcro — but only if you eventually close them.</div>
+      </div>
+    </div>
+    <div class="zeig-right stagger stg-3">
+      <div class="glass-card">
+        <div class="pod-label"><i data-lucide="list-checks" stroke-width="2"></i> Serial Open Loops In This Talk</div>
+        <div class="open-loop-list" style="margin-top:0.8em;">
+          <div class="ol-item closed"><span class="ol-dot"></span> Why did your attention span measurably shrink? <span class="tag emerald" style="margin-left:auto;">closed @ 02</span></div>
+          <div class="ol-item closed"><span class="ol-dot"></span> What circuit makes scrolling automatic? <span class="tag emerald" style="margin-left:auto;">closed @ 03</span></div>
+          <div class="ol-item"><span class="ol-dot"></span> How do you open so no one leaves? <span class="tag amber" style="margin-left:auto;">closing now</span></div>
+          <div class="ol-item"><span class="ol-dot"></span> Can pacing be ethical? <span class="tag slate" style="margin-left:auto;">opens @ 07</span></div>
+          <div class="ol-item"><span class="ol-dot"></span> What is the 10-minute protocol? <span class="tag slate" style="margin-left:auto;">opens @ 09</span></div>
+        </div>
+      </div>
+      <div class="neu-pod self-ref">
+        <i data-lucide="move-horizontal" stroke-width="2"></i>
+        <div>
+          <p><b style="color:var(--ink-h);">This deck is its own proof.</b> Look at the progress dock at the bottom-center of this screen — segmented, numeric, live. It closes a tiny loop every single transition, lowering audience anxiety about duration and unknown structure.</p>
+          <div class="mini-progress"><i id="mini-prog-fill"></i></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 6 : USE CASE #3 — MICRO-INTERACTIONS ============ -->
+<section class="slide" id="s6" data-title="Micro-Interactions &amp; Multi-Sensory Anchoring" aria-label="Slide 6 of 10">
+  <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
+  <header class="slide-head stagger stg-1">
+    <span class="eyebrow"><i data-lucide="sparkles" stroke-width="2"></i> Use Case 03 · Anchoring</span>
+    <h2 class="slide-title">Micro-Interactions &amp; <span class="accent">Multi-Sensory Anchoring</span></h2>
+    <p class="slide-sub">The orienting response fires at every novel state change. Re-trigger it every 15–20 seconds — below the threshold that overloads working memory.</p>
+  </header>
+  <div class="slide-body">
+    <div class="mi-grid stagger stg-2" style="align-content:center;">
+      <div class="mi-card glass-card">
+        <div class="mi-icon"><i data-lucide="type" stroke-width="2"></i></div>
+        <h3>Kinetic Typography</h3>
+        <p>Movement carries emphasis without sound. Words that shift weight tell the eye what the voice would stress.</p>
+      </div>
+      <div class="mi-card glass-card">
+        <div class="mi-icon"><i data-lucide="layers" stroke-width="2"></i></div>
+        <h3>Spatial Depth</h3>
+        <p>Layered elevation cues (soft extrusion, frosted planes) give abstract ideas a physical address in space.</p>
+      </div>
+      <div class="mi-card glass-card">
+        <div class="mi-icon"><i data-lucide="toggle-right" stroke-width="2"></i></div>
+        <h3>Visual State Change</h3>
+        <p>A pressed button, a morphing counter, a toggled comparison — micro-feedback proves the medium is alive.</p>
+      </div>
+      <div class="kinetic-demo neu-pod">
+        <div id="kinetic-word">Attention<span class="k-accent">.</span></div>
+        <p class="kinetic-caption">Live demo: this phrase re-states itself on the orienting cadence. Notice you cannot ignore a changing field — that is the reflex, not curiosity.</p>
+        <div class="orienting-clock">
+          <i data-lucide="clock" stroke-width="2"></i>
+          <span class="mono" id="orient-counter">next state shift in 17s</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 7 : THE DARK SIDE ============ -->
+<section class="slide" id="s7" data-title="Signal Compression vs. Cognitive Shallowing" aria-label="Slide 7 of 10">
+  <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
+  <header class="slide-head stagger stg-1">
+    <span class="eyebrow coral"><i data-lucide="shield-alert" stroke-width="2"></i> The Dark Side · 07</span>
+    <h2 class="slide-title">Signal Compression vs. <span class="accent-c">Cognitive Shallowing</span></h2>
+    <p class="slide-sub">Every tool that raises engagement velocity lowers nuance bandwidth. The matrix of the trade-off — named honestly, so we can choose it deliberately.</p>
+  </header>
+  <div class="slide-body">
+    <div class="matrix-wrap stagger stg-2">
+      <table class="matrix-table">
+        <thead><tr><th>Dimension</th><th>High-Velocity Engagement</th><th>Deep Critical Nuance</th><th>The Trade-Off</th></tr></thead>
+        <tbody>
+          <tr><td>Take Structure</td><td>Binary, decisive, shareable</td><td class="cell-neg">Flattened — qualifiers read as weakness</td><td>Disagreement collapses into tribes</td></tr>
+          <tr><td>Time Horizon</td><td>Optimised for the first 3 seconds</td><td class="cell-neg">Ideas needing 30 minutes starve</td><td>Complex truths lose the attention market</td></tr>
+          <tr><td>Evidence</td><td>One vivid example beats a dataset</td><td class="cell-neg">Base rates invisible; anecdotes omnipresent</td><td>Statistical thinking outcompetes poorly</td></tr>
+          <tr><td>Emotion</td><td>High-arousal content propagates</td><td class="cell-neg">Calm, ambivalent states do not spread</td><td>Outrage becomes the native dialect</td></tr>
+          <tr><td>Memory</td><td>Hooks + loops encode strongly</td><td class="cell-neg">Shallow processing, rapid decay of substance</td><td>People remember frames, not facts</td></tr>
+        </tbody>
+      </table>
+      <div class="ethics-band stagger stg-3">
+        <div class="neu-pod"><i data-lucide="scale" stroke-width="2" style="color:var(--cobalt);"></i><p><b style="color:var(--ink-h);">Ethical line:</b> use velocity to <em>deliver people to depth</em>, not to replace it.</p></div>
+        <div class="neu-pod"><i data-lucide="ban" stroke-width="2" style="color:var(--coral);"></i><p><b style="color:var(--ink-h);">Unethical line:</b> engineered frictionlessness toward behaviour you would not defend face-to-face.</p></div>
+        <div class="neu-pod"><i data-lucide="compass" stroke-width="2" style="color:var(--indigo);"></i><p><b style="color:var(--ink-h);">Test:</b> if the hook promised more depth than the payload delivers, you have lied at the API boundary of attention.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 8 : THE COMMUNICATOR'S SYNTHESIS ============ -->
+<section class="slide" id="s8" data-title="Hijacking the Feed Rules for Deep Ideas" aria-label="Slide 8 of 10">
+  <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
+  <header class="slide-head stagger stg-1">
+    <span class="eyebrow indigo"><i data-lucide="wrench" stroke-width="2"></i> Synthesis · 08</span>
+    <h2 class="slide-title">Hijacking the Feed Rules <span class="accent-i">for Deep Ideas</span></h2>
+    <p class="slide-sub">Three architectural rules for speakers, engineers, and designers who refuse to let the medium flatten the message.</p>
+  </header>
+  <div class="slide-body">
+    <div class="rules-col">
+      <div class="rule-row neu-pod stagger stg-2">
+        <div class="rule-num">01</div>
+        <div class="rule-icon"><i data-lucide="rocket" stroke-width="2"></i></div>
+        <div class="rule-text">
+          <h3>Front-load the Stakes</h3>
+          <p>Answer "why should I care?" in the first sentence, frame, or screen. Context is a seasoning added after the hook lands — never a toll gate before it.</p>
+        </div>
+        <div class="rule-aud"><span class="tag cobalt">Speakers</span><span class="tag slate">Writers</span></div>
+      </div>
+      <div class="rule-row r-ind neu-pod stagger stg-3">
+        <div class="rule-num">02</div>
+        <div class="rule-icon"><i data-lucide="monitor-dot" stroke-width="2"></i></div>
+        <div class="rule-text">
+          <h3>Visual State Shift Every 60 Seconds</h3>
+          <p>New diagram, new metric, new plane of motion. One deliberate orienting trigger per minute keeps the reflex awake without fragmenting comprehension.</p>
+        </div>
+        <div class="rule-aud"><span class="tag" style="color:var(--indigo);background:rgba(79,70,229,0.08);">Designers</span><span class="tag slate">UI Engineers</span></div>
+      </div>
+      <div class="rule-row r-cor neu-pod stagger stg-4">
+        <div class="rule-num">03</div>
+        <div class="rule-icon"><i data-lucide="gauge" stroke-width="2"></i></div>
+        <div class="rule-text">
+          <h3>One Core Metric Per Frame</h3>
+          <p>Working memory holds roughly four chunks — spend them on one number, one claim, one image. Density is the enemy of retention; whitespace is persuasion.</p>
+        </div>
+        <div class="rule-aud"><span class="tag coral">Analysts</span><span class="tag slate">Educators</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 9 : THE 10-MINUTE BLUEPRINT ============ -->
+<section class="slide" id="s9" data-title="The 10-Minute Blueprint" aria-label="Slide 9 of 10">
+  <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
+  <header class="slide-head stagger stg-1">
+    <span class="eyebrow"><i data-lucide="layout-template" stroke-width="2"></i> Blueprint · 09</span>
+    <h2 class="slide-title">The 10-Minute <span class="accent">Blueprint</span> — Before vs. After</h2>
+    <p class="slide-sub">The same talk, pitch, or lecture — rebuilt with ethical algorithmic pacing. Nothing is dumbed down; everything is sequenced for how attention actually works.</p>
+  </header>
+  <div class="slide-body">
+    <div class="ba-scroll stagger stg-2">
+      <table class="ba-table">
+        <thead><tr><th>Phase</th><th>Before · Default Protocol</th><th></th><th>After · Algorithmic Pacing</th></tr></thead>
+        <tbody>
+          <tr><td>Opening 0:00</td><td>"Can everyone hear me? Let me set up some context…"</td><td class="shift-cell"><i data-lucide="arrow-right" stroke-width="2"></i></td><td><b>Cold-open with the stakes:</b> one stat, one contradiction, one promise of payoff.</td></tr>
+          <tr><td>Setup 0:30</td><td>Bio, agenda, methodology — 4 minutes of toll-booth.</td><td class="shift-cell"><i data-lucide="arrow-right" stroke-width="2"></i></td><td><b>Progress bar visible;</b> credibility delivered inside the story, not before it.</td></tr>
+          <tr><td>Body 2:00</td><td>Seven equal-weight sections, monotone cadence.</td><td class="shift-cell"><i data-lucide="arrow-right" stroke-width="2"></i></td><td><b>Three pillars, serial open loops,</b> each closed with a visual state shift under 60 seconds.</td></tr>
+          <tr><td>Data 5:00</td><td>Full spreadsheet screenshot, 14 columns.</td><td class="shift-cell"><i data-lucide="arrow-right" stroke-width="2"></i></td><td><b>One core metric per frame;</b> the rest lives in the handout for the motivated.</td></tr>
+          <tr><td>Dip 7:00</td><td>Energy sags; audience quietly exits mentally.</td><td class="shift-cell"><i data-lucide="arrow-right" stroke-width="2"></i></td><td><b>Pattern interrupt:</b> a question, a toggle, a live counter — re-arm the orienting response.</td></tr>
+          <tr><td>Closing 9:00</td><td>"…so yeah, that's basically it. Any questions?"</td><td class="shift-cell"><i data-lucide="arrow-right" stroke-width="2"></i></td><td><b>Close every loop,</b> restate the single sentence you want remembered, hand out the next open loop.</td></tr>
+        </tbody>
+      </table>
+      <div class="ba-foot stagger stg-3"><i data-lucide="badge-check" stroke-width="2"></i> Ethical constraint: every hook must pay off in substance. Promise depth, deliver depth — never substitute arousal for truth.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 10 : CLOSING SYNTHESIS ============ -->
+<section class="slide" id="s10" data-title="Closing Synthesis &amp; Live Reveal" aria-label="Slide 10 of 10">
+  <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
+  <header class="slide-head stagger stg-1">
+    <span class="eyebrow coral"><i data-lucide="flag" stroke-width="2"></i> Closing Synthesis · 10</span>
+  </header>
+  <div class="slide-body">
+    <div class="close-left stagger stg-2">
+      <p class="thesis">Attention is not the resource being competed for.<br><span class="accent">Behaviour is.</span> The feed taught your audience how to consume you —<br>the ethical move is to teach them something <span class="accent-c">worth keeping.</span></p>
+      <div class="pillar-stack">
+        <div class="pillar"><i data-lucide="target" stroke-width="2"></i><b>Pillar 01 · The Hook</b><span>— earn the first three seconds honestly.</span></div>
+        <div class="pillar"><i data-lucide="route" stroke-width="2"></i><b>Pillar 02 · The Loop</b><span>— disclose progressively, close serially.</span></div>
+        <div class="pillar"><i data-lucide="sparkles" stroke-width="2"></i><b>Pillar 03 · The Anchor</b><span>— shift state before the mind drifts.</span></div>
+      </div>
+    </div>
+    <div class="close-right stagger stg-3">
+      <div class="neu-pod telemetry-stack">
+        <div class="pod-label"><i data-lucide="satellite-dish" stroke-width="2"></i> Live Deck Telemetry</div>
+        <div class="tele-row"><span class="k"><i data-lucide="network" stroke-width="2"></i> MQTT Sync</span><span class="v" id="tele-mqtt">CONNECTING</span></div>
+        <div class="tele-row"><span class="k"><i data-lucide="hash" stroke-width="2"></i> Room Topic</span><span class="v" id="tele-room" style="font-size:clamp(9px,0.7vw,13px);max-width:55%;text-align:right;word-break:break-all;">—</span></div>
+        <div class="tele-row"><span class="k"><i data-lucide="sliders-horizontal" stroke-width="2"></i> Active Slide</span><span class="v" id="tele-slide">10 / 10</span></div>
+        <div class="tele-row"><span class="k"><i data-lucide="stopwatch" stroke-width="2"></i> Presentation Runtime</span><span class="v" id="qa-timer">00:00</span></div>
+        <div class="pod-note">Total wall-clock since deck load — the honest denominator for your Q&amp;A invite.</div>
+      </div>
+      <div class="reveal-btn-row">
+        <button class="neu-btn" id="reveal-sync-btn"><i data-lucide="qr-code" stroke-width="2"></i> Live Remote Sync</button>
+        <button class="neu-btn" id="restart-btn"><i data-lucide="rotate-ccw" stroke-width="2"></i> Replay From Slide 1</button>
+      </div>
+      <p class="pod-note" style="margin-top:0.6em;">Thank you. The loop opened on Slide 1 closes now — the next open loop is yours.</p>
+    </div>
+  </div>
+</section>
+  </div><!-- /stage-inner -->
+</main><!-- /stage -->
+
+<!-- =================== HUD : TOP-RIGHT FULLSCREEN & SYNC BAR =================== -->
+<div class="hud" id="topbar">
+  <div id="audio-group" role="group" aria-label="Audio controls">
+    <button class="neu-btn icon-only" id="sfx-toggle" accesskey="x" title="Toggle action interface sounds (accesskey: x)" aria-label="Toggle action sounds" aria-pressed="true"><i data-lucide="volume-2" stroke-width="2"></i></button>
+    <span class="sep" aria-hidden="true"></span>
+    <button class="neu-btn icon-only" id="bgm-toggle" accesskey="b" title="Toggle ambient music (accesskey: b)" aria-label="Toggle ambient background music" aria-pressed="true"><i data-lucide="music" stroke-width="2"></i></button>
+  </div>
+  <button class="neu-btn icon-only" id="presenter-toggle" accesskey="c" title="Toggle presenter click zones (accesskey: c)" aria-label="Toggle presenter click mode"><i data-lucide="mouse-pointer-click" stroke-width="2"></i></button>
+  <button class="neu-btn" id="sync-btn" accesskey="r" title="Open phone remote sync modal (accesskey: r)" aria-haspopup="dialog">
+    <span id="sync-dot" aria-hidden="true"></span><span id="sync-label">SYNC</span>
+  </button>
+  <button class="neu-btn icon-only" id="fullscreen-btn" accesskey="f" title="Toggle fullscreen (accesskey: f)" aria-label="Toggle fullscreen"><i data-lucide="maximize-2" stroke-width="2"></i></button>
+</div>
+
+<!-- =================== HUD : BOTTOM-LEFT NAVIGATION =================== -->
+<div class="hud" id="navctl">
+  <button class="neu-btn icon-only" id="prev-btn" accesskey="p" title="Previous slide (accesskey: p)" aria-label="Previous slide"><i data-lucide="chevron-left" stroke-width="2"></i></button>
+  <button class="neu-btn icon-only" id="next-btn" accesskey="n" title="Next slide (accesskey: n)" aria-label="Next slide"><i data-lucide="chevron-right" stroke-width="2"></i></button>
+  <span class="kbd-hint">PgUp / PgDn</span>
+</div>
+
+<!-- =================== HUD : BOTTOM-CENTER PROGRESS DOCK =================== -->
+<div class="hud" id="progress-dock" role="group" aria-label="Progression">
+  <div id="progress-track" aria-hidden="true"><!-- TOTAL segments built once at init --></div>
+  <div id="progress-telemetry" aria-live="polite">Slide <b id="tel-x">1</b> of 10 • <span id="tel-left">9 slides left</span></div>
+</div>
+
+<!-- Slide jump buttons (hidden, keyboard/HID accessible via accesskeys 1–0) -->
+<nav id="jump-nav" aria-label="Direct slide jump" style="position:fixed;left:-9999px;top:0;width:1px;height:1px;overflow:hidden;">
+  <button accesskey="1" data-jump="0">1</button><button accesskey="2" data-jump="1">2</button>
+  <button accesskey="3" data-jump="2">3</button><button accesskey="4" data-jump="3">4</button>
+  <button accesskey="5" data-jump="4">5</button><button accesskey="6" data-jump="5">6</button>
+  <button accesskey="7" data-jump="6">7</button><button accesskey="8" data-jump="7">8</button>
+  <button accesskey="9" data-jump="8">9</button><button accesskey="0" data-jump="9">10</button>
+</nav>
+
+<!-- =================== REMOTE SYNC MODAL =================== -->
+<div id="remote-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="rm-title">
+  <div id="remote-modal">
+    <button class="neu-btn icon-only" id="modal-close-x" aria-label="Close dialog" style="position:absolute;top:16px;right:18px;"><i data-lucide="x" stroke-width="2"></i></button>
+    <h3 id="rm-title"><i data-lucide="smartphone" stroke-width="2"></i> Phone Remote — Zero-Backend Sync</h3>
+    <p class="rm-hint">Open the link or scan the code on any phone. Commands travel peer-to-peer over MQTT WebSockets (broker.emqx.io) — no server of ours, typical latency under 50&nbsp;ms.</p>
+    <div class="rm-grid">
+      <div class="rm-block">
+        <span class="rm-label">Remote Link · QR</span>
+        <div id="qr-box"><img id="qr-img" alt="QR code linking to the mobile presenter remote" width="220" height="220"></div>
+        <div id="remote-url" class="mono">—</div>
+        <div class="rm-actions">
+          <button class="neu-btn" id="copy-url-btn"><i data-lucide="copy" stroke-width="2"></i> Copy Link</button>
+          <a class="neu-btn" id="open-remote-tab" href="#" target="_blank" rel="noopener"><i data-lucide="external-link" stroke-width="2"></i> Open Remote</a>
+        </div>
+      </div>
+      <div class="rm-block">
+        <span class="rm-label">Shared Room Topic</span>
+        <input id="room-input" type="text" spellcheck="false" aria-label="MQTT room topic" value="qinfinity/lalit/algo-persuasion-2026">
+        <div class="topic-mono" id="topic-preview">—</div>
+        <div class="rm-actions">
+          <button class="neu-btn" id="apply-room-btn"><i data-lucide="plug-zap" stroke-width="2"></i> Reconnect Broker</button>
+        </div>
+        <span class="rm-label" style="margin-top:8px;">Connection Status</span>
+        <div class="tele-row"><span class="k mono" style="font-size:clamp(9px,0.7vw,13px);letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-c);">Broker wss://broker.emqx.io:8084/mqtt</span><span class="v mono" id="modal-status" style="font-family:var(--font-mono);font-weight:700;color:var(--ink-c);">…</span></div>
+        <p class="rm-hint">Tip: append <span class="mono">?room=your-name</span> to this deck URL to fork a private channel. Keys 1–0 also jump directly to slides; F toggles fullscreen.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =================== MOBILE PRESENTER REMOTE UI (?mode=remote) =================== -->
+<div id="remote-ui">
+  <div class="rmu-head">
+    <div>
+      <div class="rmu-title">Presenter Remote</div>
+      <div class="rmu-sub">Algorithmic Persuasion · 2026</div>
+    </div>
+    <div class="rmu-status"><span id="rmu-dot" style="width:9px;height:9px;border-radius:50%;background:#94A3B8;display:inline-block;"></span><span id="rmu-status-txt">LINKING</span></div>
+  </div>
+  <div class="rmu-prog"><i id="rmu-prog-fill"></i></div>
+  <div class="rmu-now">
+    <div class="idx" id="rmu-idx">SLIDE 1 / 10 · BOARD VIEW</div>
+    <div class="name" id="rmu-name">Title &amp; Provocation</div>
+    <div class="rmu-cue" id="rmu-cue">Cold-open with energy. Point at the decay counter: "twelve seconds was the human baseline in 2004. Watch it fall."</div>
+  </div>
+  <div class="rmu-timer-row">
+    <span class="lbl">Elapsed · 10:00 Target</span>
+    <span class="t mono" id="rmu-timer">00:00</span>
+  </div>
+  <div class="rmu-bigrow">
+    <button class="rmu-big" id="rmu-prev"><i data-lucide="chevron-left" stroke-width="2"></i>PREV</button>
+    <button class="rmu-big" id="rmu-next"><i data-lucide="chevron-right" stroke-width="2"></i>NEXT</button>
+  </div>
+  <div>
+    <div class="rmu-jump-lbl" style="margin-bottom:10px;">Quick Jump</div>
+    <div class="rmu-jump" id="rmu-jump"></div>
+  </div>
+  <p class="rmu-status" style="justify-content:center;">Every tap publishes NAV over MQTT · board reacts &lt; 50 ms</p>
+</div>
+
+<!-- Toast for inbound remote events -->
+<div id="toast" role="status"><i data-lucide="radio-tower" stroke-width="2"></i><span id="toast-msg">Remote navigation</span></div>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+<script>
+'use strict';
+/* =========================================================================
+   ALGORITHMIC PERSUASION — DECK ENGINE
+   Sections: state · field · slides · input · telemetry · mqtt · interactions
+   ========================================================================= */
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => Array.from(document.querySelectorAll(s));
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const easeOut = (t) => 1 - Math.pow(1 - t, 3);
+
+const params = new URLSearchParams(location.search);
+const IS_REMOTE = params.get('mode') === 'remote';
+/* shared room topic — default qinfinity/lalit/algo-persuasion-2026, customizable via ?room=xyz */
+let roomTopic = params.get('room') ? params.get('room') : 'qinfinity/lalit/algo-persuasion-2026';
+
+/* ---------------------------------------------------------------------------
+   AUDIO ENGINE — synthesized, zero-asset, mesmerising sound design.
+   Action SFX for every click / slide / animation event + generative ambient
+   BGM pad. Both independently toggleable; persisted in localStorage.
+--------------------------------------------------------------------------- */
+const AudioEngine = (() => {
+  /* FIX (PRIORITY 2 — complete BGM mute): strict two-bus audio graph.
+       SFX path : voices -> sfxDry -> sfxBus ------------------> master
+                \-> sfxWet -> convolver -> sfxWetGain -/
+       BGM path : voices -> bgmDry -> bgmBus ------------------> master
+                \-> bgmWet -> convolver -> bgmWetGain -> bgmBus -/
+     Every ambient source AND its reverb return now terminates behind
+     bgmBus, so muting BGM silences pad, bells, noise layer, reverb tail
+     and every future-scheduled note. SFX has its own parallel convolver
+     send behind sfxBus — the two mutes are fully independent. */
+  let ctx = null, master = null, noiseBuf = null;
+  let bgmBus = null, bgmDry = null, bgmWet = null, bgmConv = null, bgmWetGain = null;
+  let sfxBus = null, sfxDry = null, sfxWet = null, sfxConv = null, sfxWetGain = null;
+  /* FIX: BGM defaults to OFF unless explicitly enabled previously — an
+     unrelated first gesture can never silently start the music */
+  let bgmOn = false, sfxOn = true, bgmPlaying = false, bgmTimer = null, nextBellAt = 0;
+  let bgmNodes = [];
+  let bgmVol = 0.55, sfxVol = 0.8;
+  try { const v = parseFloat(localStorage.getItem('ap-bgmvol')); if (!isNaN(v)) bgmVol = clamp(v, 0, 1); } catch (e) {}
+  try { const v = parseFloat(localStorage.getItem('ap-sfxvol')); if (!isNaN(v)) sfxVol = clamp(v, 0, 1); } catch (e) {}
+  try { bgmOn = localStorage.getItem('ap-bgm') === 'on'; } catch (e) {}
+  try { sfxOn = localStorage.getItem('ap-sfx') !== 'off'; } catch (e) {}
+
+  function makeReverb() {
+    /* lightweight generated reverb (2.8s stereo decaying noise IR) */
+    const cv = ctx.createConvolver();
+    const len = Math.floor(ctx.sampleRate * 2.8);
+    const ir = ctx.createBuffer(2, len, ctx.sampleRate);
+    for (let ch = 0; ch < 2; ch++) {
+      const d = ir.getChannelData(ch);
+      for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.4);
+    }
+    cv.buffer = ir;
+    return cv;
+  }
+  function ensure() {
+    if (ctx) { if (ctx.state === 'suspended') ctx.resume().catch(() => {}); return true; }
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return false;
+    try { ctx = new AC(); } catch (e) { return false; }
+    master = ctx.createGain(); master.gain.value = 0.9; master.connect(ctx.destination);
+    /* --- BGM chain: everything ambient terminates through bgmBus --- */
+    bgmBus = ctx.createGain(); bgmBus.gain.value = 0.0001; bgmBus.connect(master);
+    bgmDry = ctx.createGain(); bgmDry.gain.value = 1; bgmDry.connect(bgmBus);
+    bgmWet = ctx.createGain(); bgmWet.gain.value = 0.34;
+    bgmConv = makeReverb(); bgmWetGain = ctx.createGain(); bgmWetGain.gain.value = 1;
+    bgmWet.connect(bgmConv); bgmConv.connect(bgmWetGain); bgmWetGain.connect(bgmBus);
+    /* --- SFX chain: independent dry + dedicated reverb send behind sfxBus --- */
+    sfxBus = ctx.createGain(); sfxBus.gain.value = sfxVol; sfxBus.connect(master);
+    sfxDry = ctx.createGain(); sfxDry.gain.value = 1; sfxDry.connect(sfxBus);
+    sfxWet = ctx.createGain(); sfxWet.gain.value = 0.34;
+    sfxConv = makeReverb(); sfxWetGain = ctx.createGain();
+    sfxWet.connect(sfxConv); sfxConv.connect(sfxWetGain); sfxWetGain.connect(sfxBus);
+    /* shared white-noise buffer for airy/swish layers */
+    const nlen = Math.floor(ctx.sampleRate * 1.2);
+    noiseBuf = ctx.createBuffer(1, nlen, ctx.sampleRate);
+    const nd = noiseBuf.getChannelData(0);
+    for (let i = 0; i < nlen; i++) nd[i] = Math.random() * 2 - 1;
+    return true;
+  }
+
+  function stopBGM() {
+    bgmPlaying = false;
+    if (bgmTimer) { clearInterval(bgmTimer); bgmTimer = null; }
+    if (!ctx) { bgmNodes = []; return; }
+    const t = ctx.currentTime;
+    /* 1. fade the ENTIRE BGM output (dry + reverb returns ride on bgmBus) */
+    try {
+      bgmBus.gain.cancelScheduledValues(t);
+      bgmBus.gain.setValueAtTime(Math.max(bgmBus.gain.value, 0.0001), t);
+      bgmBus.gain.linearRampToValueAtTime(0.0001, t + 0.6);
+    } catch (e) {}
+    /* 2/3. stop every live or future-scheduled ambient node, then drop refs */
+    bgmNodes.forEach((n) => {
+      try { if (n.stop) n.stop(t + 0.7); } catch (e) {}
+      try { if (n.disconnect) n.disconnect(); } catch (e) {}
+    });
+    bgmNodes = [];
+  }
+
+  const now = () => ctx.currentTime;
+  function reg(node) { bgmNodes.push(node); return node; }
+  function tone(freq, t0, dur, type, vol, glideTo, bus) {
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    const isBgm = (bus === bgmBus);
+    if (isBgm) reg(o);
+    o.type = type || 'sine';
+    o.frequency.setValueAtTime(freq, t0);
+    if (glideTo) o.frequency.exponentialRampToValueAtTime(glideTo, t0 + dur);
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(vol, t0 + 0.015);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    o.connect(g);
+    g.connect(isBgm ? bgmDry : sfxDry);          /* dry path stays behind its bus */
+    g.connect(isBgm ? bgmWet : sfxWet);          /* reverb SEND — return also lands on the same bus */
+    o.start(t0); o.stop(t0 + dur + 0.05);
+  }
+  function noiseHit(t0, dur, f0, f1, vol, q) {
+    const src = ctx.createBufferSource(); src.buffer = noiseBuf;
+    const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = q || 1.1;
+    bp.frequency.setValueAtTime(f0, t0);
+    bp.frequency.exponentialRampToValueAtTime(f1, t0 + dur);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(vol, t0 + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    src.connect(bp); bp.connect(g);
+    g.connect(sfxDry); g.connect(sfxWet);
+    src.start(t0); src.stop(t0 + dur + 0.05);
+  }
+
+  /* ---- action sounds: soft, glassy, pentatonic — satisfying, never harsh ---- */
+  const SFX = {
+    tap()     { const t = now(); tone(1180, t, 0.09, 'triangle', 0.10); noiseHit(t, 0.05, 3200, 1400, 0.03); },
+    toggle()  { const t = now(); tone(660, t, 0.10, 'triangle', 0.09); tone(990, t + 0.055, 0.12, 'sine', 0.07); },
+    forward() { const t = now(); [523.25, 659.25, 783.99].forEach((f, i) => tone(f, t + i * 0.06, 0.5, 'sine', 0.085)); noiseHit(t, 0.22, 900, 2600, 0.028, 0.8); },
+    back()    { const t = now(); [783.99, 659.25, 523.25].forEach((f, i) => tone(f, t + i * 0.06, 0.5, 'sine', 0.075)); noiseHit(t, 0.2, 2400, 800, 0.024, 0.8); },
+    jump()    { const t = now(); tone(440, t, 0.32, 'triangle', 0.09, 1318.5); tone(880, t + 0.05, 0.4, 'sine', 0.05); },
+    reveal()  { const t = now(); [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach((f, i) => tone(f, t + i * 0.07, 0.9, 'sine', 0.07)); tone(261.6, t, 1.4, 'triangle', 0.05); },
+    open()    { const t = now(); tone(392, t, 0.4, 'sine', 0.08, 784); tone(587.3, t + 0.08, 0.5, 'sine', 0.05); },
+    close()   { const t = now(); tone(784, t, 0.3, 'sine', 0.07, 392); },
+    morph()   { const t = now(); tone(329.6, t, 0.5, 'triangle', 0.07, 659.3); tone(493.9, t + 0.1, 0.55, 'sine', 0.05, 987.8); },
+    kinetic() { const t = now(); tone(1567.98, t, 0.35, 'sine', 0.05); tone(2349.3, t + 0.02, 0.25, 'sine', 0.03); },
+    chime()   { const t = now(); tone(1046.5, t, 1.6, 'sine', 0.06); tone(1567.98, t + 0.02, 1.2, 'sine', 0.035); }
+  };
+  function play(name) {
+    if (!sfxOn || IS_REMOTE) return;
+    if (!ensure()) return;
+    try { SFX[name] && SFX[name](); } catch (e) {}
+  }
+
+  /* FIX (action sounds not working): iOS/Android Chrome silently suspends the
+     AudioContext unless it is created/resumed INSIDE a real user-gesture task.
+     The old one-shot unlock listener was consumed by any first pointerdown —
+     including taps that hit a <button>, whose click handler then fired in a
+     separate, non-gesture task, leaving ctx permanently "suspended" and every
+     action sound inaudible. This dedicated synchronous listener re-arms on
+     every gesture for the whole session (zero cost once running). */
+  window.addEventListener('pointerdown', () => {
+    try { if (ctx && ctx.state === 'suspended') ctx.resume().catch(() => {}); } catch (e) {}
+  }, true);
+  window.addEventListener('keydown', () => {
+    try { if (ctx && ctx.state === 'suspended') ctx.resume().catch(() => {}); } catch (e) {}
+  }, true);
+
+  /* ---- ambient generative BGM: warm detuned pad + sparse bell rain ---- */
+  const PENTA = [523.25, 587.33, 659.25, 783.99, 880.0, 1046.5];
+  function startBGM() {
+    if (bgmPlaying || !ensure() || !bgmOn) return;
+    bgmPlaying = true;
+    const base = [130.81, 196.0, 261.63]; // C3 · G3 · C4 — open fifths, calm
+    base.forEach((f, i) => {
+      [-3.5, 3.5].forEach((cents) => {
+        const o = ctx.createOscillator(); o.type = i === 2 ? 'triangle' : 'sine';
+        o.frequency.value = f; o.detune.value = cents;
+        const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 620 + i * 240; lp.Q.value = 0.5;
+        const g = ctx.createGain(); g.gain.value = 0.0001;
+        g.gain.exponentialRampToValueAtTime(i === 2 ? 0.016 : 0.026, now() + 6);
+        const lfo = ctx.createOscillator(); lfo.frequency.value = 0.045 + i * 0.017;
+        const lg = ctx.createGain(); lg.gain.value = 0.011;
+        lfo.connect(lg); lg.connect(g.gain); lfo.start();
+        o.connect(lp); lp.connect(g); g.connect(bgmDry); g.connect(bgmWet);
+        o.start(); reg(o); reg(lfo);
+      });
+    });
+    const air = ctx.createBufferSource(); air.buffer = noiseBuf; air.loop = true;
+    const abp = ctx.createBiquadFilter(); abp.type = 'bandpass'; abp.frequency.value = 900; abp.Q.value = 0.4;
+    const ag = ctx.createGain(); ag.gain.value = 0.0001;
+    ag.gain.linearRampToValueAtTime(0.0045, now() + 8);
+    const alfo = ctx.createOscillator(); alfo.frequency.value = 0.07;
+    const alg = ctx.createGain(); alg.gain.value = 320;
+    alfo.connect(alg); alg.connect(abp.frequency); alfo.start();
+    /* FIX: noise layer routes through the BGM dry/wet sends — never a shared
+       convolver that could bypass bgmBus and keep ringing after mute */
+    air.connect(abp); abp.connect(ag); ag.connect(bgmDry); ag.connect(bgmWet);
+    air.start(); reg(air); reg(alfo);
+    nextBellAt = now() + 4;
+    bgmTimer = setInterval(scheduleBells, 1500);
+  }
+  function scheduleBells() {
+    if (!ctx || !bgmOn || !bgmPlaying) return;
+    while (nextBellAt < ctx.currentTime + 2) {
+      const f = PENTA[Math.floor(Math.random() * PENTA.length)];
+      tone(f, nextBellAt, 2.6, 'sine', 0.035 + Math.random() * 0.02, null, bgmBus);
+      tone(f * 2, nextBellAt + 0.01, 1.6, 'sine', 0.012, null, bgmBus);
+      nextBellAt += 3.5 + Math.random() * 6;
+    }
+  }
+  /* FIX: mute tears down EVERYTHING ambient (nodes, scheduler, reverb tail via
+     the bus fade). Re-enable recreates cleanly — startBGM guards against
+     duplicate schedulers/oscillators via bgmPlaying, and stopBGM clears it. */
+  function setBGM(on) {
+    bgmOn = on;
+    try { localStorage.setItem('ap-bgm', on ? 'on' : 'off'); } catch (e) {}
+    if (on) {
+      if (!ensure()) return;
+      startBGM();
+      if (bgmBus) {
+        bgmBus.gain.cancelScheduledValues(now());
+        bgmBus.gain.setValueAtTime(Math.max(bgmBus.gain.value, 0.0001), now());
+        bgmBus.gain.linearRampToValueAtTime(Math.max(bgmVol, 0.0001), now() + 1.4);
+      }
+    } else stopBGM();
+  }
+  function setSFX(on) {
+    sfxOn = on;
+    try { localStorage.setItem('ap-sfx', on ? 'on' : 'off'); } catch (e) {}
+  }
+  /* FIX (BGM volume slider): live, persisted gain control for both buses */
+  function setBGMVolume(v) {
+    bgmVol = clamp(v, 0, 1);
+    try { localStorage.setItem('ap-bgmvol', String(bgmVol)); } catch (e) {}
+    if (ctx && bgmBus && bgmOn) {
+      bgmBus.gain.cancelScheduledValues(now());
+      bgmBus.gain.setValueAtTime(Math.max(bgmBus.gain.value, 0.0001), now());
+      bgmBus.gain.linearRampToValueAtTime(Math.max(bgmVol, 0.0001), now() + 0.12);
+    }
+  }
+  function setSFXVolume(v) {
+    sfxVol = clamp(v, 0, 1);
+    try { localStorage.setItem('ap-sfxvol', String(sfxVol)); } catch (e) {}
+    if (ctx && sfxBus) {
+      sfxBus.gain.cancelScheduledValues(now());
+      sfxBus.gain.setValueAtTime(sfxVol, now());
+    }
+  }
+  function unlock() {
+    /* FIX: gesture-unlock only resumes the AudioContext; it never starts or
+       re-starts BGM behind the user's back. Music begins ONLY via setBGM(true) */
+    ensure();
+  }
+  return {
+    play, unlock, setBGM, setSFX, setBGMVolume, setSFXVolume,
+    isBGM: () => bgmOn, isSFX: () => sfxOn,
+    getBGMVolume: () => bgmVol, getSFXVolume: () => sfxVol,
+    /* telemetry for regression tests: live ambient node count + scheduler id */
+    _bgmNodeCount: () => bgmNodes.length,
+    _bgmTimerActive: () => bgmTimer !== null,
+    /* phonetic readout of the presenter's name — Web Speech API */
+    pronounce() {
+      try {
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance('luh, lit. Lalit Mehta.');
+          u.lang = 'en-IN'; u.rate = 0.82; u.pitch = 1.0; u.volume = 1;
+          const pick = (window.speechSynthesis.getVoices() || [])
+            .find(v => /en[-_]IN/i.test(v.lang)) ||
+            (window.speechSynthesis.getVoices() || []).find(v => /^en/i.test(v.lang));
+          if (pick) u.voice = pick;
+          window.speechSynthesis.speak(u);
+        }
+      } catch (e) {}
+    }
+  };
+})();
+
+/* global gesture unlock — browsers require a user gesture before audio can start */
+['pointerdown', 'keydown', 'touchstart'].forEach((ev) => {
+  window.addEventListener(ev, () => AudioEngine.unlock(), { once: true, passive: true });
+});
+
+/* HUD audio toggle buttons */
+function refreshAudioIcons() {
+  const s = $('#sfx-toggle'), b = $('#bgm-toggle');
+  if (s) {
+    s.innerHTML = `<i data-lucide="${AudioEngine.isSFX() ? 'volume-2' : 'volume-x'}" stroke-width="2"></i>`;
+    s.classList.toggle('muted', !AudioEngine.isSFX());
+    s.setAttribute('aria-pressed', String(AudioEngine.isSFX()));
+  }
+  if (b) {
+    b.innerHTML = `<i data-lucide="${AudioEngine.isBGM() ? 'music' : 'music-off'}" stroke-width="2"></i>`;
+    b.classList.toggle('muted', !AudioEngine.isBGM());
+    b.setAttribute('aria-pressed', String(AudioEngine.isBGM()));
+  }
+  if (window.lucide) lucide.createIcons();
+}
+document.addEventListener('DOMContentLoaded', () => {
+  $('#sfx-toggle').addEventListener('click', () => {
+    AudioEngine.setSFX(!AudioEngine.isSFX());
+    refreshAudioIcons();
+    AudioEngine.play('toggle');
+  });
+  $('#bgm-toggle').addEventListener('click', () => {
+    AudioEngine.setBGM(!AudioEngine.isBGM());
+    refreshAudioIcons();
+    AudioEngine.play('toggle');
+  });
+  const pb = $('#pronounce-btn');
+  if (pb) pb.addEventListener('click', () => { AudioEngine.play('chime'); AudioEngine.pronounce(); });
+  refreshAudioIcons();
+});
+
+const T0 = Date.now();                       // presentation runtime epoch
+let slideIndex = 0;                          // current slide (0-based)
+const TOTAL = 10;
+
+/* Speaker cues surfaced in the phone remote */
+const CUES = [
+  'Cold-open with energy. Point at the decay counter: "twelve seconds was the human baseline in 2004. Watch it fall."',
+  'Contrast the two panels. Ask: "when did YOUR audience last tolerate a slow setup?"',
+  'Trace the loop left to right. Stress: dopamine is prediction error, not pleasure.',
+  'Read the weak opening aloud, then hit the Hook Comparator. Let the silence do the work.',
+  'Gesture at the live progress dock below. Say: "this bar is closing loops on you, right now."',
+  'Wait for the kinetic demo to shift once before you speak. Demonstrate, then explain.',
+  'Slow down here. This is the ethical spine of the talk — nuance is the cost being paid.',
+  'Land the three rules as promises you will keep for the rest of the session.',
+  'Invite one volunteer to describe their own worst "toll-booth opening."',
+  'Hold on the thesis. Open Q&A while the runtime badge ticks live on screen.'
+];
+
+/* ---------------------------------------------------------------------------
+   PER-SLIDE GENERATIVE VECTOR FIELDS — one bespoke, content-relevant animated
+   SVG field INSIDE the slide stage for each of the 10 slides. Each field owns
+   its own RAF loop; only the active slide animates (others stay paused).
+--------------------------------------------------------------------------- */
+const SVGNS = 'http://www.w3.org/2000/svg';
+const mk = (tag, attrs) => {
+  const el = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) el.setAttribute(k, attrs[k]);
+  return el;
+};
+const svgOf = (n) => document.querySelector('#s' + n + ' .slide-field svg');
+const REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function makeField(n, build, step) {
+  const svg = svgOf(n);
+  if (!svg) return null;
+  const st = { svg, t: 0, raf: null, running: false, d: {} };
+  build(st);
+  const loop = () => {
+    if (!st.running) return;
+    st.t += 1 / 60;
+    try { step(st); } catch (e) {}
+    st.raf = requestAnimationFrame(loop);
+  };
+  st.start = () => { if (st.running || REDUCED) return; st.running = true; st.raf = requestAnimationFrame(loop); };
+  st.stop = () => { st.running = false; if (st.raf) cancelAnimationFrame(st.raf); };
+  return st;
+}
+
+const fields = [];
+
+/* FIX (live-deck crash): setFocusForSlide was called by goTo()/init() but its
+   definition had been lost in an earlier edit — every navigation threw a
+   ReferenceError, killing transitions, HUD updates and MQTT publishing.
+   Restored as a no-op safe focus guard: never steals focus from an active
+   text input, otherwise blurs any stuck button focus so HID keyboards keep
+   delivering keys to the window-level navigation listeners. */
+function setFocusForSlide(idx) {
+  try {
+    const ae = document.activeElement;
+    if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA' || ae.isContentEditable)) return;
+    if (ae && typeof ae.blur === 'function' && ae !== document.body) ae.blur();
+  } catch (e) {}
+}
+
+/* ---- 1 · Title: attention ribbons converging on an algorithmic attractor ---- */
+fields.push(makeField(1, (f) => {
+  const grid = mk('g', {}), rib = mk('g', {}), ret = mk('g', {}), nd = mk('g', {});
+  f.svg.append(grid, rib, ret, nd);
+  for (let gx = 120; gx < 1920; gx += 240) for (let gy = 120; gy < 1080; gy += 240)
+    grid.appendChild(mk('path', { d: `M ${gx-7} ${gy} H ${gx+7} M ${gx} ${gy-7} V ${gy+7}`, stroke: '#64748B', 'stroke-opacity': 0.10, 'stroke-width': 1, fill: 'none', 'vector-effect': 'non-scaling-stroke' }));
+  f.d.ribbons = [];
+  for (let i = 0; i < 12; i++) {
+    const p = mk('path', { fill: 'none', stroke: `url(#${['rgA','rgB','rgC'][i % 3]})`, 'stroke-width': String(1 + (i % 4)), 'vector-effect': 'non-scaling-stroke' });
+    if (i % 5 === 2) p.setAttribute('stroke-dasharray', '10 14');
+    rib.appendChild(p);
+    f.d.ribbons.push({ el: p, seed: i * 137.508, yBase: 90 + (i / 11) * 900, amp: 40 + (i % 5) * 26, freq: 0.6 + (i % 7) * 0.17, phase: (i * 137.508 % 360) * Math.PI / 180, speed: 0.12 + (i % 6) * 0.035, dash: i % 5 === 2 });
+  }
+  const r = mk('use', { href: '#sym-reticle' }); ret.appendChild(r);
+  const core = mk('use', { href: '#sym-core' }); ret.appendChild(core);
+  f.d.ret = r; f.d.core = core; f.d.ax = 1560; f.d.ay = 300;
+  f.d.nodes = [];
+  for (let m = 0; m < 7; m++) {
+    const c = mk('circle', { r: String(2.5 + (m % 3)), fill: ['#E11D48','#2563EB','#4F46E5'][m % 3], opacity: 0.5 });
+    nd.appendChild(c);
+    f.d.nodes.push({ el: c, t: m / 7, speed: 0.03 + (m % 4) * 0.012, row: m % 12 });
+  }
+}, (f) => {
+  const time = f.t;
+  f.d.ax = 1560 + Math.sin(time * 0.11) * 60;
+  f.d.ay = 300 + Math.cos(time * 0.09) * 46;
+  f.d.ret.setAttribute('transform', `translate(${f.d.ax.toFixed(1)} ${f.d.ay.toFixed(1)}) rotate(${(time * 6).toFixed(2)})`);
+  f.d.core.setAttribute('transform', `translate(${f.d.ax.toFixed(1)} ${f.d.ay.toFixed(1)})`);
+  const dashOff = time * 26;
+  for (const rb of f.d.ribbons) {
+    const drift = Math.sin(time * rb.speed + rb.phase) * rb.amp;
+    const y0 = rb.yBase + drift;
+    const mx1 = 420 + Math.sin(time * rb.speed * 0.7 + rb.seed) * 120;
+    const my1 = y0 + Math.cos(time * rb.freq * 0.5 + rb.phase) * rb.amp * 1.6;
+    const mx2 = 1080 + Math.sin(time * rb.speed * 0.9 + rb.phase * 2) * 90;
+    const my2 = lerp(y0, f.d.ay, 0.55) + Math.sin(time * rb.freq + rb.seed) * rb.amp * 0.7;
+    rb.el.setAttribute('d', `M -60 ${y0.toFixed(1)} C ${mx1.toFixed(1)} ${my1.toFixed(1)}, ${mx2.toFixed(1)} ${my2.toFixed(1)}, ${f.d.ax.toFixed(1)} ${f.d.ay.toFixed(1)}`);
+    if (rb.dash) rb.el.setAttribute('stroke-dashoffset', (-dashOff % 9999).toFixed(1));
+    rb._c = [y0, mx1, my1, mx2, my2];
+  }
+  for (const nod of f.d.nodes) {
+    nod.t += nod.speed / 60; if (nod.t > 1) nod.t -= 1;
+    const rb = f.d.ribbons[nod.row]; if (!rb || !rb._c) continue;
+    const [y0, mx1, my1, mx2, my2] = rb._c, tt = nod.t, mt = 1 - tt;
+    nod.el.setAttribute('cx', (mt*mt*mt*-60 + 3*mt*mt*tt*mx1 + 3*mt*tt*tt*mx2 + tt*tt*tt*f.d.ax).toFixed(1));
+    nod.el.setAttribute('cy', (mt*mt*mt*y0 + 3*mt*mt*tt*my1 + 3*mt*tt*tt*my2 + tt*tt*tt*f.d.ay).toFixed(1));
+  }
+}));
+
+/* ---- 2 · Collapse: legacy waveform decaying into fragmented noise blocks ---- */
+fields.push(makeField(2, (f) => {
+  const g1 = mk('g', {}), g2 = mk('g', {});
+  f.svg.append(g1, g2);
+  f.d.waves = [];
+  for (let w = 0; w < 5; w++) {
+    const p = mk('path', { fill: 'none', stroke: `url(#${['rgA','rgB','rgC'][w % 3]})`, 'stroke-width': String(1.4 + (w % 3)), 'vector-effect': 'non-scaling-stroke', opacity: 0.9 - w * 0.12 });
+    g1.appendChild(p);
+    f.d.waves.push({ el: p, base: 200 + w * 150, amp: 90 - w * 12, ph: w * 0.9 });
+  }
+  f.d.blocks = [];
+  for (let b = 0; b < 26; b++) {
+    const r = mk('rect', { width: 14, height: 14, rx: 3, fill: b % 4 ? '#2563EB' : '#E11D48', opacity: 0.10 });
+    g2.appendChild(r);
+    f.d.blocks.push({ el: r, x: 120 + b * 66, y: 950, seed: b * 47.3 });
+  }
+}, (f) => {
+  const t = f.t;
+  for (const w of f.d.waves) {
+    let dPath = 'M 0 ' + w.base;
+    for (let x = 0; x <= 1920; x += 64) {
+      const decay = 1 / (1 + x / 760);                        // amplitude collapse left→right
+      const chop = x > 1150 ? Math.sign(Math.sin(x * 0.05 + t)) * 26 : 0; // fragmentation zone
+      const y = w.base + Math.sin(x * 0.006 + t * (0.8 + w.ph * 0.2) + w.ph) * w.amp * decay + chop;
+      dPath += ` L ${x} ${y.toFixed(1)}`;
+    }
+    w.el.setAttribute('d', dPath);
+  }
+  for (const b of f.d.blocks) {
+    const jitter = Math.sin(t * 2.1 + b.seed) * 10 + Math.sin(t * 5.7 + b.seed * 2) * 4;
+    const fall = ((t * 40 + b.seed * 9) % 1080);
+    b.el.setAttribute('x', (b.x + Math.sin(t * 1.3 + b.seed) * 6).toFixed(1));
+    b.el.setAttribute('y', (fall - 40 + jitter).toFixed(1));
+    b.el.setAttribute('opacity', (0.05 + 0.10 * Math.abs(Math.sin(t + b.seed))).toFixed(3));
+  }
+}));
+
+/* ---- 3 · Dopamine loop: reward pulses orbiting a prediction-error ellipse ---- */
+fields.push(makeField(3, (f) => {
+  const g = mk('g', {}); f.svg.appendChild(g);
+  const ell = mk('ellipse', { cx: 960, cy: 540, rx: 620, ry: 300, fill: 'none', stroke: 'url(#rgB)', 'stroke-width': 2, 'vector-effect': 'non-scaling-stroke', opacity: 0.8 });
+  const ell2 = mk('ellipse', { cx: 960, cy: 540, rx: 620, ry: 300, fill: 'none', stroke: 'url(#rgC)', 'stroke-width': 1.6, 'stroke-dasharray': '8 12', 'vector-effect': 'non-scaling-stroke', opacity: 0.7 });
+  const rot = mk('g', {});
+  rot.appendChild(ell); rot.appendChild(ell2);
+  g.appendChild(rot);
+  f.d.rot = rot;
+  f.d.pulses = [];
+  for (let i = 0; i < 4; i++) {
+    const halo = mk('circle', { r: 26, fill: 'url(#attractorGlow)' });
+    const c = mk('circle', { r: 7, fill: i % 2 ? '#4F46E5' : '#E11D48', opacity: 0.85 });
+    g.appendChild(halo); g.appendChild(c);
+    f.d.pulses.push({ c, halo, ph: i / 4, sp: 0.16 + (i % 3) * 0.05 });
+  }
+  const spark = mk('g', {}); g.appendChild(spark); f.d.spark = spark; f.d.sparks = [];
+}, (f) => {
+  const t = f.t;
+  f.d.rot.setAttribute('transform', `rotate(${(Math.sin(t * 0.12) * 4).toFixed(2)} 960 540)`);
+  for (const p of f.d.pulses) {
+    const a = (t * p.sp + p.ph) * Math.PI * 2;
+    const err = 1 + 0.10 * Math.sin(a * 3 + t);              // prediction-error wobble
+    const x = 960 + Math.cos(a) * 620 * err, y = 540 + Math.sin(a) * 300 * err;
+    p.c.setAttribute('cx', x.toFixed(1)); p.c.setAttribute('cy', y.toFixed(1));
+    p.halo.setAttribute('cx', x.toFixed(1)); p.halo.setAttribute('cy', y.toFixed(1));
+    p.c.setAttribute('opacity', (0.55 + 0.35 * Math.abs(Math.sin(a * 2))).toFixed(2));
+  }
+  /* intermittent reinforcement sparks at random pulse positions */
+  if (Math.random() < 0.02) {
+    const p = f.d.pulses[Math.floor(Math.random() * 4)];
+    const x = parseFloat(p.c.getAttribute('cx')), y = parseFloat(p.c.getAttribute('cy'));
+    const s = mk('circle', { cx: x, cy: y, r: 4, fill: '#4F46E5', opacity: 0.8 });
+    f.d.spark.appendChild(s); f.d.sparks.push({ el: s, life: 1 });
+  }
+  f.d.sparks = f.d.sparks.filter((s) => {
+    s.life -= 0.02;
+    s.el.setAttribute('r', (14 * (1 - s.life) + 3).toFixed(1));
+    s.el.setAttribute('opacity', (s.life * 0.7).toFixed(2));
+    if (s.life <= 0) { s.el.remove(); return false; }
+    return true;
+  });
+}));
+
+/* ---- 4 · Hook: concentric ripple rings emanating from a fixed gaze point ---- */
+fields.push(makeField(4, (f) => {
+  const g = mk('g', {}); f.svg.appendChild(g);
+  const anchor = mk('circle', { cx: 1450, cy: 330, r: 6, fill: '#E11D48', opacity: 0.85 });
+  g.appendChild(anchor);
+  f.d.rings = [];
+  for (let i = 0; i < 7; i++) {
+    const c = mk('circle', { cx: 1450, cy: 330, r: 10, fill: 'none', stroke: i % 2 ? '#2563EB' : '#4F46E5', 'stroke-width': 1.4, 'vector-effect': 'non-scaling-stroke' });
+    g.appendChild(c);
+    f.d.rings.push({ el: c, ph: i / 7 });
+  }
+  /* three-second fixation sweep wedge */
+  const wedge = mk('path', { d: 'M 1450 330 L 1450 30 A 300 300 0 0 1 1610 120 Z', fill: 'url(#attractorGlow)', opacity: 0.5 });
+  g.appendChild(wedge); f.d.wedge = wedge;
+}, (f) => {
+  const t = f.t;
+  for (const r of f.d.rings) {
+    const k = ((t * 0.22 + r.ph) % 1);
+    r.el.setAttribute('r', (12 + k * 760).toFixed(1));
+    r.el.setAttribute('stroke-opacity', (0.30 * (1 - k)).toFixed(3));
+  }
+  f.d.wedge.setAttribute('transform', `rotate(${(t * 24).toFixed(1)} 1450 330)`);
+  f.d.wedge.setAttribute('opacity', (0.28 + 0.18 * Math.sin(t * 2)).toFixed(2));
+}));
+
+/* ---- 5 · Zeigarnik: open arcs breathing closed and re-opened along a chain ---- */
+fields.push(makeField(5, (f) => {
+  const g = mk('g', {}); f.svg.appendChild(g);
+  f.d.arcs = [];
+  for (let i = 0; i < 6; i++) {
+    const p = mk('path', { fill: 'none', stroke: i === 5 ? '#E11D48' : '#4F46E5', 'stroke-width': 2.2, 'stroke-linecap': 'round', 'vector-effect': 'non-scaling-stroke', opacity: 0.55 });
+    g.appendChild(p);
+    f.d.arcs.push({ el: p, cx: 300 + i * 260, cy: 540 + (i % 2 ? 130 : -130), r: 120 + (i % 3) * 40, sp: 0.5 + i * 0.13 });
+  }
+  const trail = mk('g', {}); g.appendChild(trail); f.d.trail = trail; f.d.dots = [];
+}, (f) => {
+  const t = f.t;
+  for (const a of f.d.arcs) {
+    const start = t * a.sp;
+    const span = Math.PI * (1.35 + 0.35 * Math.sin(t * 0.4 + a.cx));  // arc breathes → closes & re-opens
+    const end = start + span;
+    const x1 = a.cx + Math.cos(start) * a.r, y1 = a.cy + Math.sin(start) * a.r;
+    const x2 = a.cx + Math.cos(end) * a.r, y2 = a.cy + Math.sin(end) * a.r;
+    const large = span > Math.PI ? 1 : 0;
+    a.el.setAttribute('d', `M ${x1.toFixed(1)} ${y1.toFixed(1)} A ${a.r} ${a.r} 0 ${large} 1 ${x2.toFixed(1)} ${y2.toFixed(1)}`);
+    a.el.setAttribute('opacity', (0.30 + 0.30 * Math.abs(Math.sin(t * 0.5 + a.cx))).toFixed(2));
+    if (Math.random() < 0.05) {
+      const d = mk('circle', { cx: x2, cy: y2, r: 3, fill: '#2563EB', opacity: 0.6 });
+      f.d.trail.appendChild(d); f.d.dots.push({ el: d, life: 1 });
+    }
+  }
+  f.d.dots = f.d.dots.filter((d) => {
+    d.life -= 0.015;
+    d.el.setAttribute('opacity', (d.life * 0.5).toFixed(2));
+    d.el.setAttribute('r', (3 + (1 - d.life) * 5).toFixed(1));
+    if (d.life <= 0) { d.el.remove(); return false; }
+    return true;
+  });
+}));
+
+/* ---- 6 · Micro-interactions: constellation of reactive perceptual dots ---- */
+fields.push(makeField(6, (f) => {
+  const lines = mk('g', {}), dots = mk('g', {});
+  f.svg.append(lines, dots);
+  f.d.pts = [];
+  for (let i = 0; i < 34; i++) {
+    const c = mk('circle', { r: 2 + (i % 3), fill: i % 6 === 0 ? '#E11D48' : (i % 3 === 0 ? '#4F46E5' : '#2563EB'), opacity: 0.4 });
+    dots.appendChild(c);
+    f.d.pts.push({ el: c, ox: 100 + Math.random() * 1720, oy: 80 + Math.random() * 920, ax: 30 + Math.random() * 70, ay: 24 + Math.random() * 60, sx: 0.25 + Math.random() * 0.5, sy: 0.2 + Math.random() * 0.5, ph: Math.random() * 6.28, x: 0, y: 0 });
+  }
+  f.d.lines = [];
+  for (let i = 0; i < 16; i++) {
+    const l = mk('line', { stroke: '#2563EB', 'stroke-width': 1, 'vector-effect': 'non-scaling-stroke' });
+    lines.appendChild(l);
+    f.d.lines.push({ el: l, a: i * 2 % 34, b: (i * 5 + 3) % 34 });
+  }
+}, (f) => {
+  const t = f.t;
+  for (const p of f.d.pts) {
+    p.x = p.ox + Math.sin(t * p.sx + p.ph) * p.ax;
+    p.y = p.oy + Math.cos(t * p.sy + p.ph * 1.7) * p.ay;
+    p.el.setAttribute('cx', p.x.toFixed(1)); p.el.setAttribute('cy', p.y.toFixed(1));
+    p.el.setAttribute('opacity', (0.25 + 0.25 * Math.abs(Math.sin(t * 0.7 + p.ph))).toFixed(2));
+  }
+  for (const ln of f.d.lines) {
+    const a = f.d.pts[ln.a], b = f.d.pts[ln.b];
+    const dist = Math.hypot(a.x - b.x, a.y - b.y);
+    ln.el.setAttribute('x1', a.x.toFixed(1)); ln.el.setAttribute('y1', a.y.toFixed(1));
+    ln.el.setAttribute('x2', b.x.toFixed(1)); ln.el.setAttribute('y2', b.y.toFixed(1));
+    ln.el.setAttribute('stroke-opacity', dist < 300 ? ((1 - dist / 300) * 0.30).toFixed(3) : '0');
+  }
+}));
+
+/* ---- 7 · Dark side: oscillating balance beam with sinking tension weights ---- */
+fields.push(makeField(7, (f) => {
+  const g = mk('g', {}); f.svg.appendChild(g);
+  const glow = mk('circle', { cx: 960, cy: 540, r: 300, fill: 'url(#coralGlow)', opacity: 0.6 });
+  const fulcrum = mk('path', { d: 'M 960 700 L 920 780 L 1000 780 Z', fill: 'none', stroke: '#4F46E5', 'stroke-opacity': 0.4, 'stroke-width': 2, 'vector-effect': 'non-scaling-stroke' });
+  g.append(glow, fulcrum);
+  const beam = mk('g', {}); g.appendChild(beam);
+  const bar = mk('rect', { x: 460, y: 690, width: 1000, height: 10, rx: 5, fill: 'url(#rgA)' });
+  beam.appendChild(bar);
+  f.d.beam = beam;
+  f.d.weights = [];
+  for (let i = 0; i < 6; i++) {
+    const w = mk('rect', { x: 500 + i * 160, y: 700, width: 46, height: 26, rx: 7, fill: i < 3 ? '#2563EB' : '#E11D48', opacity: 0.28 });
+    beam.appendChild(w);
+    f.d.weights.push({ el: w, side: i < 3 ? -1 : 1, ph: i * 1.1 });
+  }
+  f.d.glow = glow;
+}, (f) => {
+  const t = f.t;
+  const tilt = Math.sin(t * 0.35) * 7 + Math.sin(t * 0.13) * 3;   // slow unstable seesaw
+  f.d.beam.setAttribute('transform', `rotate(${tilt.toFixed(2)} 960 695)`);
+  for (const w of f.d.weights) {
+    const sink = 700 + (18 + 10 * Math.sin(t * 0.6 + w.ph)) * (w.side > 0 ? (1 + tilt / 12) : (1 - tilt / 12));
+    w.el.setAttribute('y', sink.toFixed(1));
+    w.el.setAttribute('height', (26 + (w.side > 0 ? 14 + tilt : 14 - tilt)).toFixed(1));
+  }
+  f.d.glow.setAttribute('opacity', (0.35 + 0.25 * Math.abs(Math.sin(t * 0.3))).toFixed(2));
+}));
+
+/* ---- 8 · Synthesis: three tool-gears meshing and driving one output shaft ---- */
+fields.push(makeField(8, (f) => {
+  const defs = mk('defs', {}); f.svg.appendChild(defs);
+  const teeth = 14, R = 120, r = 96;
+  let gd = '';
+  for (let i = 0; i < teeth; i++) {
+    const a0 = (i / teeth) * Math.PI * 2, a1 = ((i + 0.45) / teeth) * Math.PI * 2, a2 = ((i + 0.55) / teeth) * Math.PI * 2, a3 = ((i + 1) / teeth) * Math.PI * 2;
+    gd += `${i ? 'L' : 'M'} ${(Math.cos(a0) * r).toFixed(1)} ${(Math.sin(a0) * r).toFixed(1)} L ${(Math.cos(a1) * R).toFixed(1)} ${(Math.sin(a1) * R).toFixed(1)} L ${(Math.cos(a2) * R).toFixed(1)} ${(Math.sin(a2) * R).toFixed(1)} L ${(Math.cos(a3) * r).toFixed(1)} ${(Math.sin(a3) * r).toFixed(1)} `;
+  }
+  const gear = mk('path', { id: 'gear-s8', d: gd + 'Z', fill: 'none', 'stroke-width': 2, 'vector-effect': 'non-scaling-stroke' });
+  defs.appendChild(gear);
+  f.d.gears = [];
+  [[560, 420, 1], [900, 560, -1], [1240, 420, 1]].forEach((cfg, i) => {
+    const wrap = mk('g', {});
+    const u = mk('use', { href: '#gear-s8' });
+    u.setAttribute('stroke', ['#2563EB', '#4F46E5', '#E11D48'][i]);
+    u.setAttribute('stroke-opacity', '0.30');
+    const hub = mk('circle', { r: 14, fill: ['#2563EB', '#4F46E5', '#E11D48'][i], opacity: 0.35 });
+    wrap.append(u, hub);
+    f.svg.appendChild(wrap);
+    f.d.gears.push({ el: wrap, x: cfg[0], y: cfg[1], dir: cfg[2], off: i * 0.24 });
+  });
+  const shaft = mk('path', { d: 'M 1360 420 C 1520 420, 1560 540, 1720 540', fill: 'none', stroke: 'url(#rgC)', 'stroke-width': 2, 'stroke-dasharray': '6 10', 'vector-effect': 'non-scaling-stroke', opacity: 0.6 });
+  f.svg.appendChild(shaft);
+}, (f) => {
+  const t = f.t;
+  for (const gr of f.d.gears) {
+    gr.el.setAttribute('transform', `translate(${gr.x} ${gr.y}) rotate(${((t * 22 * gr.dir + gr.off * 360) % 360).toFixed(1)})`);
+  }
+}));
+
+/* ---- 9 · Blueprint: construction modules assembling themselves on a timeline ---- */
+fields.push(makeField(9, (f) => {
+  const base = mk('path', { d: 'M 120 860 H 1800', stroke: '#94A3B8', 'stroke-opacity': 0.35, 'stroke-width': 2, 'vector-effect': 'non-scaling-stroke', fill: 'none' });
+  f.svg.appendChild(base);
+  f.d.mods = [];
+  for (let i = 0; i < 10; i++) {
+    const gmod = mk('g', {});
+    const rect = mk('rect', { x: -44, y: -30, width: 88, height: 60, rx: 10, fill: 'none', stroke: i % 3 ? '#2563EB' : '#4F46E5', 'stroke-width': 1.6, 'vector-effect': 'non-scaling-stroke', opacity: 0.4 });
+    const fillBar = mk('rect', { x: -44, y: 12, width: 88, height: 18, rx: 6, fill: i % 4 === 3 ? '#E11D48' : '#2563EB', opacity: 0.18 });
+    gmod.append(rect, fillBar);
+    f.svg.appendChild(gmod);
+    f.d.mods.push({ el: gmod, fill: fillBar, tx: 160 + i * 176, ph: i * 0.55 });
+  }
+  const crane = mk('path', { d: 'M 0 -120 L 0 0 M -40 -120 L 40 -120', stroke: '#4F46E5', 'stroke-opacity': 0.5, 'stroke-width': 2, fill: 'none', 'vector-effect': 'non-scaling-stroke' });
+  f.svg.appendChild(crane); f.d.crane = crane;
+}, (f) => {
+  const t = f.t;
+  for (const m of f.d.mods) {
+    const settle = (Math.sin(t * 0.5 + m.ph) + 1) / 2;
+    const y = 860 - 40 - settle * 260 - (m.ph % 1) * 30;
+    m.el.setAttribute('transform', `translate(${(m.tx + Math.sin(t * 0.3 + m.ph) * 4).toFixed(1)} ${y.toFixed(1)}) rotate(${(Math.sin(t * 0.4 + m.ph) * 3).toFixed(2)})`);
+    m.el.setAttribute('opacity', (0.45 + 0.4 * settle).toFixed(2));
+    m.fill.setAttribute('width', (20 + 68 * settle).toFixed(1));
+  }
+  f.d.crane.setAttribute('transform', `translate(${(960 + Math.sin(t * 0.35) * 760).toFixed(1)} ${(560 + Math.cos(t * 0.5) * 60).toFixed(1)})`);
+}));
+
+/* ---- 10 · Closing: converging speech bursts folding into one horizon line ---- */
+fields.push(makeField(10, (f) => {
+  const g = mk('g', {}); f.svg.appendChild(g);
+  const sun = mk('circle', { cx: 960, cy: 620, r: 90, fill: 'url(#attractorGlow)' });
+  const horizon = mk('path', { d: 'M 100 620 H 1820', stroke: 'url(#rgA)', 'stroke-width': 2, 'vector-effect': 'non-scaling-stroke', fill: 'none', opacity: 0.8 });
+  g.append(sun, horizon);
+  f.d.sun = sun;
+  f.d.bursts = [];
+  for (let i = 0; i < 9; i++) {
+    const u = mk('use', { href: '#sym-burst' });
+    u.setAttribute('stroke', ['#2563EB', '#4F46E5', '#E11D48'][i % 3]);
+    u.setAttribute('stroke-width', 1.6);
+    g.appendChild(u);
+    f.d.bursts.push({ el: u, ox: 180 + (i % 5) * 380, oy: 200 + Math.floor(i / 5) * 620 + (i % 3) * 60, sc: 0.6 + (i % 4) * 0.3, ph: i * 0.7 });
+  }
+}, (f) => {
+  const t = f.t;
+  for (const b of f.d.bursts) {
+    const k = ((t * 0.10 + b.ph * 0.31) % 1);
+    const x = lerp(b.ox, 960, k);
+    const y = lerp(b.oy, 620, k);
+    const sc = b.sc * (1 - k * 0.75);
+    b.el.setAttribute('transform', `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${(t * 18 + b.ph * 40).toFixed(1)}) scale(${sc.toFixed(3)})`);
+    b.el.setAttribute('stroke-opacity', (0.42 * (1 - k) + 0.06).toFixed(3));
+  }
+  f.d.sun.setAttribute('r', (90 + Math.sin(t * 0.6) * 14).toFixed(1));
+}));
+
+function setActiveField(idx) {
+  fields.forEach((fl, i) => { if (!fl) return; if (i === idx) fl.start(); else fl.stop(); });
+}
+
+/* ---------------------------------------------------------------------------
+   SLIDE ENGINE — transitions animate ONLY translate3d + opacity (GPU-safe)
+--------------------------------------------------------------------------- */
+const slides = $$('.slide');
+let transitioning = false;
+
+function goTo(idx, opts) {
+  opts = opts || {};
+  idx = clamp(idx, 0, TOTAL - 1);
+  if (idx === slideIndex && document.querySelector('.slide.is-active') && !opts.force) return;
+  const prevIdx = slideIndex;
+  const goingForward = idx >= prevIdx;
+  slides.forEach((s, i) => {
+    s.classList.remove('is-active', 'is-exit-up', 'is-exit-down');
+    if (i === idx) {
+      s.classList.add('is-active');
+    } else if (i === prevIdx && i !== idx) {
+      s.classList.add(goingForward ? 'is-exit-up' : 'is-exit-down');
+    }
+  });
+  slideIndex = idx;
+  setFocusForSlide(idx);
+  setActiveField(idx);
+  updateHUD();
+  onSlideEnter(idx);
+  if (!opts.silent) AudioEngine.play(goingForward ? 'forward' : 'back');
+  if (!IS_REMOTE) publishNav(idx);
+}
+function next() { goTo(slideIndex + 1); }
+function prev() { goTo(slideIndex - 1); }
+
+function updateHUD() {
+  const x = slideIndex + 1;
+  $('#chip-num').textContent = String(x).padStart(2, '0');
+  /* segmented dock: single authoritative state pass driven by slideIndex */
+  $$('#progress-track .pseg').forEach((el, i) => {
+    el.classList.toggle('done', i < slideIndex);
+    el.classList.toggle('current', i === slideIndex);
+  });
+  $('#tel-x').textContent = x;
+  $('#tel-left').textContent = (x === TOTAL) ? 'Final Slide' : ((TOTAL - x) + ' slides left');
+  const mini = $('#mini-prog-fill'); if (mini) mini.style.transform = `scaleX(${x / TOTAL})`;
+  /* remote UI sync */
+  if (IS_REMOTE) {
+    $('#rmu-idx').textContent = `SLIDE ${x} / ${TOTAL} · BOARD VIEW`;
+    $('#rmu-name').textContent = slides[slideIndex].dataset.title.replace(/&amp;/g, '&');
+    $('#rmu-cue').textContent = CUES[slideIndex];
+    $('#rmu-prog-fill').style.transform = `scaleX(${x / TOTAL})`;
+    $$('#rmu-jump button').forEach((b, i) => b.classList.toggle('current', i === slideIndex));
+  }
+  const ts = $('#tele-slide'); if (ts) ts.textContent = `${x} / ${TOTAL}`;
+}
+
+/* ---------------------------------------------------------------------------
+   INPUT HARDWARE: keyboard (Bluetooth HID), wheel, swipe, click zones, buttons
+--------------------------------------------------------------------------- */
+window.addEventListener('keydown', (e) => {
+  const k = e.key, c = e.code, kc = e.keyCode;
+  /* never hijack typing inside the room input */
+  if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
+    if (k === 'Escape') closeModal();
+    return;
+  }
+  const isNext = (k === 'PageDown' || c === 'PageDown' || kc === 34 ||
+                  k === 'ArrowRight' || k === 'ArrowDown' || c === 'ArrowRight' || c === 'ArrowDown' ||
+                  k === ' ' || c === 'Space' || kc === 32 ||
+                  k === 'Enter' || kc === 13 || c === 'KeyN' || kc === 78);
+  const isPrev = (k === 'PageUp' || c === 'PageUp' || kc === 33 ||
+                  k === 'ArrowLeft' || k === 'ArrowUp' || c === 'ArrowLeft' || c === 'ArrowUp' ||
+                  k === 'Backspace' || kc === 8 || c === 'KeyP' || kc === 80);
+  if (isNext) { e.preventDefault(); next(); return; }
+  if (isPrev) { e.preventDefault(); prev(); return; }
+  if (c === 'KeyF' || kc === 70 || k === 'F11' || kc === 122) { e.preventDefault(); toggleFullscreen(); return; }
+  if (c === 'Escape' || kc === 27) { closeModal(); return; }
+  /* direct jump: digits 1..9 -> slides 1..9 ; 0 -> slide 10 */
+  let n = -1;
+  if (/^[1-9]$/.test(k)) n = parseInt(k, 10) - 1;
+  else if (k === '0') n = 9;
+  else if (c && /^Digit[1-9]$/.test(c)) n = parseInt(c.slice(5), 10) - 1;
+  else if (c === 'Digit0') n = 9;
+  if (n >= 0) { e.preventDefault(); goTo(n); }
+}, { passive: false });
+
+/* debounced mouse wheel navigation */
+let wheelLock = 0;
+window.addEventListener('wheel', (e) => {
+  if (IS_REMOTE) return;
+  const nowT = Date.now();
+  if (nowT - wheelLock < 650) return;
+  if (Math.abs(e.deltaY) < 12) return;
+  wheelLock = nowT;
+  if (e.deltaY > 0) next(); else prev();
+}, { passive: true });
+
+/* touch swipe (board + phone both use this file) */
+let touchX = null, touchY = null;
+window.addEventListener('touchstart', (e) => {
+  if (IS_REMOTE) return;
+  if (e.touches.length !== 1) return;
+  touchX = e.touches[0].clientX; touchY = e.touches[0].clientY;
+}, { passive: true });
+window.addEventListener('touchend', (e) => {
+  if (!IS_REMOTE && touchX !== null) {
+    const dx = e.changedTouches[0].clientX - touchX;
+    const dy = e.changedTouches[0].clientY - touchY;
+    if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy)) { if (dx < 0) next(); else prev(); }
+    touchX = null;
+  }
+}, { passive: true });
+
+/* HUD buttons */
+$('#next-btn').addEventListener('click', next);
+$('#prev-btn').addEventListener('click', prev);
+const restartBtn = $('#restart-btn');
+if (restartBtn) restartBtn.addEventListener('click', () => goTo(0, { force: true }));
+$$('[data-jump]').forEach(b => b.addEventListener('click', () => goTo(parseInt(b.dataset.jump, 10))));
+
+/* presenter click-mode toggle + right/left zone clicks */
+$('#presenter-toggle').addEventListener('click', () => {
+  document.body.classList.toggle('presenter-click');
+  $('#presenter-toggle').classList.toggle('is-on');
+});
+$('#zone-next').addEventListener('click', next);
+$('#zone-prev').addEventListener('click', prev);
+
+/* ---------------------------------------------------------------------------
+   FULLSCREEN (Android Chrome webkit fallback + dynamic icon/label)
+--------------------------------------------------------------------------- */
+function enterFS() {
+  const el = document.documentElement;
+  if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
+  else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+  else if (el.webkitRequestFullScreen) el.webkitRequestFullScreen();
+}
+function exitFS() {
+  if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+  else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+}
+function isFS() { return !!(document.fullscreenElement || document.webkitFullscreenElement); }
+function toggleFullscreen() { isFS() ? exitFS() : enterFS(); }
+function refreshFSIcon() {
+  const btn = $('#fullscreen-btn');
+  btn.innerHTML = `<i data-lucide="${isFS() ? 'minimize-2' : 'maximize-2'}" stroke-width="2"></i>`;
+  btn.setAttribute('aria-label', isFS() ? 'Exit fullscreen' : 'Enter fullscreen');
+  if (window.lucide) lucide.createIcons();
+}
+$('#fullscreen-btn').addEventListener('click', toggleFullscreen);
+document.addEventListener('fullscreenchange', refreshFSIcon);
+document.addEventListener('webkitfullscreenchange', refreshFSIcon);
+
+/* ---------------------------------------------------------------------------
+   MQTT ZERO-BACKEND PHONE SYNC (broker.emqx.io over WSS)
+--------------------------------------------------------------------------- */
+const BROKER = 'wss://broker.emqx.io:8084/mqtt';
+let mqttClient = null, mqttOnline = false;
+
+function setSyncStatus(state) {
+  const dot = $('#sync-dot'), lbl = $('#sync-label');
+  const ms = $('#modal-status'), tm = $('#tele-mqtt');
+  const rdot = $('#rmu-dot'), rt = $('#rmu-status-txt');
+  if (dot) { dot.className = ''; dot.classList.add(state === 'online' ? 'online' : (state === 'offline' ? 'offline' : '')); }
+  const txt = state === 'online' ? 'SYNCED' : (state === 'offline' ? 'OFFLINE' : 'LINKING');
+  if (lbl) lbl.textContent = txt;
+  if (ms) { ms.textContent = state.toUpperCase(); ms.style.color = state === 'online' ? 'var(--emerald)' : (state === 'offline' ? 'var(--coral)' : 'var(--ink-c)'); }
+  if (tm) { tm.textContent = state === 'online' ? 'ONLINE · WSS' : txt; tm.classList.toggle('online', state === 'online'); }
+  if (rdot) rdot.style.background = state === 'online' ? '#059669' : (state === 'offline' ? '#E11D48' : '#94A3B8');
+  if (rt) rt.textContent = txt;
+}
+
+function connectMQTT() {
+  if (typeof mqtt === 'undefined') { setSyncStatus('offline'); return; }
+  try {
+    if (mqttClient) { try { mqttClient.end(true); } catch (e) {} }
+    mqttClient = mqtt.connect(BROKER, {
+      clientId: 'qp-' + Math.random().toString(16).slice(2, 10),
+      keepalive: 30, reconnectPeriod: 2500, connectTimeout: 6000
+    });
+    mqttClient.on('connect', () => {
+      mqttOnline = true; setSyncStatus('online');
+      mqttClient.subscribe(roomTopic, { qos: 0 }, () => {
+        /* announce presence so late joiners sync to our view */
+        publishNav(slideIndex, true);
+      });
+    });
+    mqttClient.on('reconnect', () => setSyncStatus('linking'));
+    mqttClient.on('close', () => { mqttOnline = false; setSyncStatus('offline'); });
+    mqttClient.on('error', () => setSyncStatus('offline'));
+    mqttClient.on('message', (topic, payload) => {
+      if (topic !== roomTopic) return;
+      let msg;
+      try { msg = JSON.parse(payload.toString()); } catch (e) { return; }
+      if (!msg || msg.type !== 'NAV' || typeof msg.slideIndex !== 'number') return;
+      if (IS_REMOTE) {
+        /* phone view mirrors the board's authoritative index */
+        slideIndex = clamp(msg.slideIndex, 0, TOTAL - 1);
+        updateHUD();
+      } else {
+        /* board obeys inbound remote commands (<50ms transition budget) */
+        goTo(clamp(msg.slideIndex, 0, TOTAL - 1), { silent: true });
+        showToast(`Remote jump → Slide ${msg.slideIndex + 1}`);
+      }
+    });
+  } catch (e) { setSyncStatus('offline'); }
+}
+
+function publishNav(idx, isAnnounce) {
+  if (!IS_REMOTE && !isAnnounce && mqttClient == null) return;
+  if (!mqttClient || !mqttOnline) return;
+  try {
+    mqttClient.publish(roomTopic, JSON.stringify({ type: 'NAV', slideIndex: idx, timestamp: Date.now(), src: IS_REMOTE ? 'remote' : 'board' }), { qos: 0 });
+  } catch (e) {}
+}
+
+let toastTimer = null;
+function showToast(msg) {
+  const t = $('#toast'); $('#toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+/* ---------------------------------------------------------------------------
+   REMOTE SYNC MODAL + QR
+--------------------------------------------------------------------------- */
+function remoteURL() {
+  const u = new URL(location.href);
+  u.searchParams.set('mode', 'remote');
+  u.searchParams.set('room', roomTopic);
+  return u.toString();
+}
+function refreshModalLinks() {
+  const url = remoteURL();
+  $('#remote-url').textContent = url;
+  $('#open-remote-tab').href = url;
+  const qr = $('#qr-img');
+  if (qr) qr.src = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&color=0f172a&bgcolor=ffffff&data=' + encodeURIComponent(url);
+  $('#topic-preview').textContent = roomTopic;
+  $('#room-input').value = roomTopic;
+  const tr = $('#tele-room'); if (tr) tr.textContent = roomTopic;
+}
+function openModal() { refreshModalLinks(); $('#remote-modal-overlay').classList.add('open'); }
+function closeModal() { $('#remote-modal-overlay').classList.remove('open'); }
+$('#sync-btn').addEventListener('click', openModal);
+$('#reveal-sync-btn').addEventListener('click', openModal);
+$('#modal-close-x').addEventListener('click', closeModal);
+$('#remote-modal-overlay').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeModal(); });
+$('#copy-url-btn').addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText(remoteURL()); showToast('Remote link copied'); }
+  catch (e) { showToast('Copy blocked — long-press the link'); }
+});
+$('#apply-room-btn').addEventListener('click', () => {
+  const v = $('#room-input').value.trim();
+  if (v) { roomTopic = v; refreshModalLinks(); setSyncStatus('linking'); connectMQTT(); showToast('Broker reconnected on new topic'); }
+});
+
+/* ---------------------------------------------------------------------------
+   PER-SLIDE INTERACTIVE TELEMETRY
+--------------------------------------------------------------------------- */
+/* Slide 1 — Attention Decay Counter: 12.0s -> 2.7s, loops every 9s */
+let decayRAF = null;
+const DECAY_CYCLE = 9000;
+function decayLoop() {
+  const el = $('#decay-num'), marker = $('#decay-marker'), fill = $('#decay-fillbar');
+  if (!el) return;
+  const tick = () => {
+    const t = (Date.now() % DECAY_CYCLE) / DECAY_CYCLE;
+    const eased = easeOut(t);
+    const val = lerp(12.0, 2.7, eased);
+    el.textContent = val.toFixed(1);
+    const pct = ((12.0 - val) / (12.0 - 2.7)) * 100;
+    /* GPU-safe: position via left on a static track, transform for centering only */
+    marker.style.left = pct.toFixed(2) + '%';
+    fill.style.transform = `scaleX(${pct / 100})`;
+    decayRAF = requestAnimationFrame(tick);
+  };
+  tick();
+}
+
+/* Slide 2 — friction meters animate in on entry */
+function primeFrictionMeters() {
+  const a = $('#m-legacy'), b = $('#m-feed');
+  if (a) setTimeout(() => { a.style.transform = 'scaleX(0.82)'; }, 350);
+  if (b) setTimeout(() => { b.style.transform = 'scaleX(0.11)'; }, 450);
+}
+
+/* Slide 3 — reward pulse travels the loop arc */
+let pulseRAF = null, pulseStarted = false;
+function loopPulse() {
+  if (pulseStarted) return; pulseStarted = true;
+  const c = $('#reward-pulse');
+  if (!c) return;
+  /* cubic P0(60,150) C1(260,20) C2(940,20) P3(1140,150) forward, then dashed return */
+  const tick = (now) => {
+    const t = (now % 3200) / 3200;
+    let x, y;
+    const tt = t < 0.5 ? t * 2 : (t - 0.5) * 2;
+    const mt = 1 - tt;
+    if (t < 0.5) {
+      x = mt*mt*mt*60 + 3*mt*mt*tt*260 + 3*mt*tt*tt*940 + tt*tt*tt*1140;
+      y = mt*mt*mt*150 + 3*mt*mt*tt*20 + 3*mt*tt*tt*20 + tt*tt*tt*150;
+    } else {
+      x = mt*mt*mt*1140 + 3*mt*mt*tt*940 + 3*mt*tt*tt*260 + tt*tt*tt*60;
+      y = mt*mt*mt*150 + 3*mt*mt*tt*250 + 3*mt*tt*tt*250 + tt*tt*tt*150;
+    }
+    c.setAttribute('cx', x.toFixed(1));
+    c.setAttribute('cy', y.toFixed(1));
+    c.setAttribute('opacity', (0.4 + 0.45 * Math.abs(Math.sin(tt * Math.PI))).toFixed(2));
+    pulseRAF = requestAnimationFrame(tick);
+  };
+  pulseRAF = requestAnimationFrame(tick);
+}
+
+/* Slide 4 — Hook Comparator */
+const HOOKS = {
+  weak: {
+    label: 'Weak Passive Opening',
+    text: '"So, today I\'m going to be talking a little bit about our quarterly metrics, and if everyone could please just give me two minutes of your time while I set up the context…"',
+    timing: ['0.0s preamble', '2.4s throat-clearing', '5.8s still no stakes', '9.1s exit threshold crossed'],
+    retention: 18,
+    verdict: '<i data-lucide="thumbs-down" stroke-width="2"></i> Attention leak at second 4',
+    bars: [0.9, 0.75, 0.55, 0.4, 0.3, 0.22, 0.18, 0.15, 0.13, 0.12]
+  },
+  strong: {
+    label: 'Algorithmic High-Retention Opening',
+    text: '"Your attention span is now shorter than a goldfish\'s measured baseline — and <em>this slide</em> is the proof. Nine seconds from now, most of you will have decided whether I deserve your next minute. Here\'s how that decision actually gets made."',
+    timing: ['0.0s conflict stated', '0.8s personal stakes', '1.9s open loop planted', '3.0s thesis delivered'],
+    retention: 87,
+    verdict: '<i data-lucide="flame" stroke-width="2"></i> Loop opened before second 3',
+    bars: [1, 0.98, 0.95, 0.92, 0.9, 0.88, 0.86, 0.84, 0.82, 0.8]
+  }
+};
+let hookState = 'weak';
+function buildRetentionBars() {
+  const wrap = $('#rbars');
+  if (!wrap || wrap.children.length) return;
+  for (let i = 0; i < 10; i++) {
+    const b = document.createElement('div');
+    b.className = 'rbar';
+    wrap.appendChild(b);
+  }
+}
+function renderHook() {
+  const h = HOOKS[hookState];
+  const card = $('#hook-card');
+  card.classList.toggle('state-strong', hookState === 'strong');
+  $('#hook-state-label').textContent = h.label;
+  $('#hook-quote').innerHTML = h.text;
+  const strip = $('#hook-timing');
+  strip.innerHTML = h.timing.map((t) => `<span>${t}</span>`).join('');
+  $('#hook-retention').textContent = h.retention;
+  $('#hook-verdict').innerHTML = h.verdict;
+  $$('#rbars .rbar').forEach((b, i) => { b.style.transform = `scaleY(${h.bars[i]})`; });
+  if (window.lucide) lucide.createIcons();
+}
+$('#hook-toggle').addEventListener('click', () => {
+  hookState = hookState === 'weak' ? 'strong' : 'weak';
+  renderHook();
+});
+
+/* Slide 6 — kinetic typography orienting demo */
+const KINETIC = ['Attention<span class="k-accent">.</span>', 'Rethought<span class="k-accent">.</span>', 'Every<span class="k-accent">.</span>', 'Three<span class="k-accent">.</span>', 'Seconds<span class="k-accent">.</span>'];
+let kIdx = 0, kNextIn = 17;
+function kineticTick() {
+  const w = $('#kinetic-word'), counter = $('#orient-counter');
+  if (!w) return;
+  kNextIn -= 1;
+  if (kNextIn <= 0) {
+    kIdx = (kIdx + 1) % KINETIC.length;
+    w.style.opacity = '0';
+    w.style.transform = 'translate3d(0,8px,0)';
+    setTimeout(() => {
+      w.innerHTML = KINETIC[kIdx];
+      w.style.transition = 'transform 0.4s cubic-bezier(0.22,1,0.36,1), opacity 0.35s ease';
+      w.style.opacity = '1';
+      w.style.transform = 'translate3d(0,0,0)';
+    }, 180);
+    kNextIn = 15 + Math.floor(Math.random() * 6); // 15–20s cadence
+  }
+  if (counter) counter.textContent = `next state shift in ${kNextIn}s`;
+}
+setInterval(kineticTick, 1000);
+
+/* Slide 10 + remote — runtime timers */
+function fmtTime(ms) {
+  const s = Math.floor(ms / 1000);
+  return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+}
+setInterval(() => {
+  const el = $('#qa-timer');
+  if (el) el.textContent = fmtTime(Date.now() - T0);
+  const rt = $('#rmu-timer');
+  if (rt) {
+    const ms = Date.now() - T0;
+    rt.textContent = fmtTime(ms);
+    rt.classList.toggle('over', ms > 10 * 60 * 1000);
+  }
+}, 1000);
+
+/* Per-slide entry hooks */
+function onSlideEnter(idx) {
+  if (idx === 1) primeFrictionMeters();
+  if (idx === 2) loopPulse();
+  if (idx === 3) renderHook();
+}
+
+/* ---------------------------------------------------------------------------
+   REMOTE UI BOOT (phone view)
+--------------------------------------------------------------------------- */
+function bootRemoteUI() {
+  document.body.classList.add('remote-mode');
+  const jumpWrap = $('#rmu-jump');
+  for (let i = 0; i < TOTAL; i++) {
+    const b = document.createElement('button');
+    b.textContent = i + 1;
+    b.addEventListener('click', () => publishNav(i));
+    jumpWrap.appendChild(b);
+  }
+  $('#rmu-next').addEventListener('click', () => publishNav(clamp(slideIndex + 1, 0, TOTAL - 1)));
+  $('#rmu-prev').addEventListener('click', () => publishNav(clamp(slideIndex - 1, 0, TOTAL - 1)));
+  updateHUD();
+}
+
+/* ---------------------------------------------------------------------------
+   INIT
+--------------------------------------------------------------------------- */
+function init() {
+  /* build the ten progress segments once, from TOTAL — single source of truth */
+  const track = $('#progress-track');
+  if (track && !track.children.length) {
+    for (let i = 0; i < TOTAL; i++) {
+      const s = document.createElement('span');
+      s.className = 'pseg';
+      track.appendChild(s);
+    }
+  }
+  setActiveField(0);
+  setFocusForSlide(0);
+  buildRetentionBars();
+  renderHook();
+  decayLoop();
+  if (IS_REMOTE) {
+    bootRemoteUI();
+  } else {
+    slides.forEach((s, i) => {
+      if (i !== 0) s.classList.remove('is-active');
+    });
+    goTo(0, { force: true });
+  }
+  connectMQTT();
+  refreshModalLinks();
+  if (window.lucide) lucide.createIcons();
+  /* re-run icon creation after dynamic innerHTML swaps */
+  setInterval(() => { if (window.lucide) lucide.createIcons(); }, 2500);
+}
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
