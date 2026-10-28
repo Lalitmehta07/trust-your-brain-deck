@@ -1,0 +1,357 @@
+<body>
+
+<!-- ============ SHARED SVG DEFS — gradients + generative motifs referenced by every slide field ============ -->
+<svg id="field-defs" width="0" height="0" style="position:absolute;left:-9999px;top:0;" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="rgA" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2563EB" stop-opacity="0.05"/>
+      <stop offset="55%" stop-color="#2563EB" stop-opacity="0.34"/>
+      <stop offset="100%" stop-color="#4F46E5" stop-opacity="0.10"/>
+    </linearGradient>
+    <linearGradient id="rgB" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4F46E5" stop-opacity="0.06"/>
+      <stop offset="60%" stop-color="#4F46E5" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#E11D48" stop-opacity="0.12"/>
+    </linearGradient>
+    <linearGradient id="rgC" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#E11D48" stop-opacity="0.05"/>
+      <stop offset="60%" stop-color="#E11D48" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#2563EB" stop-opacity="0.10"/>
+    </linearGradient>
+    <radialGradient id="attractorGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2563EB" stop-opacity="0.16"/>
+      <stop offset="60%" stop-color="#4F46E5" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#4F46E5" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="coralGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#E11D48" stop-opacity="0.14"/>
+      <stop offset="60%" stop-color="#E11D48" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#E11D48" stop-opacity="0"/>
+    </radialGradient>
+    <!-- reticle rings motif -->
+    <g id="sym-reticle">
+      <circle r="34" fill="none" stroke="#2563EB" stroke-opacity="0.28" stroke-width="1.2" vector-effect="non-scaling-stroke"/>
+      <circle r="62" fill="none" stroke="#2563EB" stroke-opacity="0.18" stroke-width="1.2" stroke-dasharray="3 9" vector-effect="non-scaling-stroke"/>
+      <circle r="104" fill="none" stroke="#E11D48" stroke-opacity="0.16" stroke-width="1.2" vector-effect="non-scaling-stroke"/>
+      <path d="M -18 0 H 18 M 0 -18 V 18" stroke="#4F46E5" stroke-opacity="0.45" stroke-width="1.2" fill="none" vector-effect="non-scaling-stroke"/>
+    </g>
+    <!-- attractor core motif -->
+    <g id="sym-core">
+      <circle r="170" fill="url(#attractorGlow)"/>
+      <circle r="7" fill="#2563EB" opacity="0.9"/>
+    </g>
+    <!-- waveform cycle motif (one period, baseline y=0) -->
+    <path id="sym-wavecycle" d="M 0 0 C 80 -120, 160 -120, 240 0 C 320 120, 400 120, 480 0" fill="none" vector-effect="non-scaling-stroke"/>
+    <!-- speech burst motif -->
+    <path id="sym-burst" d="M 0 -46 L 12 -18 L 42 -26 L 20 -6 L 46 14 L 14 12 L 8 44 L -4 14 L -34 34 L -20 4 L -46 -8 L -14 -12 Z" fill="none" vector-effect="non-scaling-stroke"/>
+  </defs>
+</svg>
+
+<!-- =================== GLASSMORPHIC STAGE =================== -->
+<main id="stage" role="region" aria-label="Presentation stage">
+  <div id="slide-chip"><span class="chip-num mono" id="chip-num">01</span><span>/ 10 &nbsp;·&nbsp; Can You Trust Your Own Brain?</span></div>
+  <div id="stage-inner">
+    <div class="clickzone" id="zone-prev" title="Previous slide"><span class="zone-glyph"><i data-lucide="chevron-left" stroke-width="2"></i></span></div>
+    <div class="clickzone" id="zone-next" title="Next slide"><span class="zone-glyph"><i data-lucide="chevron-right" stroke-width="2"></i></span></div>
+
+<!-- ============ SLIDE 1 : THE GREETING BLIND SPOT ============ -->
+<section class="slide" id="s1" data-title="The Greeting Blind Spot" aria-label="Slide 1 of 10">
+  <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
+  <div class="slide-body">
+    <div class="stagger stg-1">
+      <span class="eyebrow"><i data-lucide="radio" stroke-width="2"></i> Q-Infinity Smart Board · Live Experiments · 2026</span>
+    </div>
+    <h1 class="title-hero stagger stg-2">Can You Trust<br><span class="grad">Your Own Brain?</span></h1>
+    <p class="title-sub stagger stg-3">Seven live experiments on one screen — and a field manual for what they prove. The room is the lab.</p>
+    <div class="author-block stagger stg-3">
+      <div class="avatar-ring">
+        <div class="avatar-core">
+          <img class="avatar-img" src="Profilepicture.jpg" alt="Portrait of Lalit Mehta"
+               onload="this.style.display='block';var f=this.parentNode.querySelector('.avatar-fallback');if(f)f.style.display='none';"
+               onerror="this.style.display='none';var f=this.parentNode.querySelector('.avatar-fallback');if(f)f.style.display='flex';">
+          <span class="avatar-fallback" style="display:none;">LM</span>
+        </div>
+      </div>
+      <div class="author-meta">
+        <span class="author-role">Presented by</span>
+        <span class="author-name">LALIT MEHTA</span>
+        <button class="pronounce-btn" id="pronounce-btn" type="button" title="Hear the pronunciation (accesskey: v)" accesskey="v" aria-label="Play phonetic pronunciation of Lalit">
+          <i data-lucide="volume-2" stroke-width="2"></i> /ləlɪt̪/ &nbsp;luh · lit
+        </button>
+      </div>
+    </div>
+    <div class="feature-pills stagger stg-5">
+      <span class="pill-neu"><i data-lucide="flask-conical" stroke-width="2"></i> Seven Live Experiments</span>
+      <span class="pill-neu"><i data-lucide="eye" stroke-width="2"></i> Perception Tricks You'll Feel</span>
+      <span class="pill-neu"><i data-lucide="book-open" stroke-width="2"></i> A Field Manual For The Room</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 2 : EXPERIMENT 01 — SAME OR DIFFERENT? ============ -->
+<section class="slide" id="s2" data-title="Experiment 01 · Same or Different?" aria-label="Slide 2 of 10">
+  <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
+  <header class="slide-head stagger stg-1">
+    <span class="eyebrow"><i data-lucide="flask-conical" stroke-width="2"></i> Experiment 01 · Live Now</span>
+    <h2 class="slide-title swap" id="s2-title">Same or <span class="accent">Different?</span></h2>
+    <p class="slide-sub">One rule before we start: answer with your eyes, not your opinions. Ready?</p>
+  </header>
+  <div class="slide-body">
+    <div class="demo-grid">
+      <div class="stim-col stagger stg-2">
+        <div class="stim-card">
+          <div class="stim-head">
+            <span class="pod-label"><i data-lucide="scan-line" stroke-width="2"></i> Stimulus · Look, don't lean</span>
+            <span class="tag cobalt" id="gray-count-tag">Round 1 / 2</span>
+          </div>
+          <div class="stim-svgwrap">
+            <svg id="gray-svg" viewBox="0 0 1200 640" preserveAspectRatio="xMidYMid meet" shape-rendering="crispEdges" aria-label="Two gray squares side by side"></svg>
+          </div>
+          <p class="stim-readout dim" id="gray-q">Which square looks lighter — A, B, or are they the same? Shout your first instinct.</p>
+        </div>
+        <div class="src-line">Ref: Adelson's checker-shadow illusion · MIT Vision Science</div>
+      </div>
+      <div class="step-col stagger stg-3">
+        <div class="step-list">
+          <div class="step-row rv" id="s2-step-reveal"><span class="chip rev">Reveal</span><p class="step-text" id="s2-reveal-text"></p></div>
+          <div class="step-row rv" id="s2-step-why"><span class="chip why">Why</span><p class="step-text" id="s2-why-text"></p></div>
+          <div class="step-row rv" id="s2-step-care"><span class="chip care">So what</span><p class="step-text" id="s2-care-text"></p></div>
+        </div>
+        <div class="action-bar">
+          <button class="neu-btn act-btn" id="s2-reveal-btn" accesskey="e" title="Reveal round 1 (accesskey: E)"><i data-lucide="eye" stroke-width="2"></i> Reveal</button>
+          <button class="neu-btn act-btn" id="s2-next-btn" title="Run round 2 — the identical-grays test"><i data-lucide="arrow-right" stroke-width="2"></i> Next Round</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 3 : EXPERIMENT 02 — COUNT THE PASSES ============ -->
+<section class="slide" id="s3" data-title="Experiment 02 · Count the Passes" aria-label="Slide 3 of 10">
+  <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
+  <header class="slide-head stagger stg-1">
+    <span class="eyebrow indigo"><i data-lucide="flask-conical" stroke-width="2"></i> Experiment 02 · Live Now</span>
+    <h2 class="slide-title swap" id="s3-title">Count the <span class="accent-i">Passes</span></h2>
+    <p class="slide-sub">Watch the white circle only. Count every pass it makes. No pausing, no rewinds — this works when you commit.</p>
+  </header>
+  <div class="slide-body">
+    <div class="demo-grid">
+      <div class="stim-col stagger stg-2">
+        <div class="stim-card">
+          <div class="stim-head">
+            <span class="pod-label"><i data-lucide="circle" stroke-width="2"></i> Track ONLY the WHITE circle</span>
+            <span class="tag slate" id="sim-status">STANDBY</span>
+          </div>
+          <div class="stim-svgwrap">
+            <svg id="pass-svg" viewBox="0 0 1200 640" preserveAspectRatio="xMidYMid meet" aria-label="Inattentional blindness simulation: circles passing a dot between two teams"></svg>
+          </div>
+          <p class="stim-readout dim" id="pass-q">How many passes did the white team make? Hold your number in your head — and ask yourself what else was on the screen.</p>
+        </div>
+        <div class="src-line">Ref: Simons &amp; Chabris "Gorilla Basketball" (1999) · Stage adaptation</div>
+      </div>
+      <div class="step-col stagger stg-3">
+        <div class="step-list">
+          <div class="step-row rv" id="s3-step-reveal"><span class="chip rev">Reveal</span><p class="step-text" id="s3-reveal-text"></p></div>
+          <div class="step-row rv" id="s3-step-why"><span class="chip why">Why</span><p class="step-text" id="s3-why-text"></p></div>
+          <div class="step-row rv" id="s3-step-care"><span class="chip care">So what</span><p class="step-text" id="s3-care-text"></p></div>
+        </div>
+        <div class="action-bar">
+          <button class="neu-btn act-btn" id="s3-run-btn" accesskey="r" title="Run the 20-second simulation (accesskey: R)"><i data-lucide="play" stroke-width="2"></i> Run Simulation</button>
+          <button class="neu-btn act-btn" id="s3-reveal-btn" title="Reveal what happened"><i data-lucide="eye" stroke-width="2"></i> Reveal</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 4 : EXPERIMENT 03 — ONE IMAGE, TWO ANIMALS ============ -->
+<section class="slide" id="s4" data-title="Experiment 03 · One Image, Two Animals" aria-label="Slide 4 of 10">
+  <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
+  <header class="slide-head stagger stg-1">
+    <span class="eyebrow coral"><i data-lucide="flask-conical" stroke-width="2"></i> Experiment 03 · Live Now</span>
+    <h2 class="slide-title swap" id="s4-title">One Image, <span class="accent-c">Two Animals</span></h2>
+    <p class="slide-sub">What do you see first — a duck, or a rabbit? Raise your hand for duck… now for rabbit. Same photons. Different brains.</p>
+  </header>
+  <div class="slide-body">
+    <div class="demo-grid">
+      <div class="stim-col stagger stg-2">
+        <div class="stim-card">
+          <div class="stim-head">
+            <span class="pod-label"><i data-lucide="image" stroke-width="2"></i> Ambiguous figure · Necker-style bistable drawing</span>
+          </div>
+          <div class="stim-svgwrap">
+            <svg id="dr-svg" viewBox="0 0 1200 640" preserveAspectRatio="xMidYMid meet" aria-label="Duck–rabbit ambiguous line drawing"></svg>
+          </div>
+          <p class="stim-readout dim" id="dr-readout">Stare at the beak-or-ears. Can you flip it on purpose? Most people can — but not instantly. That delay is the finding.</p>
+        </div>
+        <div class="src-line">Ref: Jastrow's Duck–Rabbit (1892) · Boring (1930)</div>
+      </div>
+      <div class="step-col stagger stg-3">
+        <div class="step-list">
+          <div class="step-row rv" id="s4-step-reveal"><span class="chip rev">Reveal</span><p class="step-text" id="s4-reveal-text"></p></div>
+          <div class="step-row rv" id="s4-step-why"><span class="chip why">Why</span><p class="step-text" id="s4-why-text"></p></div>
+          <div class="step-row rv" id="s4-step-care"><span class="chip care">So what</span><p class="step-text" id="s4-care-text"></p></div>
+        </div>
+        <div class="dr-controls">
+          <button class="neu-btn" id="dr-duck-btn" title="Overlay the duck reading"><i data-lucide="bird" stroke-width="2"></i> Duck Guide</button>
+          <button class="neu-btn" id="dr-rabbit-btn" title="Overlay the rabbit reading"><i data-lucide="rabbit" stroke-width="2"></i> Rabbit Guide</button>
+          <button class="neu-btn" id="dr-hide-btn" title="Remove overlays"><i data-lucide="eye-off" stroke-width="2"></i> Hide Guides</button>
+        </div>
+        <div class="action-bar">
+          <button class="neu-btn act-btn" id="s4-reveal-btn" accesskey="e" title="Reveal the science (accesskey: E)"><i data-lucide="eye" stroke-width="2"></i> Reveal</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 5 : EXPERIMENT 04 — THE IMPOSSIBLE TRIANGLE ============ -->
+<section class="slide" id="s5" data-title="Experiment 04 · The Impossible Triangle" aria-label="Slide 5 of 10">
+  <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
+  <header class="slide-head stagger stg-1">
+    <span class="eyebrow"><i data-lucide="flask-conical" stroke-width="2"></i> Experiment 04 · Live Now</span>
+    <h2 class="slide-title swap" id="s5-title">The <span class="accent">Impossible</span> Triangle</h2>
+    <p class="slide-sub">Trace the three corners with your eyes. Each corner is a perfect right angle. The triangle cannot exist. Your brain built it anyway.</p>
+  </header>
+  <div class="slide-body">
+    <div class="demo-grid">
+      <div class="stim-col stagger stg-2">
+        <div class="stim-card">
+          <div class="stim-head">
+            <span class="pod-label"><i data-lucide="triangle" stroke-width="2"></i> Penrose triangle · Constructed from real bars</span>
+            <span class="tag slate">Forced depth interpretation</span>
+          </div>
+          <div class="stim-svgwrap">
+            <svg id="penrose-svg" viewBox="0 0 1200 640" preserveAspectRatio="xMidYMid meet" aria-label="Penrose impossible triangle"></svg>
+          </div>
+          <p class="stim-readout dim" id="penrose-readout">There is no place to put this object in the world. Geometry says impossible — perception says "clearly a triangle." Who overruled whom?</p>
+        </div>
+        <div class="src-line">Ref: Penrose &amp; Penrose (1958) · Figure–ground construction in V1/V2</div>
+      </div>
+      <div class="step-col stagger stg-3">
+        <div class="step-list">
+          <div class="step-row rv" id="s5-step-reveal"><span class="chip rev">Reveal</span><p class="step-text" id="s5-reveal-text"></p></div>
+          <div class="step-row rv" id="s5-step-why"><span class="chip why">Why</span><p class="step-text" id="s5-why-text"></p></div>
+          <div class="step-row rv" id="s5-step-care"><span class="chip care">So what</span><p class="step-text" id="s5-care-text"></p></div>
+        </div>
+        <div class="action-bar">
+          <button class="neu-btn act-btn" id="s5-reveal-btn" accesskey="e" title="Reveal the science (accesskey: E)"><i data-lucide="eye" stroke-width="2"></i> Reveal</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 6 : EXPERIMENT 05 — THE MEMORY INCEPTION ============ -->
+<section class="slide" id="s6" data-title="Experiment 05 · The Memory Inception" aria-label="Slide 6 of 10">
+  <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
+  <header class="slide-head stagger stg-1">
+    <span class="eyebrow indigo"><i data-lucide="flask-conical" stroke-width="2"></i> Experiment 05 · Live Now</span>
+    <h2 class="slide-title swap" id="s6-title">The Memory <span class="accent-i">Inception</span></h2>
+    <p class="slide-sub">Four words, two seconds each. Just look — no memorising tricks. Then the room votes on a word that never appeared.</p>
+  </header>
+  <div class="slide-body">
+    <div class="demo-grid">
+      <div class="stim-col stagger stg-2">
+        <div class="stim-card" style="position:relative;">
+          <div class="stim-head">
+            <span class="pod-label"><i data-lucide="brain" stroke-width="2"></i> Deese–Roediger–McDermott paradigm</span>
+            <span class="drm-dots" id="drm-dots" aria-hidden="true"></span>
+          </div>
+          <div class="arena-stage">
+            <div class="drm-view on" id="drm-idle">
+              <p class="drm-hint">Press RUN. Four words flash on this card — watch them like a slideshow, nothing else.</p>
+            </div>
+            <div class="drm-view" id="drm-show">
+              <div class="drm-word" id="drm-word">—</div>
+            </div>
+            <div class="drm-view" id="drm-poll">
+              <p class="poll-q">Which of these four words was on the screen just now?</p>
+              <div class="poll-chips" id="drm-chips"></div>
+              <p class="poll-note">Shout your answer before I reveal anything. The room will agree — that agreement is the data.</p>
+            </div>
+            <div class="drm-view" id="drm-result">
+              <div class="drm-results" id="drm-tiles"></div>
+            </div>
+          </div>
+          <p class="stim-readout dim" id="drm-readout">No notes, no repetition. Encoding happens whether you intend it or not.</p>
+        </div>
+        <div class="src-line">Ref: Roediger &amp; McDermott (1995) · False-memory rate ≈ 80% on this list</div>
+      </div>
+      <div class="step-col stagger stg-3">
+        <div class="step-list">
+          <div class="step-row rv" id="s6-step-reveal"><span class="chip rev">Reveal</span><p class="step-text" id="s6-reveal-text"></p></div>
+          <div class="step-row rv" id="s6-step-why"><span class="chip why">Why</span><p class="step-text" id="s6-why-text"></p></div>
+          <div class="step-row rv" id="s6-step-care"><span class="chip care">So what</span><p class="step-text" id="s6-care-text"></p></div>
+        </div>
+        <div class="action-bar">
+          <button class="neu-btn act-btn" id="drm-run-btn" accesskey="r" title="Run the four-word sequence (accesskey: R)"><i data-lucide="play" stroke-width="2"></i> Run Sequence</button>
+          <button class="neu-btn act-btn" id="drm-verdict-btn" disabled title="Judge the room's vote"><i data-lucide="scale" stroke-width="2"></i> Verdict</button>
+          <button class="neu-btn act-btn" id="drm-reset-btn" title="Reset for another round"><i data-lucide="rotate-ccw" stroke-width="2"></i> Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 7 : EXPERIMENT 06 — WHERE WERE THE BROKEN GLASS? ============ -->
+<section class="slide" id="s7" data-title="Experiment 06 · Where Were the Broken Glass?" aria-label="Slide 7 of 10">
+  <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
+  <header class="slide-head stagger stg-1">
+    <span class="eyebrow coral"><i data-lucide="flask-conical" stroke-width="2"></i> Experiment 06 · Live Now</span>
+    <h2 class="slide-title swap" id="s7-title">Where Were the <span class="accent-c">Broken Glass?</span></h2>
+    <p class="slide-sub">Read this accident report out loud, together. One verb will do more damage than the crash.</p>
+  </header>
+  <div class="slide-body">
+    <div class="demo-grid">
+      <div class="stim-col stagger stg-2">
+        <div class="stim-card">
+          <div class="stim-head">
+            <span class="pod-label"><i data-lucide="car" stroke-width="2"></i> Loftus &amp; Palmer (1974) · Study 2 recreation</span>
+            <span class="tag slate" id="lp-verb-tag">verb: hit</span>
+          </div>
+          <div class="stim-svgwrap" style="align-items:flex-start;">
+            <div style="width:100%;display:flex;flex-direction:column;gap:clamp(10px,1.4vh,20px);">
+              <p class="lp-question">About how fast were the cars going when they <span class="verb-slot" id="lp-verb">SMASHED</span> into each other?</p>
+              <div class="lp-chips" id="lp-chips">
+                <span class="lp-chip" data-v="hit">hit</span>
+                <span class="lp-chip" data-v="bumped">bumped</span>
+                <span class="lp-chip" data-v="collided">collided</span>
+                <span class="lp-chip" data-v="smashed">smashed</span>
+              </div>
+              <div class="lp-chart">
+                <div class="lp-bar-row" data-k="hit"><span class="lp-bar-name">“hit”</span><div class="lp-bar-track"><div class="lp-bar-fill"></div></div><span class="lp-bar-val">32.2</span></div>
+                <div class="lp-bar-row" data-k="bumped"><span class="lp-bar-name">“bumped”</span><div class="lp-bar-track"><div class="lp-bar-fill"></div></div><span class="lp-bar-val">34.0</span></div>
+                <div class="lp-bar-row" data-k="collided"><span class="lp-bar-name">“collided”</span><div class="lp-bar-track"><div class="lp-bar-fill"></div></div><span class="lp-bar-val">36.0</span></div>
+                <div class="lp-bar-row" data-k="contacted"><span class="lp-bar-name">“contacted”</span><div class="lp-bar-track"><div class="lp-bar-fill"></div></div><span class="lp-bar-val">30.8</span></div>
+                <div class="lp-bar-row" data-k="smashed"><span class="lp-bar-name">“smashed”</span><div class="lp-bar-track"><div class="lp-bar-fill hot"></div></div><span class="lp-bar-val">40.5</span></div>
+              </div>
+              <div class="lp-axis"><span>0 mph</span><span>estimated speed (mean) · n = 45 per group</span><span>45 mph</span></div>
+            </div>
+          </div>
+          <div class="lp-glass" id="lp-glass">
+            <h4>One week later, the same people were asked: “Were there any broken glass?”</h4>
+            <div class="lp-tiles">
+              <div class="lp-tile"><div class="n">32%</div><div class="l">said YES after “smashed”<br>(there was none)</div></div>
+              <div class="lp-tile"><div class="n">14%</div><div class="l">said YES after “hit”</div></div>
+              <div class="lp-tile"><div class="n">18%</div><div class="l">control group said YES</div></div>
+            </div>
+            <p class="lp-noglass"><i data-lucide="video-off" stroke-width="2"></i> Fact check: the film contained <b>&nbsp;no broken glass&nbsp;</b> at all.</p>
+          </div>
+        </div>
+        <div class="src-line">Ref: Loftus &amp; Palmer, Journal of Verbal Learning (1974)</div>
+      </div>
+      <div class="step-col stagger stg-3">
+        <div class="step-list">
+          <div class="step-row rv" id="s7-step-reveal"><span class="chip rev">Reveal</span><p class="step-text" id="s7-reveal-text"></p></div>
+          <div class="step-row rv" id="s7-step-why"><span class="chip why">Why</span><p class="step-text" id="s7-why-text"></p></div>
+          <div class="step-row rv" id="s7-step-care"><span class="chip care">So what</span><p class="step-text" id="s7-care-text"></p></div>
+        </div>
+        <div class="action-bar">
+          <button class="neu-btn act-btn" id="s7-cycle-btn" accesskey="e" title="Cycle the verb through all five conditions (accesskey: E)"><i data-lucide="repeat" stroke-width="2"></i> Cycle Verb</button>
+          <button class="neu-btn act-btn" id="s7-reveal-btn" title="Reveal the follow-up question results"><i data-lucide="eye" stroke-width="2"></i> Reveal</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
