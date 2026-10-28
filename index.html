@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#F4F6FB">
-<title>Algorithmic Persuasion: How Short-Form Feeds Rewire Human Communication</title>
+<title>Can You Trust Your Own Brain? — Live Experiments</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
-   ALGORITHMIC PERSUASION — LIGHT-THEME ARCHITECTURAL DECK
+   CAN YOU TRUST YOUR OWN BRAIN? — LIGHT-THEME ARCHITECTURAL DECK
    Porcelain/Alabaster base, Neumorphism + Glassmorphism hybrid
    Zero emoji. Lucide icons only. 4K 60fps GPU-safe animation.
    ============================================================ */
@@ -95,6 +95,9 @@ i[data-lucide]{display:inline-flex;}
   content:"";position:absolute;inset:0;z-index:3;pointer-events:none;border-radius:inherit;
   background:var(--apple-sheen);opacity:0.55;mix-blend-mode:soft-light;
 }
+/* Stimulus protection: while any experiment slide (1–7) is active, the sheen
+   overlay is suppressed so identical grays/sizes are never tinted unevenly. */
+body.stim-on #stage::before{opacity:0;}
 #stage::after{
   content:"";position:absolute;top:0;left:8%;right:8%;height:1px;z-index:3;pointer-events:none;
   background:linear-gradient(90deg,transparent,rgba(255,255,255,0.95) 30%,rgba(255,255,255,0.95) 70%,transparent);
@@ -303,11 +306,6 @@ body.presenter-click .clickzone{opacity:1;}
 #s1 .title-hero .grad{background:linear-gradient(92deg,var(--cobalt) 10%,var(--indigo) 55%,var(--coral) 105%);-webkit-background-clip:text;background-clip:text;color:transparent;}
 #s1 .title-sub{font-size:clamp(15px,1.5vw,30px);color:var(--ink-b);margin-top:clamp(10px,1.4vh,20px);font-weight:500;max-width:58ch;line-height:1.5;}
 #s1 .s1-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:clamp(20px,2.4vw,44px);align-items:end;margin-top:clamp(22px,3.4vh,52px);}
-#decay-pod{min-width:0;}
-#decay-track{position:relative;height:14px;border-radius:99px;background:rgba(148,163,184,0.22);box-shadow:var(--neu-in);margin-top:1.1em;overflow:hidden;}
-#decay-marker{position:absolute;top:50%;left:0;width:22px;height:22px;border-radius:50%;background:var(--white);box-shadow:var(--neu-out-sm),0 0 0 2px rgba(37,99,235,0.35);transform:translate(-50%,-50%) translateZ(0);will-change:transform;}
-#decay-fillbar{position:absolute;inset:0;background:linear-gradient(90deg,rgba(37,99,235,0.35),rgba(225,29,72,0.4));transform-origin:left center;transform:scaleX(0);}
-#decay-scale{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:clamp(9px,0.62vw,13px);color:var(--ink-c);margin-top:0.7em;letter-spacing:0.06em;}
 .feature-pills{display:flex;flex-wrap:wrap;gap:clamp(10px,1vw,18px);margin-top:clamp(18px,2.4vh,36px);}
 .pill-neu{
   display:inline-flex;align-items:center;gap:0.65em;background:var(--neu-bg);
@@ -353,138 +351,6 @@ body.presenter-click .clickzone{opacity:1;}
 #s1 .pronounce-btn i[data-lucide]{width:1.05em;height:1.05em;}
 #s1 .author-role{font-size:clamp(10px,0.78vw,15px);color:var(--ink-c);letter-spacing:0.06em;text-transform:uppercase;font-family:var(--font-mono);}
 
-/* ---- Slide 2: Comparison grid ---- */
-.compare-grid{display:grid;grid-template-columns:1fr clamp(60px,6vw,120px) 1fr;gap:0;width:100%;align-items:stretch;}
-.compare-col{display:flex;flex-direction:column;gap:clamp(10px,1.3vh,18px);min-width:0;}
-.compare-head{display:flex;align-items:center;gap:0.7em;font-family:var(--font-display);font-weight:800;font-size:clamp(15px,1.35vw,27px);color:var(--ink-h);margin-bottom:0.3em;}
-.compare-head i[data-lucide]{width:1.3em;height:1.3em;}
-.col-legacy .compare-head i{color:var(--ink-c);}
-.col-feed .compare-head i{color:var(--coral);}
-.compare-arrow{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;}
-.compare-arrow i[data-lucide]{width:clamp(24px,2.2vw,44px);height:clamp(24px,2.2vw,44px);color:var(--cobalt);}
-.compare-arrow .arrow-label{writing-mode:vertical-rl;font-family:var(--font-mono);font-size:clamp(9px,0.6vw,12px);letter-spacing:0.28em;text-transform:uppercase;color:var(--ink-c);}
-.row-item{font-size:clamp(12px,0.95vw,18px);line-height:1.5;display:flex;gap:0.75em;align-items:flex-start;color:var(--ink-b);}
-.row-item i[data-lucide]{width:1.2em;height:1.2em;flex:0 0 auto;margin-top:0.15em;}
-.col-legacy .row-item i{color:var(--ink-c);}
-.col-feed .row-item i{color:var(--coral);}
-.row-item b{color:var(--ink-h);font-weight:600;}
-.friction-meter{margin-top:auto;display:flex;align-items:center;gap:0.8em;font-family:var(--font-mono);font-size:clamp(10px,0.7vw,14px);letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-c);}
-.meter-bar{flex:1;height:8px;border-radius:99px;background:rgba(148,163,184,0.22);box-shadow:var(--neu-in);overflow:hidden;}
-.meter-fill{height:100%;border-radius:99px;transform-origin:left center;transition:transform 0.9s var(--slide-ease);}
-.meter-fill.slate{background:linear-gradient(90deg,#94A3B8,var(--ink-c));}
-.meter-fill.coralg{background:linear-gradient(90deg,var(--cobalt),var(--coral));}
-
-/* ---- Slide 3: Dopamine loop flow ---- */
-#s3 .slide-body{flex-direction:column;}
-.flow-row{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;align-items:stretch;gap:clamp(6px,0.8vw,14px);width:100%;}
-.flow-node{display:flex;flex-direction:column;align-items:center;text-align:center;gap:clamp(8px,1vh,14px);padding:clamp(14px,1.8vh,28px) clamp(10px,1.1vw,20px);position:relative;}
-.flow-icon{width:clamp(52px,4.6vw,90px);height:clamp(52px,4.6vw,90px);border-radius:24px;background:var(--neu-bg);box-shadow:var(--neu-out);display:flex;align-items:center;justify-content:center;}
-.flow-icon i[data-lucide]{width:46%;height:46%;}
-.flow-node.n-eye .flow-icon i{color:var(--cobalt);}
-.flow-node.n-zap .flow-icon i{color:var(--amber);}
-.flow-node.n-gift .flow-icon i{color:var(--indigo);}
-.flow-node.n-repeat .flow-icon i{color:var(--coral);}
-.flow-stage{font-family:var(--font-mono);font-size:clamp(9px,0.6vw,12px);letter-spacing:0.2em;color:var(--ink-c);text-transform:uppercase;}
-.flow-name{font-family:var(--font-display);font-weight:800;font-size:clamp(13px,1.15vw,23px);color:var(--ink-h);line-height:1.2;}
-.flow-desc{font-size:clamp(10px,0.8vw,15px);color:var(--ink-c);line-height:1.45;}
-.flow-link{display:flex;align-items:center;justify-content:center;width:clamp(20px,2.4vw,56px);}
-.flow-link i[data-lucide]{width:clamp(18px,1.5vw,30px);height:clamp(18px,1.5vw,30px);color:var(--cobalt);opacity:0.7;}
-#loop-svg-wrap{margin-top:clamp(12px,2vh,26px);flex:1;min-height:0;display:flex;align-items:center;justify-content:center;}
-#loop-svg{width:min(90%,1200px);height:100%;}
-.loop-caption{display:flex;justify-content:center;gap:clamp(14px,1.6vw,30px);flex-wrap:wrap;margin-top:clamp(6px,1vh,14px);}
-
-/* ---- Slide 4: Hook comparator ---- */
-#s4 .slide-body{flex-direction:column;}
-.hook-stage{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;}
-.hook-card{width:min(100%,1500px);position:relative;overflow:hidden;}
-.hook-quote{font-family:var(--font-display);font-weight:700;color:var(--ink-h);font-size:clamp(19px,2.3vw,44px);line-height:1.32;letter-spacing:-0.015em;transition:opacity 0.4s ease;}
-.hook-quote em{font-style:normal;color:var(--cobalt);}
-.hook-card.state-strong .hook-quote em{color:var(--coral);}
-.hook-meta{display:flex;align-items:center;gap:clamp(12px,1.4vw,26px);margin-top:clamp(12px,1.8vh,24px);flex-wrap:wrap;}
-.hook-controls{display:flex;align-items:center;gap:clamp(10px,1.2vw,20px);margin-top:clamp(14px,2vh,26px);flex-wrap:wrap;}
-.retention-bars{display:flex;align-items:flex-end;gap:clamp(4px,0.5vw,9px);height:clamp(34px,4.4vh,64px);}
-.rbar{width:clamp(10px,0.9vw,20px);border-radius:5px 5px 2px 2px;background:rgba(148,163,184,0.3);transform-origin:bottom center;transform:scaleY(0.12);transition:transform 0.7s var(--slide-ease),background 0.5s ease;}
-.hook-card.state-strong .rbar{background:linear-gradient(180deg,var(--coral),rgba(225,29,72,0.35));}
-.timing-strip{display:flex;gap:clamp(6px,0.7vw,12px);margin-top:clamp(10px,1.4vh,18px);font-family:var(--font-mono);font-size:clamp(9px,0.62vw,12px);color:var(--ink-c);letter-spacing:0.05em;flex-wrap:wrap;}
-.timing-strip span{background:rgba(148,163,184,0.14);padding:0.4em 0.8em;border-radius:7px;}
-
-/* ---- Slide 5: Progressive disclosure / Zeigarnik ---- */
-#s5 .slide-body{gap:clamp(18px,2.2vw,40px);}
-.zeig-left{flex:1.1;display:flex;flex-direction:column;gap:clamp(12px,1.6vh,22px);min-width:0;}
-.zeig-right{flex:1;display:flex;flex-direction:column;gap:clamp(12px,1.6vh,22px);min-width:0;}
-.loop-diagram{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;}
-.loop-diagram svg{width:100%;height:100%;max-height:420px;}
-.open-loop-list{display:flex;flex-direction:column;gap:clamp(8px,1.1vh,14px);}
-.ol-item{display:flex;align-items:center;gap:0.9em;font-size:clamp(11px,0.9vw,17px);color:var(--ink-b);}
-.ol-item .ol-dot{width:10px;height:10px;border-radius:50%;flex:0 0 auto;background:var(--indigo);box-shadow:0 0 0 4px rgba(79,70,229,0.12);}
-.ol-item.closed .ol-dot{background:var(--emerald);box-shadow:0 0 0 4px rgba(5,150,105,0.12);}
-.self-ref{display:flex;align-items:flex-start;gap:clamp(10px,1.2vw,20px);}
-.self-ref i[data-lucide]{width:clamp(26px,2.2vw,44px);height:clamp(26px,2.2vw,44px);color:var(--cobalt);flex:0 0 auto;}
-.self-ref p{font-size:clamp(11px,0.9vw,17px);line-height:1.5;color:var(--ink-b);}
-.mini-progress{width:100%;height:8px;border-radius:99px;background:rgba(148,163,184,0.22);box-shadow:var(--neu-in);overflow:hidden;margin-top:0.8em;}
-.mini-progress i{display:block;height:100%;background:linear-gradient(90deg,var(--cobalt),var(--indigo));transform-origin:left center;transform:scaleX(0.5);}
-
-/* ---- Slide 6: Micro-interactions ---- */
-.mi-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:min-content;gap:clamp(14px,1.6vw,28px);width:100%;align-content:start;}
-.mi-card{display:flex;flex-direction:column;gap:0.7em;}
-.mi-card .mi-icon{width:clamp(40px,3.2vw,62px);height:clamp(40px,3.2vw,62px);border-radius:16px;background:var(--neu-bg);box-shadow:var(--neu-out-sm);display:flex;align-items:center;justify-content:center;}
-.mi-card .mi-icon i[data-lucide]{width:44%;height:44%;color:var(--cobalt);}
-.mi-card h3{font-size:clamp(14px,1.2vw,24px);font-weight:800;color:var(--ink-h);}
-.mi-card p{font-size:clamp(11px,0.88vw,17px);line-height:1.5;color:var(--ink-c);}
-.kinetic-demo{grid-column:span 3;display:flex;align-items:center;gap:clamp(16px,2vw,34px);flex-wrap:wrap;}
-#kinetic-word{font-family:var(--font-display);font-weight:800;font-size:clamp(24px,2.8vw,56px);color:var(--ink-h);letter-spacing:-0.02em;min-width:6ch;}
-#kinetic-word .k-accent{color:var(--cobalt);}
-.kinetic-caption{font-size:clamp(11px,0.85vw,16px);color:var(--ink-c);max-width:44ch;line-height:1.5;}
-.orienting-clock{margin-left:auto;display:flex;align-items:center;gap:0.8em;}
-.orienting-clock i[data-lucide]{width:clamp(20px,1.5vw,28px);height:clamp(20px,1.5vw,28px);color:var(--indigo);}
-.orienting-clock .mono{font-size:clamp(11px,0.85vw,16px);color:var(--ink-b);}
-
-/* ---- Slide 7: Trade-off matrix ---- */
-.matrix-wrap{width:100%;display:flex;flex-direction:column;gap:clamp(12px,1.6vh,20px);min-height:0;}
-.matrix-table{width:100%;border-collapse:separate;border-spacing:0 clamp(6px,0.8vh,10px);}
-.matrix-table th{font-family:var(--font-mono);font-size:clamp(9px,0.66vw,13px);letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-c);text-align:left;padding:0 clamp(10px,1.1vw,20px) 4px;font-weight:500;}
-.matrix-table th:first-child{width:20%;}
-.matrix-table td{background:rgba(255,255,255,0.55);border-top:1px solid rgba(255,255,255,0.8);border-bottom:1px solid rgba(226,232,240,0.8);padding:clamp(8px,1.1vh,15px) clamp(10px,1.1vw,20px);font-size:clamp(11px,0.9vw,17px);line-height:1.45;color:var(--ink-b);vertical-align:middle;}
-.matrix-table tr td:first-child{border-left:1px solid rgba(226,232,240,0.8);border-radius:14px 0 0 14px;font-family:var(--font-display);font-weight:700;color:var(--ink-h);font-size:clamp(11px,0.92vw,18px);}
-.matrix-table tr td:last-child{border-right:1px solid rgba(226,232,240,0.8);border-radius:0 14px 14px 0;}
-.cell-neg{color:var(--coral);}
-.ethics-band{display:flex;gap:clamp(12px,1.4vw,24px);align-items:stretch;flex-wrap:wrap;}
-.ethics-band .neu-pod{flex:1;min-width:240px;display:flex;align-items:center;gap:0.9em;}
-.ethics-band .neu-pod p{font-size:clamp(11px,0.85vw,16px);line-height:1.45;color:var(--ink-b);}
-.ethics-band i[data-lucide]{width:clamp(22px,1.8vw,34px);height:clamp(22px,1.8vw,34px);flex:0 0 auto;}
-
-/* ---- Slide 8: Three rules ---- */
-.rules-col{display:flex;flex-direction:column;gap:clamp(12px,1.7vh,24px);width:100%;justify-content:center;flex:1;}
-.rule-row{display:grid;grid-template-columns:clamp(64px,6vw,110px) clamp(56px,5vw,90px) 1fr auto;gap:clamp(12px,1.6vw,28px);align-items:center;}
-.rule-num{font-family:var(--font-mono);font-weight:700;font-size:clamp(26px,2.8vw,58px);color:transparent;-webkit-text-stroke:1.5px var(--cobalt);letter-spacing:-0.02em;}
-.rule-row.r-ind .rule-num{-webkit-text-stroke-color:var(--indigo);}
-.rule-row.r-cor .rule-num{-webkit-text-stroke-color:var(--coral);}
-.rule-icon{width:clamp(44px,3.8vw,72px);height:clamp(44px,3.8vw,72px);border-radius:18px;background:var(--neu-bg);box-shadow:var(--neu-out-sm);display:flex;align-items:center;justify-content:center;}
-.rule-icon i[data-lucide]{width:44%;height:44%;color:var(--cobalt);}
-.rule-row.r-ind .rule-icon i{color:var(--indigo);}
-.rule-row.r-cor .rule-icon i{color:var(--coral);}
-.rule-text h3{font-size:clamp(15px,1.35vw,28px);font-weight:800;color:var(--ink-h);}
-.rule-text p{font-size:clamp(11px,0.9vw,17px);color:var(--ink-c);line-height:1.5;margin-top:0.35em;max-width:70ch;}
-.rule-aud{display:flex;flex-direction:column;gap:0.4em;align-items:flex-end;}
-
-/* ---- Slide 9: Before/After table ---- */
-.ba-scroll{width:100%;display:flex;flex-direction:column;min-height:0;}
-.ba-table{width:100%;border-collapse:separate;border-spacing:0 clamp(5px,0.7vh,9px);table-layout:fixed;}
-.ba-table th{font-family:var(--font-mono);font-size:clamp(9px,0.64vw,13px);letter-spacing:0.16em;text-transform:uppercase;padding:0 clamp(10px,1.1vw,18px) 4px;text-align:left;font-weight:500;}
-.ba-table th:nth-child(1){width:17%;color:var(--ink-c);}
-.ba-table th:nth-child(2){width:36%;color:var(--ink-c);}
-.ba-table th:nth-child(3){width:6%;}
-.ba-table th:nth-child(4){width:41%;color:var(--cobalt);}
-.ba-table td{padding:clamp(7px,1vh,14px) clamp(10px,1.1vw,18px);font-size:clamp(10.5px,0.85vw,16.5px);line-height:1.42;vertical-align:middle;background:rgba(255,255,255,0.55);border-top:1px solid rgba(255,255,255,0.85);border-bottom:1px solid rgba(226,232,240,0.85);}
-.ba-table td:nth-child(1){border-left:1px solid rgba(226,232,240,0.85);border-radius:12px 0 0 12px;font-family:var(--font-display);font-weight:700;color:var(--ink-h);}
-.ba-table td:nth-child(2){color:var(--ink-c);}
-.ba-table td:nth-child(4){border-right:1px solid rgba(226,232,240,0.85);border-radius:0 12px 12px 0;color:var(--ink-b);}
-.ba-table td:nth-child(4) b{color:var(--cobalt);font-weight:600;}
-.ba-table .shift-cell{text-align:center;background:transparent;border:none;}
-.ba-table .shift-cell i[data-lucide]{width:clamp(16px,1.2vw,24px);height:clamp(16px,1.2vw,24px);color:var(--cobalt);}
-.ba-foot{margin-top:clamp(8px,1.2vh,16px);display:flex;align-items:center;gap:0.8em;font-size:clamp(11px,0.85vw,16px);color:var(--ink-c);}
-.ba-foot i[data-lucide]{width:1.3em;height:1.3em;color:var(--emerald);flex:0 0 auto;}
-
 /* ---- Slide 10: Closing ---- */
 #s10 .slide-body{gap:clamp(18px,2.4vw,44px);}
 .close-left{flex:1.2;display:flex;flex-direction:column;min-width:0;}
@@ -504,6 +370,230 @@ body.presenter-click .clickzone{opacity:1;}
 .tele-row .v.online{color:var(--emerald);}
 #qa-timer{font-size:clamp(24px,2.6vw,52px);letter-spacing:0.02em;}
 .reveal-btn-row{margin-top:auto;display:flex;gap:14px;flex-wrap:wrap;}
+
+/* ============================================================
+   DEMO SYSTEM — shared layout for the experiment slides (1–7)
+   ============================================================ */
+.demo-grid{
+  display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);
+  gap:clamp(16px,2vw,36px);width:100%;flex:1 1 auto;min-height:0;
+}
+.stim-col{display:flex;flex-direction:column;min-width:0;min-height:0;gap:clamp(8px,1.2vh,16px);}
+/* SOLID white stimulus card — no blur, no sheen, no transparency tricks.
+   Nothing above the stimulus may tint it (see body.stim-on rule above). */
+.stim-card{
+  background:#FFFFFF;
+  border:1px solid rgba(226,232,240,0.9);
+  border-radius:clamp(14px,1.2vw,24px);
+  box-shadow:0 20px 50px rgba(15,23,42,0.06);
+  padding:clamp(12px,1.4vh,22px) clamp(14px,1.5vw,26px);
+  flex:1 1 auto;min-height:0;
+  display:flex;flex-direction:column;gap:clamp(6px,1vh,14px);
+}
+.stim-card .stim-head{flex:0 0 auto;display:flex;align-items:baseline;justify-content:space-between;gap:1em;flex-wrap:wrap;}
+.stim-card .stim-svgwrap{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;}
+.stim-card .stim-svgwrap svg{width:100%;height:100%;display:block;}
+.stim-readout{
+  flex:0 0 auto;font-size:clamp(12px,1.05vw,20px);line-height:1.45;color:var(--ink-b);
+  min-height:2.6em;transition:opacity 0.35s ease;
+}
+.stim-readout.dim{color:var(--ink-c);}
+.step-list{display:flex;flex-direction:column;gap:clamp(8px,1.2vh,16px);min-height:0;}
+.step-row{
+  display:flex;gap:0.9em;align-items:flex-start;
+  background:var(--neu-bg);border:1px solid rgba(255,255,255,0.6);
+  border-radius:14px;padding:clamp(9px,1.1vh,15px) clamp(11px,1.2vw,19px);
+  box-shadow:var(--neu-out-sm);
+}
+.step-row.rv{opacity:0;transform:translate3d(0,14px,0);transition:opacity 0.5s ease,transform 0.5s var(--slide-ease);pointer-events:none;}
+.step-row.rv.shown{opacity:1;transform:translate3d(0,0,0);pointer-events:auto;}
+.chip{
+  flex:0 0 auto;font-family:var(--font-mono);font-weight:700;
+  font-size:clamp(9px,0.66vw,13px);letter-spacing:0.12em;text-transform:uppercase;
+  border-radius:8px;padding:0.42em 0.75em;margin-top:0.15em;white-space:nowrap;
+}
+.chip.ask{color:#fff;background:var(--cobalt);}
+.chip.rev{color:#fff;background:var(--coral);}
+.chip.why{color:#fff;background:var(--indigo);}
+.chip.care{color:#fff;background:var(--ink-c);}
+.step-text{font-size:clamp(12px,1.1vw,21px);line-height:1.5;color:var(--ink-b);}
+.step-text b{color:var(--ink-h);font-weight:700;}
+.action-bar{margin-top:auto;display:flex;align-items:center;gap:clamp(10px,1.2vw,20px);flex-wrap:wrap;}
+.act-btn{
+  min-height:clamp(56px,7vh,84px);
+  font-size:clamp(14px,1.15vw,22px);font-weight:700;
+  padding:0.8em 1.5em;gap:0.65em;
+}
+.act-btn i[data-lucide]{width:1.25em;height:1.25em;color:var(--cobalt);}
+.act-btn[disabled]{opacity:0.45;cursor:default;}
+.src-line{
+  flex:0 0 auto;margin-top:clamp(8px,1.2vh,16px);
+  font-family:var(--font-mono);font-size:clamp(9px,0.68vw,13px);
+  letter-spacing:0.08em;color:rgba(100,116,139,0.75);
+}
+/* title swap fade — opacity only (GPU-safe) */
+.slide-title.swap{transition:opacity 0.35s ease;}
+.slide-title.fading{opacity:0;}
+
+/* ---- Slide 1 hook card bits ---- */
+#gray-svg .sq-label{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;}
+
+/* ---- Slide 3 duck-rabbit controls ---- */
+.dr-controls{flex:0 0 auto;display:flex;gap:clamp(8px,1vw,16px);flex-wrap:wrap;}
+.dr-controls .neu-btn{min-height:56px;}
+
+/* ---- Slide 4 arena ---- */
+#arena-timebar{flex:0 0 auto;width:100%;height:8px;border-radius:99px;background:rgba(148,163,184,0.25);overflow:hidden;box-shadow:var(--neu-in);}
+#arena-timefill{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--cobalt),var(--indigo));transform-origin:left center;transform:scaleX(0);}
+.arena-veil{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,0.82);opacity:0;pointer-events:none;transition:opacity 0.4s ease;
+  border-radius:12px;
+}
+.arena-veil.show{opacity:1;}
+.arena-veil p{font-family:var(--font-display);font-weight:800;color:var(--ink-h);font-size:clamp(16px,1.6vw,32px);text-align:center;padding:0 1em;line-height:1.3;}
+.arena-stage{position:relative;flex:1 1 auto;min-height:0;display:flex;}
+.arena-stage .stim-svgwrap{width:100%;}
+.bounce-live{font-family:var(--font-mono);font-weight:700;color:var(--ink-h);font-size:clamp(16px,1.5vw,30px);}
+
+/* ---- Slide 5 DRM word stage ---- */
+.drm-view{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.6em;opacity:0;transition:opacity 0.3s ease;pointer-events:none;}
+.drm-view.on{opacity:1;}
+.drm-word{font-family:var(--font-display);font-weight:800;color:var(--ink-h);font-size:clamp(30px,9vw,170px);letter-spacing:-0.02em;line-height:1.05;text-transform:uppercase;text-align:center;padding:0 0.4em;}
+.drm-hint{font-size:clamp(13px,1.2vw,24px);color:var(--ink-c);text-align:center;max-width:30ch;line-height:1.5;}
+.drm-dots{display:flex;gap:clamp(5px,0.6vw,11px);align-items:center;}
+.drm-dots i{width:clamp(7px,0.7vw,13px);height:clamp(7px,0.7vw,13px);border-radius:50%;background:rgba(148,163,184,0.35);transition:background 0.2s ease,transform 0.2s ease;}
+.drm-dots i.done{background:var(--cobalt);}
+.drm-dots i.now{background:var(--coral);transform:scale(1.35);}
+.poll-q{font-family:var(--font-display);font-weight:800;color:var(--ink-h);font-size:clamp(15px,1.5vw,30px);text-align:center;}
+.poll-chips{display:flex;gap:clamp(10px,1.3vw,24px);flex-wrap:wrap;justify-content:center;}
+.poll-chip{
+  position:relative;background:var(--neu-bg);box-shadow:var(--neu-out-sm);
+  border-radius:16px;padding:clamp(12px,1.5vh,22px) clamp(16px,1.8vw,32px);
+  font-family:var(--font-display);font-weight:800;color:var(--ink-h);
+  font-size:clamp(15px,1.6vw,32px);letter-spacing:0.02em;
+  transition:transform 0.25s var(--slide-ease),box-shadow 0.25s ease;
+}
+.poll-chip .verdict{
+  display:block;font-family:var(--font-mono);font-weight:500;
+  font-size:clamp(9px,0.68vw,13px);letter-spacing:0.1em;text-transform:uppercase;
+  margin-top:0.5em;opacity:0;transition:opacity 0.3s ease;
+}
+.poll-chip.judged .verdict{opacity:1;}
+.poll-chip.shown-was{box-shadow:var(--neu-out-sm),inset 0 0 0 2px var(--emerald);}
+.poll-chip.shown-was .verdict{color:var(--emerald);}
+.poll-chip.not-shown{box-shadow:var(--neu-out-sm),inset 0 0 0 2px #94A3B8;}
+.poll-chip.not-shown .verdict{color:var(--ink-c);}
+.poll-chip.lure{box-shadow:var(--neu-out-sm),inset 0 0 0 3px var(--coral);animation:lurePulse 1.6s ease-in-out 3;}
+.poll-chip.lure .verdict{color:var(--coral);}
+@keyframes lurePulse{0%,100%{transform:translate3d(0,0,0);}50%{transform:translate3d(0,-5px,0);}}
+.poll-note{font-size:clamp(11px,0.95vw,18px);color:var(--ink-c);text-align:center;}
+.drm-results{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(8px,1vw,16px);width:100%;}
+.drm-tile{
+  background:var(--neu-bg);border-radius:12px;box-shadow:var(--neu-out-sm);
+  padding:clamp(8px,1.1vh,15px) clamp(8px,0.9vw,15px);text-align:center;
+  font-family:var(--font-display);font-weight:700;color:var(--ink-h);
+  font-size:clamp(11px,1.05vw,20px);
+}
+.drm-tile.lure-tile{background:rgba(225,29,72,0.06);border:2px dashed var(--coral);color:var(--coral);}
+.drm-tile.lure-tile small{display:block;font-family:var(--font-mono);font-weight:500;font-size:0.62em;letter-spacing:0.06em;margin-top:0.4em;text-transform:uppercase;}
+
+/* ---- Slide 6 Loftus & Palmer ---- */
+.lp-question{font-family:var(--font-display);font-weight:700;color:var(--ink-h);font-size:clamp(14px,1.45vw,28px);line-height:1.4;}
+.lp-question .verb-slot{color:var(--coral);border-bottom:3px solid var(--coral);padding:0 0.15em;}
+.lp-chips{display:flex;gap:clamp(6px,0.8vw,14px);flex-wrap:wrap;}
+.lp-chip{
+  font-family:var(--font-mono);font-size:clamp(10px,0.85vw,16px);letter-spacing:0.06em;
+  border-radius:999px;padding:0.5em 1em;background:rgba(148,163,184,0.16);color:var(--ink-c);
+  opacity:0;transform:translate3d(0,8px,0);transition:opacity 0.4s ease,transform 0.4s var(--slide-ease),background 0.3s ease,color 0.3s ease;
+}
+.lp-chip.seen{opacity:1;transform:translate3d(0,0,0);}
+.lp-chip.active{background:var(--coral);color:#fff;}
+.lp-chart{display:flex;flex-direction:column;gap:clamp(6px,0.9vh,12px);min-height:0;}
+.lp-bar-row{display:flex;align-items:center;gap:0.8em;opacity:0;transition:opacity 0.4s ease;}
+.lp-bar-row.seen{opacity:1;}
+.lp-bar-name{flex:0 0 clamp(86px,9vw,170px);font-family:var(--font-mono);font-size:clamp(10px,0.85vw,16px);color:var(--ink-b);text-align:right;}
+.lp-bar-track{flex:1;height:clamp(14px,1.8vh,26px);border-radius:99px;background:rgba(148,163,184,0.18);position:relative;overflow:hidden;}
+.lp-bar-fill{position:absolute;inset:0;background:linear-gradient(90deg,var(--cobalt),var(--indigo));transform-origin:left center;transform:scaleX(0);transition:transform 0.9s var(--slide-ease);border-radius:99px;}
+.lp-bar-fill.hot{background:linear-gradient(90deg,var(--coral),#F97316);}
+.lp-bar-val{flex:0 0 clamp(44px,4.4vw,80px);font-family:var(--font-mono);font-weight:700;font-size:clamp(11px,0.95vw,18px);color:var(--ink-h);}
+.lp-axis{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:clamp(8px,0.62vw,12px);color:var(--ink-c);padding-left:calc(clamp(86px,9vw,170px) + 0.8em);padding-right:calc(clamp(44px,4.4vw,80px) + 0.8em);}
+.lp-glass{opacity:0;transform:translate3d(0,14px,0);transition:opacity 0.5s ease,transform 0.5s var(--slide-ease);display:none;}
+.lp-glass.seen{display:block;opacity:1;transform:translate3d(0,0,0);}
+.lp-glass h4{font-family:var(--font-display);font-weight:800;color:var(--ink-h);font-size:clamp(13px,1.2vw,23px);margin-bottom:0.6em;}
+.lp-tiles{display:flex;gap:clamp(8px,1vw,16px);flex-wrap:wrap;}
+.lp-tile{flex:1;min-width:120px;background:var(--neu-bg);border-radius:12px;box-shadow:var(--neu-out-sm);padding:clamp(9px,1.2vh,16px) clamp(10px,1.1vw,18px);text-align:center;}
+.lp-tile .n{font-family:var(--font-mono);font-weight:700;font-size:clamp(16px,1.7vw,34px);color:var(--coral);}
+.lp-tile .l{font-size:clamp(9px,0.75vw,14px);color:var(--ink-c);margin-top:0.35em;line-height:1.35;}
+.lp-noglass{margin-top:0.7em;font-size:clamp(10px,0.9vw,17px);color:var(--ink-b);display:flex;align-items:center;gap:0.6em;}
+.lp-noglass i[data-lucide]{width:1.2em;height:1.2em;color:var(--coral);flex:0 0 auto;}
+
+/* ---- Slide 7 Wason ---- */
+.wason-seed{display:flex;align-items:center;gap:0.8em;font-family:var(--font-mono);font-size:clamp(13px,1.3vw,26px);color:var(--ink-h);font-weight:700;}
+.wason-presets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(8px,1vw,16px);}
+.wason-presets .neu-btn{min-height:56px;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:clamp(12px,1.05vw,20px);}
+.wason-stepper{display:flex;align-items:center;gap:clamp(6px,0.8vw,14px);flex-wrap:wrap;}
+.ws-num{display:flex;align-items:center;gap:6px;}
+.ws-num button{width:clamp(40px,3.6vw,60px);height:clamp(40px,3.6vw,60px);border-radius:12px;background:var(--neu-bg);box-shadow:var(--neu-out-sm);font-weight:800;font-size:clamp(15px,1.3vw,26px);color:var(--ink-b);display:flex;align-items:center;justify-content:center;}
+.ws-num button:active{box-shadow:var(--neu-in);}
+.ws-num .val{min-width:clamp(52px,4.6vw,86px);text-align:center;font-family:var(--font-mono);font-weight:700;font-size:clamp(14px,1.3vw,26px);color:var(--ink-h);background:var(--neu-bg);box-shadow:var(--neu-in);border-radius:10px;padding:0.4em 0.2em;}
+.wason-log{display:flex;flex-direction:column;gap:clamp(5px,0.8vh,11px);max-height:clamp(90px,14vh,220px);overflow:hidden;}
+.wason-log-row{display:flex;align-items:center;justify-content:space-between;gap:1em;background:rgba(255,255,255,0.7);border:1px solid rgba(226,232,240,0.9);border-radius:10px;padding:clamp(5px,0.8vh,10px) clamp(9px,1vw,16px);font-family:var(--font-mono);font-size:clamp(11px,0.95vw,18px);color:var(--ink-b);animation:logIn 0.35s var(--slide-ease);}
+@keyframes logIn{from{opacity:0;transform:translate3d(0,10px,0);}to{opacity:1;transform:translate3d(0,0,0);}}
+.wason-banner{
+  display:none;background:rgba(5,150,105,0.08);border:1px solid rgba(5,150,105,0.25);
+  color:var(--emerald);border-radius:12px;padding:clamp(9px,1.2vh,16px) clamp(12px,1.3vw,20px);
+  font-family:var(--font-display);font-weight:800;font-size:clamp(12px,1.15vw,22px);line-height:1.4;
+}
+.wason-banner.show{display:block;animation:logIn 0.4s var(--slide-ease);}
+
+/* ---- Slide 8 rules reuse / callout ---- */
+.callout-bar{
+  flex:0 0 auto;margin-top:clamp(10px,1.6vh,22px);
+  display:flex;align-items:center;gap:0.9em;
+  background:var(--neu-bg);border-radius:16px;box-shadow:var(--neu-out-sm);
+  padding:clamp(11px,1.5vh,20px) clamp(14px,1.6vw,26px);
+  font-family:var(--font-display);font-weight:700;color:var(--ink-h);
+  font-size:clamp(13px,1.25vw,24px);line-height:1.4;
+}
+.callout-bar i[data-lucide]{width:1.4em;height:1.4em;color:var(--indigo);flex:0 0 auto;}
+
+/* ---- Slide 9 before/after table ---- */
+.ba-scroll{width:100%;display:flex;flex-direction:column;min-height:0;}
+.ba-table{width:100%;border-collapse:separate;border-spacing:0 clamp(5px,0.7vh,9px);table-layout:fixed;}
+.ba-table th{font-family:var(--font-mono);font-size:clamp(9px,0.64vw,13px);letter-spacing:0.16em;text-transform:uppercase;padding:0 clamp(10px,1.1vw,18px) 4px;text-align:left;font-weight:500;}
+.ba-table th:nth-child(1){width:17%;color:var(--ink-c);}
+.ba-table th:nth-child(2){width:36%;color:var(--ink-c);}
+.ba-table th:nth-child(3){width:6%;}
+.ba-table th:nth-child(4){width:41%;color:var(--cobalt);}
+.ba-table td{padding:clamp(7px,1vh,14px) clamp(10px,1.1vw,18px);font-size:clamp(10.5px,0.85vw,16.5px);line-height:1.42;vertical-align:middle;background:rgba(255,255,255,0.55);border-top:1px solid rgba(255,255,255,0.85);border-bottom:1px solid rgba(226,232,240,0.85);}
+.ba-table td:nth-child(1){border-left:1px solid rgba(226,232,240,0.85);border-radius:12px 0 0 12px;font-family:var(--font-display);font-weight:700;color:var(--ink-h);}
+.ba-table td:nth-child(2){color:var(--ink-c);}
+.ba-table td:nth-child(4){border-right:1px solid rgba(226,232,240,0.85);border-radius:0 12px 12px 0;color:var(--ink-b);}
+.ba-table td:nth-child(4) b{color:var(--cobalt);font-weight:600;}
+.ba-table .shift-cell{text-align:center;background:transparent;border:none;}
+.ba-table .shift-cell i[data-lucide]{width:clamp(16px,1.2vw,24px);height:clamp(16px,1.2vw,24px);color:var(--cobalt);}
+.ba-foot{margin-top:clamp(8px,1.2vh,16px);display:flex;align-items:center;gap:0.8em;font-size:clamp(11px,0.85vw,16px);color:var(--ink-c);}
+.ba-foot i[data-lucide]{width:1.3em;height:1.3em;color:var(--emerald);flex:0 0 auto;}
+
+/* ---- Slide 8: Three rules ---- */
+.rules-col{display:flex;flex-direction:column;gap:clamp(12px,1.7vh,24px);width:100%;justify-content:center;flex:1;}
+.rule-row{display:grid;grid-template-columns:clamp(64px,6vw,110px) clamp(56px,5vw,90px) 1fr auto;gap:clamp(12px,1.6vw,28px);align-items:center;}
+.rule-num{font-family:var(--font-mono);font-weight:700;font-size:clamp(26px,2.8vw,58px);color:transparent;-webkit-text-stroke:1.5px var(--cobalt);letter-spacing:-0.02em;}
+.rule-row.r-ind .rule-num{-webkit-text-stroke-color:var(--indigo);}
+.rule-row.r-cor .rule-num{-webkit-text-stroke-color:var(--coral);}
+.rule-icon{width:clamp(44px,3.8vw,72px);height:clamp(44px,3.8vw,72px);border-radius:18px;background:var(--neu-bg);box-shadow:var(--neu-out-sm);display:flex;align-items:center;justify-content:center;}
+.rule-icon i[data-lucide]{width:44%;height:44%;color:var(--cobalt);}
+.rule-row.r-ind .rule-icon i{color:var(--indigo);}
+.rule-row.r-cor .rule-icon i{color:var(--coral);}
+.rule-text h3{font-size:clamp(15px,1.35vw,28px);font-weight:800;color:var(--ink-h);}
+.rule-text p{font-size:clamp(11px,0.9vw,17px);color:var(--ink-c);line-height:1.5;margin-top:0.35em;max-width:70ch;}
+.rule-aud{display:flex;flex-direction:column;gap:0.4em;align-items:flex-end;}
+
+/* ---- Slide 10 replay row ---- */
+.replay-row{display:flex;gap:clamp(8px,1vw,16px);flex-wrap:wrap;margin-top:clamp(12px,1.8vh,24px);}
+.replay-row .neu-btn{min-height:56px;}
+.replay-row .neu-btn i[data-lucide]{color:var(--indigo);}
 
 /* ============================================================
    MODAL — Phone Remote Sync (Glassmorphic)
@@ -576,6 +666,7 @@ body.remote-mode #remote-ui{display:flex;flex-direction:column;gap:clamp(14px,2.
 }
 .rmu-big i[data-lucide]{width:clamp(26px,7vw,38px);height:clamp(26px,7vw,38px);color:var(--cobalt);}
 .rmu-big:active{box-shadow:var(--neu-in);transform:translateY(1px);}
+.rmu-big[disabled]{opacity:0.45;cursor:default;box-shadow:var(--neu-out-sm);}
 .rmu-jump-lbl{font-family:var(--font-mono);font-size:clamp(9px,2.6vw,12px);letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-c);}
 .rmu-jump{display:grid;grid-template-columns:repeat(5,1fr);gap:clamp(8px,2.2vw,12px);}
 .rmu-jump button{
@@ -610,11 +701,8 @@ body.remote-mode #remote-ui{display:flex;flex-direction:column;gap:clamp(14px,2.
 
 @media (max-width:900px){
   #stage{width:100dvw;height:100dvh;border-radius:0;top:0;left:0;transform:none;}
-  .flow-row{grid-template-columns:1fr;}
-  .flow-link{transform:rotate(90deg);height:20px;}
-  .compare-grid{grid-template-columns:1fr;}
+  .demo-grid{grid-template-columns:1fr;}
   .mi-grid{grid-template-columns:1fr;}
-  .kinetic-demo{grid-column:span 1;}
   .rm-grid{grid-template-columns:1fr;}
   .rule-row{grid-template-columns:auto auto 1fr;}
   .rule-aud{display:none;}
@@ -675,20 +763,20 @@ body.remote-mode #remote-ui{display:flex;flex-direction:column;gap:clamp(14px,2.
 
 <!-- =================== GLASSMORPHIC STAGE =================== -->
 <main id="stage" role="region" aria-label="Presentation stage">
-  <div id="slide-chip"><span class="chip-num mono" id="chip-num">01</span><span>/ 10 &nbsp;·&nbsp; Algorithmic Persuasion</span></div>
+  <div id="slide-chip"><span class="chip-num mono" id="chip-num">01</span><span>/ 10 &nbsp;·&nbsp; Can You Trust Your Own Brain?</span></div>
   <div id="stage-inner">
     <div class="clickzone" id="zone-prev" title="Previous slide"><span class="zone-glyph"><i data-lucide="chevron-left" stroke-width="2"></i></span></div>
     <div class="clickzone" id="zone-next" title="Next slide"><span class="zone-glyph"><i data-lucide="chevron-right" stroke-width="2"></i></span></div>
 
-<!-- ============ SLIDE 1 : TITLE & PROVOCATION ============ -->
-<section class="slide" id="s1" data-title="Title &amp; Provocation" aria-label="Slide 1 of 10">
+<!-- ============ SLIDE 1 : THE GREETING BLIND SPOT ============ -->
+<section class="slide" id="s1" data-title="The Greeting Blind Spot" aria-label="Slide 1 of 10">
   <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
   <div class="slide-body">
     <div class="stagger stg-1">
-      <span class="eyebrow"><i data-lucide="radio" stroke-width="2"></i> Q-Infinity Smart Board · Live Deck · 2026</span>
+      <span class="eyebrow"><i data-lucide="radio" stroke-width="2"></i> Q-Infinity Smart Board · Live Experiments · 2026</span>
     </div>
-    <h1 class="title-hero stagger stg-2">Algorithmic<br><span class="grad">Persuasion</span></h1>
-    <p class="title-sub stagger stg-3">How Short-Form Feeds Rewire Human Communication &amp; Attention — and how ethical communicators can take those rewired circuits back.</p>
+    <h1 class="title-hero stagger stg-2">Can You Trust<br><span class="grad">Your Own Brain?</span></h1>
+    <p class="title-sub stagger stg-3">Seven live experiments on one screen — and a field manual for what they prove. The room is the lab.</p>
     <div class="author-block stagger stg-3">
       <div class="avatar-ring">
         <div class="avatar-core">
@@ -706,366 +794,427 @@ body.remote-mode #remote-ui{display:flex;flex-direction:column;gap:clamp(14px,2.
         </button>
       </div>
     </div>
-    <div class="s1-grid stagger stg-4">
-      <div class="neu-pod" id="decay-pod">
-        <div class="pod-label"><i data-lucide="timer" stroke-width="2"></i> Attention Decay Counter · Mean Visual Fixation</div>
-        <div class="pod-value"><span id="decay-num" class="mono">12.0</span><span class="unit">sec</span></div>
-        <div id="decay-track">
-          <div id="decay-fillbar"></div>
-          <div id="decay-marker"></div>
-        </div>
-        <div id="decay-scale"><span>2004 · 12.0s</span><span>2012 · 8.0s</span><span>2026 · 2.7s</span></div>
-        <div class="pod-note">Live simulation: sustained visual fixation collapses as feed velocity rises. The counter loops every 9 seconds — exactly how long this slide will hold you.</div>
-      </div>
-      <div class="glass-card">
-        <div class="pod-label"><i data-lucide="scan-line" stroke-width="2"></i> Field Telemetry</div>
-        <div class="pod-value mono" style="font-size:clamp(15px,1.2vw,24px);">PHASE-SPACE v2.6</div>
-        <div class="pod-note">The ribbons behind this deck are parametric attention trajectories converging on an algorithmic attractor. They re-phase with every slide you turn.</div>
-      </div>
-    </div>
     <div class="feature-pills stagger stg-5">
-      <span class="pill-neu"><i data-lucide="zap" stroke-width="2"></i> 3-Second Hooks</span>
-      <span class="pill-neu"><i data-lucide="dices" stroke-width="2"></i> Variable Rewards</span>
-      <span class="pill-neu"><i data-lucide="minimize-2" stroke-width="2"></i> Cognitive Compression</span>
+      <span class="pill-neu"><i data-lucide="flask-conical" stroke-width="2"></i> Seven Live Experiments</span>
+      <span class="pill-neu"><i data-lucide="eye" stroke-width="2"></i> Perception Tricks You'll Feel</span>
+      <span class="pill-neu"><i data-lucide="book-open" stroke-width="2"></i> A Field Manual For The Room</span>
     </div>
   </div>
 </section>
 
-<!-- ============ SLIDE 2 : THE CORE PROBLEM ============ -->
-<section class="slide" id="s2" data-title="The Linear Storytelling Collapse" aria-label="Slide 2 of 10">
+<!-- ============ SLIDE 2 : EXPERIMENT 01 — SAME OR DIFFERENT? ============ -->
+<section class="slide" id="s2" data-title="Experiment 01 · Same or Different?" aria-label="Slide 2 of 10">
   <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
   <header class="slide-head stagger stg-1">
-    <span class="eyebrow coral"><i data-lucide="triangle-alert" stroke-width="2"></i> Core Problem · 02</span>
-    <h2 class="slide-title">The <span class="accent-c">Linear Storytelling</span> Collapse</h2>
-    <p class="slide-sub">For ten thousand years, human ideas travelled slowly — setups, digressions, delayed payoffs. Feed-conditioned cognition now rejects that structure before it even loads.</p>
+    <span class="eyebrow"><i data-lucide="flask-conical" stroke-width="2"></i> Experiment 01 · Live Now</span>
+    <h2 class="slide-title swap" id="s2-title">Same or <span class="accent">Different?</span></h2>
+    <p class="slide-sub">One rule before we start: answer with your eyes, not your opinions. Ready?</p>
   </header>
   <div class="slide-body">
-    <div class="compare-grid stagger stg-2" style="width:100%;">
-      <div class="compare-col col-legacy neu-pod">
-        <div class="compare-head"><i data-lucide="book-open" stroke-width="2"></i> Legacy Communication</div>
-        <div class="row-item"><i data-lucide="hourglass" stroke-width="2"></i><span><b>Long setups:</b> context first, thesis at minute seven.</span></div>
-        <div class="row-item"><i data-lucide="file-text" stroke-width="2"></i><span><b>Delayed thesis:</b> the payoff lives in the conclusion nobody reaches.</span></div>
-        <div class="row-item"><i data-lucide="layers" stroke-width="2"></i><span><b>High cognitive friction:</b> the audience must build the frame themselves.</span></div>
-        <div class="row-item"><i data-lucide="door-open" stroke-width="2"></i><span><b>Zero-cost exit didn't exist:</b> leaving a lecture took effort, so staying was default.</span></div>
-        <div class="friction-meter"><span>Friction</span><div class="meter-bar"><div class="meter-fill slate" id="m-legacy" style="transform:scaleX(0);"></div></div><span>0.82</span></div>
-      </div>
-      <div class="compare-arrow">
-        <i data-lucide="arrow-right" stroke-width="2"></i>
-        <span class="arrow-label">Feed Conditioning</span>
-      </div>
-      <div class="compare-col col-feed glass-card">
-        <div class="compare-head"><i data-lucide="clapperboard" stroke-width="2"></i> Feed-Conditioned Cognition</div>
-        <div class="row-item"><i data-lucide="flashlight" stroke-width="2"></i><span><b>Instant stakes:</b> the brain asks "why should I care?" in under 800&nbsp;ms.</span></div>
-        <div class="row-item"><i data-lucide="milestone" stroke-width="2"></i><span><b>Thesis-first parsing:</b> conclusions arrive up front; evidence is optional scaffolding.</span></div>
-        <div class="row-item"><i data-lucide="waves" stroke-width="2"></i><span><b>Micro-segments:</b> meaning is consumed in 15–60 second packets, not arcs.</span></div>
-        <div class="row-item"><i data-lucide="log-out" stroke-width="2"></i><span><b>One-flick exit:</b> leaving costs nothing, so boredom is instantly fatal.</span></div>
-        <div class="friction-meter"><span>Friction</span><div class="meter-bar"><div class="meter-fill coralg" id="m-feed" style="transform:scaleX(0);"></div></div><span>0.11</span></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ SLIDE 3 : THE CORE MECHANISM ============ -->
-<section class="slide" id="s3" data-title="The Dopamine &amp; Prediction Error Loop" aria-label="Slide 3 of 10">
-  <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
-  <header class="slide-head stagger stg-1">
-    <span class="eyebrow indigo"><i data-lucide="activity" stroke-width="2"></i> Core Mechanism · 03</span>
-    <h2 class="slide-title">The <span class="accent-i">Dopamine</span> &amp; Prediction-Error Loop</h2>
-    <p class="slide-sub">Dopamine does not encode pleasure — it encodes <em>prediction error</em>. A feed that never fully surprises, never fully bores, keeps the loop firing indefinitely.</p>
-  </header>
-  <div class="slide-body">
-    <div style="display:flex;flex-direction:column;width:100%;height:100%;min-height:0;">
-      <div class="flow-row stagger stg-2">
-        <div class="flow-node n-eye neu-pod">
-          <div class="flow-icon"><i data-lucide="eye" stroke-width="2"></i></div>
-          <div class="flow-stage">Stage 01</div>
-          <div class="flow-name">Sensory Interrupt</div>
-          <div class="flow-desc">Motion, contrast, or dissonance hijacks the orienting response before conscious choice exists.</div>
-        </div>
-        <div class="flow-link"><i data-lucide="chevron-right" stroke-width="2"></i></div>
-        <div class="flow-node n-zap neu-pod">
-          <div class="flow-icon"><i data-lucide="zap" stroke-width="2"></i></div>
-          <div class="flow-stage">Stage 02</div>
-          <div class="flow-name">Micro-Curiosity Gap</div>
-          <div class="flow-desc">A withheld detail creates an open loop — the brain pays to close it.</div>
-        </div>
-        <div class="flow-link"><i data-lucide="chevron-right" stroke-width="2"></i></div>
-        <div class="flow-node n-gift neu-pod">
-          <div class="flow-icon"><i data-lucide="gift" stroke-width="2"></i></div>
-          <div class="flow-stage">Stage 03</div>
-          <div class="flow-name">Variable Reward</div>
-          <div class="flow-desc">Intermittent payoff spikes prediction error far harder than any guaranteed one.</div>
-        </div>
-        <div class="flow-link"><i data-lucide="chevron-right" stroke-width="2"></i></div>
-        <div class="flow-node n-repeat neu-pod">
-          <div class="flow-icon"><i data-lucide="repeat" stroke-width="2"></i></div>
-          <div class="flow-stage">Stage 04</div>
-          <div class="flow-name">Automatic Scroll Reflex</div>
-          <div class="flow-desc">The thumb pre-empts intention. The loop restarts before evaluation begins.</div>
-        </div>
-      </div>
-      <div id="loop-svg-wrap" class="stagger stg-3">
-        <svg id="loop-svg" viewBox="0 0 1200 190" preserveAspectRatio="xMidYMid meet" shape-rendering="geometricPrecision" aria-hidden="true">
-          <path d="M 60 150 C 260 20, 940 20, 1140 150" fill="none" stroke="url(#rgB)" stroke-width="2" vector-effect="non-scaling-stroke"/>
-          <path d="M 1140 150 C 940 250, 260 250, 60 150" fill="none" stroke="url(#rgC)" stroke-width="2" vector-effect="non-scaling-stroke" stroke-dasharray="6 8" opacity="0.7"/>
-          <circle cx="60" cy="150" r="7" fill="#2563EB" opacity="0.85"/>
-          <circle cx="1140" cy="150" r="7" fill="#E11D48" opacity="0.85"/>
-          <circle id="reward-pulse" r="10" fill="#4F46E5" opacity="0.75"/>
-          <text x="600" y="16" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" letter-spacing="3" fill="#64748B">REWARD EXPECTATION vs REALITY — ERROR SIGNAL SUSTAINS THE LOOP</text>
-          <text x="600" y="186" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" letter-spacing="3" fill="#94A3B8">INTERMITTENT REINFORCEMENT · THE MOST EXTINGUISH-RESISTANT SCHEDULE KNOWN</text>
-        </svg>
-      </div>
-      <div class="loop-caption stagger stg-4">
-        <span class="tag cobalt"><i data-lucide="cpu" stroke-width="2"></i> Prediction Error = Reality − Expectation</span>
-        <span class="tag amber"><i data-lucide="shuffle" stroke-width="2"></i> Randomised reward timing maximises error</span>
-        <span class="tag coral"><i data-lucide="infinity" stroke-width="2"></i> Loops resist extinction, not satisfaction</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ SLIDE 4 : USE CASE #1 — HOOK ============ -->
-<section class="slide" id="s4" data-title="The 3-Second Visual &amp; Semantic Hook" aria-label="Slide 4 of 10">
-  <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
-  <header class="slide-head stagger stg-1">
-    <span class="eyebrow"><i data-lucide="target" stroke-width="2"></i> Use Case 01 · The Hook</span>
-    <h2 class="slide-title">The <span class="accent">3-Second</span> Visual &amp; Semantic Hook</h2>
-    <p class="slide-sub">Top-performing communicators open <em>in medias res</em> — conflict or contrast inside the first frame. Toggle the comparator to feel the difference.</p>
-  </header>
-  <div class="slide-body">
-    <div style="display:flex;flex-direction:column;width:100%;min-height:0;">
-      <div class="hook-stage stagger stg-2">
-        <div class="hook-card glass-card" id="hook-card">
-          <div class="pod-label"><i data-lucide="quote" stroke-width="2"></i> Opening Line · <span id="hook-state-label">Weak Passive Opening</span></div>
-          <p class="hook-quote" id="hook-quote">"So, today I'm going to be talking a little bit about our quarterly metrics, and if everyone could please just give me two minutes of your time while I set up the context…"</p>
-          <div class="timing-strip" id="hook-timing">
-            <span>0.0s preamble</span><span>2.4s throat-clearing</span><span>5.8s still no stakes</span><span>9.1s exit threshold crossed</span>
+    <div class="demo-grid">
+      <div class="stim-col stagger stg-2">
+        <div class="stim-card">
+          <div class="stim-head">
+            <span class="pod-label"><i data-lucide="scan-line" stroke-width="2"></i> Stimulus · Look, don't lean</span>
+            <span class="tag cobalt" id="gray-count-tag">Round 1 / 2</span>
           </div>
-          <div class="hook-meta">
-            <div class="retention-bars" id="rbars" aria-hidden="true"></div>
-            <div>
-              <div class="pod-label">Simulated 10s retention</div>
-              <div class="pod-value" style="font-size:clamp(18px,1.8vw,36px);"><span id="hook-retention" class="mono">18</span><span class="unit">%</span></div>
+          <div class="stim-svgwrap">
+            <svg id="gray-svg" viewBox="0 0 1200 640" preserveAspectRatio="xMidYMid meet" shape-rendering="crispEdges" aria-label="Two gray squares side by side"></svg>
+          </div>
+          <p class="stim-readout dim" id="gray-q">Which square looks lighter — A, B, or are they the same? Shout your first instinct.</p>
+        </div>
+        <div class="src-line">Ref: Adelson's checker-shadow illusion · MIT Vision Science</div>
+      </div>
+      <div class="step-col stagger stg-3">
+        <div class="step-list">
+          <div class="step-row rv" id="s2-step-reveal"><span class="chip rev">Reveal</span><p class="step-text" id="s2-reveal-text"></p></div>
+          <div class="step-row rv" id="s2-step-why"><span class="chip why">Why</span><p class="step-text" id="s2-why-text"></p></div>
+          <div class="step-row rv" id="s2-step-care"><span class="chip care">So what</span><p class="step-text" id="s2-care-text"></p></div>
+        </div>
+        <div class="action-bar">
+          <button class="neu-btn act-btn" id="s2-reveal-btn" accesskey="e" title="Reveal round 1 (accesskey: E)"><i data-lucide="eye" stroke-width="2"></i> Reveal</button>
+          <button class="neu-btn act-btn" id="s2-next-btn" title="Run round 2 — the identical-grays test"><i data-lucide="arrow-right" stroke-width="2"></i> Next Round</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 3 : EXPERIMENT 02 — COUNT THE PASSES ============ -->
+<section class="slide" id="s3" data-title="Experiment 02 · Count the Passes" aria-label="Slide 3 of 10">
+  <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
+  <header class="slide-head stagger stg-1">
+    <span class="eyebrow indigo"><i data-lucide="flask-conical" stroke-width="2"></i> Experiment 02 · Live Now</span>
+    <h2 class="slide-title swap" id="s3-title">Count the <span class="accent-i">Passes</span></h2>
+    <p class="slide-sub">Watch the white circle only. Count every pass it makes. No pausing, no rewinds — this works when you commit.</p>
+  </header>
+  <div class="slide-body">
+    <div class="demo-grid">
+      <div class="stim-col stagger stg-2">
+        <div class="stim-card">
+          <div class="stim-head">
+            <span class="pod-label"><i data-lucide="circle" stroke-width="2"></i> Track ONLY the WHITE circle</span>
+            <span class="tag slate" id="sim-status">STANDBY</span>
+          </div>
+          <div class="stim-svgwrap">
+            <svg id="pass-svg" viewBox="0 0 1200 640" preserveAspectRatio="xMidYMid meet" aria-label="Inattentional blindness simulation: circles passing a dot between two teams"></svg>
+          </div>
+          <p class="stim-readout dim" id="pass-q">How many passes did the white team make? Hold your number in your head — and ask yourself what else was on the screen.</p>
+        </div>
+        <div class="src-line">Ref: Simons &amp; Chabris "Gorilla Basketball" (1999) · Stage adaptation</div>
+      </div>
+      <div class="step-col stagger stg-3">
+        <div class="step-list">
+          <div class="step-row rv" id="s3-step-reveal"><span class="chip rev">Reveal</span><p class="step-text" id="s3-reveal-text"></p></div>
+          <div class="step-row rv" id="s3-step-why"><span class="chip why">Why</span><p class="step-text" id="s3-why-text"></p></div>
+          <div class="step-row rv" id="s3-step-care"><span class="chip care">So what</span><p class="step-text" id="s3-care-text"></p></div>
+        </div>
+        <div class="action-bar">
+          <button class="neu-btn act-btn" id="s3-run-btn" accesskey="r" title="Run the 20-second simulation (accesskey: R)"><i data-lucide="play" stroke-width="2"></i> Run Simulation</button>
+          <button class="neu-btn act-btn" id="s3-reveal-btn" title="Reveal what happened"><i data-lucide="eye" stroke-width="2"></i> Reveal</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 4 : EXPERIMENT 03 — ONE IMAGE, TWO ANIMALS ============ -->
+<section class="slide" id="s4" data-title="Experiment 03 · One Image, Two Animals" aria-label="Slide 4 of 10">
+  <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
+  <header class="slide-head stagger stg-1">
+    <span class="eyebrow coral"><i data-lucide="flask-conical" stroke-width="2"></i> Experiment 03 · Live Now</span>
+    <h2 class="slide-title swap" id="s4-title">One Image, <span class="accent-c">Two Animals</span></h2>
+    <p class="slide-sub">What do you see first — a duck, or a rabbit? Raise your hand for duck… now for rabbit. Same photons. Different brains.</p>
+  </header>
+  <div class="slide-body">
+    <div class="demo-grid">
+      <div class="stim-col stagger stg-2">
+        <div class="stim-card">
+          <div class="stim-head">
+            <span class="pod-label"><i data-lucide="image" stroke-width="2"></i> Ambiguous figure · Necker-style bistable drawing</span>
+          </div>
+          <div class="stim-svgwrap">
+            <svg id="dr-svg" viewBox="0 0 1200 640" preserveAspectRatio="xMidYMid meet" aria-label="Duck–rabbit ambiguous line drawing"></svg>
+          </div>
+          <p class="stim-readout dim" id="dr-readout">Stare at the beak-or-ears. Can you flip it on purpose? Most people can — but not instantly. That delay is the finding.</p>
+        </div>
+        <div class="src-line">Ref: Jastrow's Duck–Rabbit (1892) · Boring (1930)</div>
+      </div>
+      <div class="step-col stagger stg-3">
+        <div class="step-list">
+          <div class="step-row rv" id="s4-step-reveal"><span class="chip rev">Reveal</span><p class="step-text" id="s4-reveal-text"></p></div>
+          <div class="step-row rv" id="s4-step-why"><span class="chip why">Why</span><p class="step-text" id="s4-why-text"></p></div>
+          <div class="step-row rv" id="s4-step-care"><span class="chip care">So what</span><p class="step-text" id="s4-care-text"></p></div>
+        </div>
+        <div class="dr-controls">
+          <button class="neu-btn" id="dr-duck-btn" title="Overlay the duck reading"><i data-lucide="bird" stroke-width="2"></i> Duck Guide</button>
+          <button class="neu-btn" id="dr-rabbit-btn" title="Overlay the rabbit reading"><i data-lucide="rabbit" stroke-width="2"></i> Rabbit Guide</button>
+          <button class="neu-btn" id="dr-hide-btn" title="Remove overlays"><i data-lucide="eye-off" stroke-width="2"></i> Hide Guides</button>
+        </div>
+        <div class="action-bar">
+          <button class="neu-btn act-btn" id="s4-reveal-btn" accesskey="e" title="Reveal the science (accesskey: E)"><i data-lucide="eye" stroke-width="2"></i> Reveal</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 5 : EXPERIMENT 04 — THE IMPOSSIBLE TRIANGLE ============ -->
+<section class="slide" id="s5" data-title="Experiment 04 · The Impossible Triangle" aria-label="Slide 5 of 10">
+  <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
+  <header class="slide-head stagger stg-1">
+    <span class="eyebrow"><i data-lucide="flask-conical" stroke-width="2"></i> Experiment 04 · Live Now</span>
+    <h2 class="slide-title swap" id="s5-title">The <span class="accent">Impossible</span> Triangle</h2>
+    <p class="slide-sub">Trace the three corners with your eyes. Each corner is a perfect right angle. The triangle cannot exist. Your brain built it anyway.</p>
+  </header>
+  <div class="slide-body">
+    <div class="demo-grid">
+      <div class="stim-col stagger stg-2">
+        <div class="stim-card">
+          <div class="stim-head">
+            <span class="pod-label"><i data-lucide="triangle" stroke-width="2"></i> Penrose triangle · Constructed from real bars</span>
+            <span class="tag slate">Forced depth interpretation</span>
+          </div>
+          <div class="stim-svgwrap">
+            <svg id="penrose-svg" viewBox="0 0 1200 640" preserveAspectRatio="xMidYMid meet" aria-label="Penrose impossible triangle"></svg>
+          </div>
+          <p class="stim-readout dim" id="penrose-readout">There is no place to put this object in the world. Geometry says impossible — perception says "clearly a triangle." Who overruled whom?</p>
+        </div>
+        <div class="src-line">Ref: Penrose &amp; Penrose (1958) · Figure–ground construction in V1/V2</div>
+      </div>
+      <div class="step-col stagger stg-3">
+        <div class="step-list">
+          <div class="step-row rv" id="s5-step-reveal"><span class="chip rev">Reveal</span><p class="step-text" id="s5-reveal-text"></p></div>
+          <div class="step-row rv" id="s5-step-why"><span class="chip why">Why</span><p class="step-text" id="s5-why-text"></p></div>
+          <div class="step-row rv" id="s5-step-care"><span class="chip care">So what</span><p class="step-text" id="s5-care-text"></p></div>
+        </div>
+        <div class="action-bar">
+          <button class="neu-btn act-btn" id="s5-reveal-btn" accesskey="e" title="Reveal the science (accesskey: E)"><i data-lucide="eye" stroke-width="2"></i> Reveal</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 6 : EXPERIMENT 05 — THE MEMORY INCEPTION ============ -->
+<section class="slide" id="s6" data-title="Experiment 05 · The Memory Inception" aria-label="Slide 6 of 10">
+  <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
+  <header class="slide-head stagger stg-1">
+    <span class="eyebrow indigo"><i data-lucide="flask-conical" stroke-width="2"></i> Experiment 05 · Live Now</span>
+    <h2 class="slide-title swap" id="s6-title">The Memory <span class="accent-i">Inception</span></h2>
+    <p class="slide-sub">Four words, two seconds each. Just look — no memorising tricks. Then the room votes on a word that never appeared.</p>
+  </header>
+  <div class="slide-body">
+    <div class="demo-grid">
+      <div class="stim-col stagger stg-2">
+        <div class="stim-card" style="position:relative;">
+          <div class="stim-head">
+            <span class="pod-label"><i data-lucide="brain" stroke-width="2"></i> Deese–Roediger–McDermott paradigm</span>
+            <span class="drm-dots" id="drm-dots" aria-hidden="true"></span>
+          </div>
+          <div class="arena-stage">
+            <div class="drm-view on" id="drm-idle">
+              <p class="drm-hint">Press RUN. Four words flash on this card — watch them like a slideshow, nothing else.</p>
             </div>
-            <span class="tag slate" id="hook-verdict"><i data-lucide="thumbs-down" stroke-width="2"></i> Attention leak at second 4</span>
+            <div class="drm-view" id="drm-show">
+              <div class="drm-word" id="drm-word">—</div>
+            </div>
+            <div class="drm-view" id="drm-poll">
+              <p class="poll-q">Which of these four words was on the screen just now?</p>
+              <div class="poll-chips" id="drm-chips"></div>
+              <p class="poll-note">Shout your answer before I reveal anything. The room will agree — that agreement is the data.</p>
+            </div>
+            <div class="drm-view" id="drm-result">
+              <div class="drm-results" id="drm-tiles"></div>
+            </div>
+          </div>
+          <p class="stim-readout dim" id="drm-readout">No notes, no repetition. Encoding happens whether you intend it or not.</p>
+        </div>
+        <div class="src-line">Ref: Roediger &amp; McDermott (1995) · False-memory rate ≈ 80% on this list</div>
+      </div>
+      <div class="step-col stagger stg-3">
+        <div class="step-list">
+          <div class="step-row rv" id="s6-step-reveal"><span class="chip rev">Reveal</span><p class="step-text" id="s6-reveal-text"></p></div>
+          <div class="step-row rv" id="s6-step-why"><span class="chip why">Why</span><p class="step-text" id="s6-why-text"></p></div>
+          <div class="step-row rv" id="s6-step-care"><span class="chip care">So what</span><p class="step-text" id="s6-care-text"></p></div>
+        </div>
+        <div class="action-bar">
+          <button class="neu-btn act-btn" id="drm-run-btn" accesskey="r" title="Run the four-word sequence (accesskey: R)"><i data-lucide="play" stroke-width="2"></i> Run Sequence</button>
+          <button class="neu-btn act-btn" id="drm-verdict-btn" disabled title="Judge the room's vote"><i data-lucide="scale" stroke-width="2"></i> Verdict</button>
+          <button class="neu-btn act-btn" id="drm-reset-btn" title="Reset for another round"><i data-lucide="rotate-ccw" stroke-width="2"></i> Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 7 : EXPERIMENT 06 — WHERE WERE THE BROKEN GLASS? ============ -->
+<section class="slide" id="s7" data-title="Experiment 06 · Where Were the Broken Glass?" aria-label="Slide 7 of 10">
+  <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
+  <header class="slide-head stagger stg-1">
+    <span class="eyebrow coral"><i data-lucide="flask-conical" stroke-width="2"></i> Experiment 06 · Live Now</span>
+    <h2 class="slide-title swap" id="s7-title">Where Were the <span class="accent-c">Broken Glass?</span></h2>
+    <p class="slide-sub">Read this accident report out loud, together. One verb will do more damage than the crash.</p>
+  </header>
+  <div class="slide-body">
+    <div class="demo-grid">
+      <div class="stim-col stagger stg-2">
+        <div class="stim-card">
+          <div class="stim-head">
+            <span class="pod-label"><i data-lucide="car" stroke-width="2"></i> Loftus &amp; Palmer (1974) · Study 2 recreation</span>
+            <span class="tag slate" id="lp-verb-tag">verb: hit</span>
+          </div>
+          <div class="stim-svgwrap" style="align-items:flex-start;">
+            <div style="width:100%;display:flex;flex-direction:column;gap:clamp(10px,1.4vh,20px);">
+              <p class="lp-question">About how fast were the cars going when they <span class="verb-slot" id="lp-verb">SMASHED</span> into each other?</p>
+              <div class="lp-chips" id="lp-chips">
+                <span class="lp-chip" data-v="hit">hit</span>
+                <span class="lp-chip" data-v="bumped">bumped</span>
+                <span class="lp-chip" data-v="collided">collided</span>
+                <span class="lp-chip" data-v="smashed">smashed</span>
+              </div>
+              <div class="lp-chart">
+                <div class="lp-bar-row" data-k="hit"><span class="lp-bar-name">“hit”</span><div class="lp-bar-track"><div class="lp-bar-fill"></div></div><span class="lp-bar-val">32.2</span></div>
+                <div class="lp-bar-row" data-k="bumped"><span class="lp-bar-name">“bumped”</span><div class="lp-bar-track"><div class="lp-bar-fill"></div></div><span class="lp-bar-val">34.0</span></div>
+                <div class="lp-bar-row" data-k="collided"><span class="lp-bar-name">“collided”</span><div class="lp-bar-track"><div class="lp-bar-fill"></div></div><span class="lp-bar-val">36.0</span></div>
+                <div class="lp-bar-row" data-k="contacted"><span class="lp-bar-name">“contacted”</span><div class="lp-bar-track"><div class="lp-bar-fill"></div></div><span class="lp-bar-val">30.8</span></div>
+                <div class="lp-bar-row" data-k="smashed"><span class="lp-bar-name">“smashed”</span><div class="lp-bar-track"><div class="lp-bar-fill hot"></div></div><span class="lp-bar-val">40.5</span></div>
+              </div>
+              <div class="lp-axis"><span>0 mph</span><span>estimated speed (mean) · n = 45 per group</span><span>45 mph</span></div>
+            </div>
+          </div>
+          <div class="lp-glass" id="lp-glass">
+            <h4>One week later, the same people were asked: “Were there any broken glass?”</h4>
+            <div class="lp-tiles">
+              <div class="lp-tile"><div class="n">32%</div><div class="l">said YES after “smashed”<br>(there was none)</div></div>
+              <div class="lp-tile"><div class="n">14%</div><div class="l">said YES after “hit”</div></div>
+              <div class="lp-tile"><div class="n">18%</div><div class="l">control group said YES</div></div>
+            </div>
+            <p class="lp-noglass"><i data-lucide="video-off" stroke-width="2"></i> Fact check: the film contained <b>&nbsp;no broken glass&nbsp;</b> at all.</p>
           </div>
         </div>
+        <div class="src-line">Ref: Loftus &amp; Palmer, Journal of Verbal Learning (1974)</div>
       </div>
-      <div class="hook-controls stagger stg-3">
-        <button class="neu-btn" id="hook-toggle" title="Toggle hook state (Hook Comparator)"><i data-lucide="arrow-left-right" stroke-width="2"></i> Hook Comparator</button>
-        <span class="kbd-hint">tap to compare openings</span>
-        <span class="tag emerald" style="margin-left:auto;"><i data-lucide="flame" stroke-width="2"></i> Conflict-first openings retain ~3.2× longer</span>
+      <div class="step-col stagger stg-3">
+        <div class="step-list">
+          <div class="step-row rv" id="s7-step-reveal"><span class="chip rev">Reveal</span><p class="step-text" id="s7-reveal-text"></p></div>
+          <div class="step-row rv" id="s7-step-why"><span class="chip why">Why</span><p class="step-text" id="s7-why-text"></p></div>
+          <div class="step-row rv" id="s7-step-care"><span class="chip care">So what</span><p class="step-text" id="s7-care-text"></p></div>
+        </div>
+        <div class="action-bar">
+          <button class="neu-btn act-btn" id="s7-cycle-btn" accesskey="e" title="Cycle the verb through all five conditions (accesskey: E)"><i data-lucide="repeat" stroke-width="2"></i> Cycle Verb</button>
+          <button class="neu-btn act-btn" id="s7-reveal-btn" title="Reveal the follow-up question results"><i data-lucide="eye" stroke-width="2"></i> Reveal</button>
+        </div>
       </div>
     </div>
   </div>
 </section>
-
-<!-- ============ SLIDE 5 : USE CASE #2 — PROGRESSIVE DISCLOSURE ============ -->
-<section class="slide" id="s5" data-title="Progressive Disclosure &amp; Pacing Architecture" aria-label="Slide 5 of 10">
+<!-- ============ SLIDE 8 : EXPERIMENT 07 — PROVE THE RULE ============ -->
+<section class="slide" id="s8" data-title="Experiment 07 · Prove the Rule" aria-label="Slide 8 of 10">
   <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
   <header class="slide-head stagger stg-1">
-    <span class="eyebrow indigo"><i data-lucide="route" stroke-width="2"></i> Use Case 02 · Pacing</span>
-    <h2 class="slide-title">Progressive Disclosure &amp; <span class="accent-i">Pacing Architecture</span></h2>
-    <p class="slide-sub">The Zeigarnik Effect: unfinished tasks occupy working memory until closed. Structure information as serial open loops — and always show where the audience is.</p>
+    <span class="eyebrow coral"><i data-lucide="flask-conical" stroke-width="2"></i> Experiment 07 · Live Now</span>
+    <h2 class="slide-title swap" id="s8-title">Prove the <span class="accent-c">Rule</span></h2>
+    <p class="slide-sub">The rule: <b>every card with a vowel on its underside has an even number on the other.</b> Four cards lie here. Turn over the minimum set that could break the rule — and watch how fast the room agrees on the wrong ones.</p>
   </header>
   <div class="slide-body">
-    <div class="zeig-left stagger stg-2">
-      <div class="loop-diagram neu-pod" style="flex:1;">
-        <svg viewBox="0 0 520 300" preserveAspectRatio="xMidYMid meet" shape-rendering="geometricPrecision" aria-hidden="true">
-          <defs>
-            <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="#4F46E5" opacity="0.6"/>
-            </marker>
-          </defs>
-          <path d="M 70 210 C 70 90, 250 60, 260 60" fill="none" stroke="url(#rgB)" stroke-width="2.5" vector-effect="non-scaling-stroke" marker-end="url(#ah)"/>
-          <path d="M 260 60 C 330 60, 450 100, 450 210" fill="none" stroke="url(#rgA)" stroke-width="2.5" vector-effect="non-scaling-stroke" marker-end="url(#ah)"/>
-          <path d="M 450 210 C 450 268, 380 278, 300 278" fill="none" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5 7" vector-effect="non-scaling-stroke"/>
-          <circle cx="70" cy="210" r="8" fill="#2563EB"/>
-          <circle cx="260" cy="60" r="8" fill="#4F46E5"/>
-          <circle cx="450" cy="210" r="8" fill="#E11D48"/>
-          <text x="70" y="248" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" fill="#334155">LOOP OPENED</text>
-          <text x="260" y="38" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" fill="#334155">TENSION HELD</text>
-          <text x="450" y="248" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" fill="#334155">PAYOFF / CLOSE</text>
-          <text x="330" y="296" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#94A3B8">never leave more than one loop unclosed at the end</text>
-        </svg>
-      </div>
-      <div class="neu-pod">
-        <div class="pod-label"><i data-lucide="brain" stroke-width="2"></i> Zeigarnik Effect · Memory Persistence</div>
-        <div class="pod-value"><span class="mono">90</span><span class="unit">%</span><span style="font-size:0.5em;color:#64748B;"> vs </span><span class="mono">55</span><span class="unit">%</span></div>
-        <div class="pod-note">Recall of interrupted / unfinished sequences versus completed ones. Open loops are cognitive velcro — but only if you eventually close them.</div>
-      </div>
-    </div>
-    <div class="zeig-right stagger stg-3">
-      <div class="glass-card">
-        <div class="pod-label"><i data-lucide="list-checks" stroke-width="2"></i> Serial Open Loops In This Talk</div>
-        <div class="open-loop-list" style="margin-top:0.8em;">
-          <div class="ol-item closed"><span class="ol-dot"></span> Why did your attention span measurably shrink? <span class="tag emerald" style="margin-left:auto;">closed @ 02</span></div>
-          <div class="ol-item closed"><span class="ol-dot"></span> What circuit makes scrolling automatic? <span class="tag emerald" style="margin-left:auto;">closed @ 03</span></div>
-          <div class="ol-item"><span class="ol-dot"></span> How do you open so no one leaves? <span class="tag amber" style="margin-left:auto;">closing now</span></div>
-          <div class="ol-item"><span class="ol-dot"></span> Can pacing be ethical? <span class="tag slate" style="margin-left:auto;">opens @ 07</span></div>
-          <div class="ol-item"><span class="ol-dot"></span> What is the 10-minute protocol? <span class="tag slate" style="margin-left:auto;">opens @ 09</span></div>
+    <div class="demo-grid">
+      <div class="stim-col stagger stg-2">
+        <div class="stim-card">
+          <div class="stim-head">
+            <span class="pod-label"><i data-lucide="cards" stroke-width="2"></i> Wason selection task · your picks, live</span>
+            <span class="tag slate" id="wason-rule-tag">vowel → even</span>
+          </div>
+          <div class="stim-svgwrap">
+            <svg id="wason-svg" viewBox="0 0 1200 640" preserveAspectRatio="xMidYMid meet" aria-label="Four cards: E, K, 4, 7 — select the ones that must be turned to test the rule"></svg>
+          </div>
+          <p class="stim-readout dim" id="wason-readout">Tap the cards you would flip. Only those. Not the ones that would confirm the rule — the ones that could FALSIFY it.</p>
         </div>
+        <div class="src-line">Ref: Wason (1966) · ~10% pass rate in the abstract version</div>
       </div>
-      <div class="neu-pod self-ref">
-        <i data-lucide="move-horizontal" stroke-width="2"></i>
-        <div>
-          <p><b style="color:var(--ink-h);">This deck is its own proof.</b> Look at the progress dock at the bottom-center of this screen — segmented, numeric, live. It closes a tiny loop every single transition, lowering audience anxiety about duration and unknown structure.</p>
-          <div class="mini-progress"><i id="mini-prog-fill"></i></div>
+      <div class="step-col stagger stg-3">
+        <div class="step-list">
+          <div class="step-row rv" id="s8-step-reveal"><span class="chip rev">Reveal</span><p class="step-text" id="s8-reveal-text"></p></div>
+          <div class="step-row rv" id="s8-step-why"><span class="chip why">Why</span><p class="step-text" id="s8-why-text"></p></div>
+          <div class="step-row rv" id="s8-step-care"><span class="chip care">So what</span><p class="step-text" id="s8-care-text"></p></div>
+        </div>
+        <div class="action-bar">
+          <button class="neu-btn act-btn" id="s8-check-btn" accesskey="e" title="Check the selected cards against the rule (accesskey: E)"><i data-lucide="scale" stroke-width="2"></i> Check Selection</button>
+          <button class="neu-btn act-btn" id="s8-clear-btn" title="Clear all picks"><i data-lucide="rotate-ccw" stroke-width="2"></i> Clear</button>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============ SLIDE 6 : USE CASE #3 — MICRO-INTERACTIONS ============ -->
-<section class="slide" id="s6" data-title="Micro-Interactions &amp; Multi-Sensory Anchoring" aria-label="Slide 6 of 10">
+<!-- ============ SLIDE 9 : FIELD MANUAL PART 1 — SIX LAWS OF BELIEF ============ -->
+<section class="slide" id="s9" data-title="Field Manual · Six Laws of Belief" aria-label="Slide 9 of 10">
   <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
   <header class="slide-head stagger stg-1">
-    <span class="eyebrow"><i data-lucide="sparkles" stroke-width="2"></i> Use Case 03 · Anchoring</span>
-    <h2 class="slide-title">Micro-Interactions &amp; <span class="accent">Multi-Sensory Anchoring</span></h2>
-    <p class="slide-sub">The orienting response fires at every novel state change. Re-trigger it every 15–20 seconds — below the threshold that overloads working memory.</p>
-  </header>
-  <div class="slide-body">
-    <div class="mi-grid stagger stg-2" style="align-content:center;">
-      <div class="mi-card glass-card">
-        <div class="mi-icon"><i data-lucide="type" stroke-width="2"></i></div>
-        <h3>Kinetic Typography</h3>
-        <p>Movement carries emphasis without sound. Words that shift weight tell the eye what the voice would stress.</p>
-      </div>
-      <div class="mi-card glass-card">
-        <div class="mi-icon"><i data-lucide="layers" stroke-width="2"></i></div>
-        <h3>Spatial Depth</h3>
-        <p>Layered elevation cues (soft extrusion, frosted planes) give abstract ideas a physical address in space.</p>
-      </div>
-      <div class="mi-card glass-card">
-        <div class="mi-icon"><i data-lucide="toggle-right" stroke-width="2"></i></div>
-        <h3>Visual State Change</h3>
-        <p>A pressed button, a morphing counter, a toggled comparison — micro-feedback proves the medium is alive.</p>
-      </div>
-      <div class="kinetic-demo neu-pod">
-        <div id="kinetic-word">Attention<span class="k-accent">.</span></div>
-        <p class="kinetic-caption">Live demo: this phrase re-states itself on the orienting cadence. Notice you cannot ignore a changing field — that is the reflex, not curiosity.</p>
-        <div class="orienting-clock">
-          <i data-lucide="clock" stroke-width="2"></i>
-          <span class="mono" id="orient-counter">next state shift in 17s</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ SLIDE 7 : THE DARK SIDE ============ -->
-<section class="slide" id="s7" data-title="Signal Compression vs. Cognitive Shallowing" aria-label="Slide 7 of 10">
-  <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
-  <header class="slide-head stagger stg-1">
-    <span class="eyebrow coral"><i data-lucide="shield-alert" stroke-width="2"></i> The Dark Side · 07</span>
-    <h2 class="slide-title">Signal Compression vs. <span class="accent-c">Cognitive Shallowing</span></h2>
-    <p class="slide-sub">Every tool that raises engagement velocity lowers nuance bandwidth. The matrix of the trade-off — named honestly, so we can choose it deliberately.</p>
-  </header>
-  <div class="slide-body">
-    <div class="matrix-wrap stagger stg-2">
-      <table class="matrix-table">
-        <thead><tr><th>Dimension</th><th>High-Velocity Engagement</th><th>Deep Critical Nuance</th><th>The Trade-Off</th></tr></thead>
-        <tbody>
-          <tr><td>Take Structure</td><td>Binary, decisive, shareable</td><td class="cell-neg">Flattened — qualifiers read as weakness</td><td>Disagreement collapses into tribes</td></tr>
-          <tr><td>Time Horizon</td><td>Optimised for the first 3 seconds</td><td class="cell-neg">Ideas needing 30 minutes starve</td><td>Complex truths lose the attention market</td></tr>
-          <tr><td>Evidence</td><td>One vivid example beats a dataset</td><td class="cell-neg">Base rates invisible; anecdotes omnipresent</td><td>Statistical thinking outcompetes poorly</td></tr>
-          <tr><td>Emotion</td><td>High-arousal content propagates</td><td class="cell-neg">Calm, ambivalent states do not spread</td><td>Outrage becomes the native dialect</td></tr>
-          <tr><td>Memory</td><td>Hooks + loops encode strongly</td><td class="cell-neg">Shallow processing, rapid decay of substance</td><td>People remember frames, not facts</td></tr>
-        </tbody>
-      </table>
-      <div class="ethics-band stagger stg-3">
-        <div class="neu-pod"><i data-lucide="scale" stroke-width="2" style="color:var(--cobalt);"></i><p><b style="color:var(--ink-h);">Ethical line:</b> use velocity to <em>deliver people to depth</em>, not to replace it.</p></div>
-        <div class="neu-pod"><i data-lucide="ban" stroke-width="2" style="color:var(--coral);"></i><p><b style="color:var(--ink-h);">Unethical line:</b> engineered frictionlessness toward behaviour you would not defend face-to-face.</p></div>
-        <div class="neu-pod"><i data-lucide="compass" stroke-width="2" style="color:var(--indigo);"></i><p><b style="color:var(--ink-h);">Test:</b> if the hook promised more depth than the payload delivers, you have lied at the API boundary of attention.</p></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ SLIDE 8 : THE COMMUNICATOR'S SYNTHESIS ============ -->
-<section class="slide" id="s8" data-title="Hijacking the Feed Rules for Deep Ideas" aria-label="Slide 8 of 10">
-  <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
-  <header class="slide-head stagger stg-1">
-    <span class="eyebrow indigo"><i data-lucide="wrench" stroke-width="2"></i> Synthesis · 08</span>
-    <h2 class="slide-title">Hijacking the Feed Rules <span class="accent-i">for Deep Ideas</span></h2>
-    <p class="slide-sub">Three architectural rules for speakers, engineers, and designers who refuse to let the medium flatten the message.</p>
+    <span class="eyebrow indigo"><i data-lucide="book-open" stroke-width="2"></i> Field Manual · Part 1</span>
+    <h2 class="slide-title">Six <span class="accent-i">Laws</span> of Belief</h2>
+    <p class="slide-sub">Every experiment you just lived is one of these laws doing its job. They run whether you approve of them or not.</p>
   </header>
   <div class="slide-body">
     <div class="rules-col">
       <div class="rule-row neu-pod stagger stg-2">
         <div class="rule-num">01</div>
-        <div class="rule-icon"><i data-lucide="rocket" stroke-width="2"></i></div>
+        <div class="rule-icon"><i data-lucide="eye" stroke-width="2"></i></div>
         <div class="rule-text">
-          <h3>Front-load the Stakes</h3>
-          <p>Answer "why should I care?" in the first sentence, frame, or screen. Context is a seasoning added after the hook lands — never a toll gate before it.</p>
+          <h3>You See Your Guesses</h3>
+          <p>Perception is controlled hallucination — the brain proposes, the senses merely veto. Slides 2–5 were prediction editing live.</p>
         </div>
-        <div class="rule-aud"><span class="tag cobalt">Speakers</span><span class="tag slate">Writers</span></div>
+        <div class="rule-aud"><span class="tag cobalt">Perception</span><span class="tag slate">Exps 01–04</span></div>
       </div>
       <div class="rule-row r-ind neu-pod stagger stg-3">
         <div class="rule-num">02</div>
-        <div class="rule-icon"><i data-lucide="monitor-dot" stroke-width="2"></i></div>
+        <div class="rule-icon"><i data-lucide="search-x" stroke-width="2"></i></div>
         <div class="rule-text">
-          <h3>Visual State Shift Every 60 Seconds</h3>
-          <p>New diagram, new metric, new plane of motion. One deliberate orienting trigger per minute keeps the reflex awake without fragmenting comprehension.</p>
+          <h3>Attention Is a Bouncer, Not a Camera</h3>
+          <p>Counting passes cost you the gorilla. Whatever you focus on, everything else gets quietly denied entry.</p>
         </div>
-        <div class="rule-aud"><span class="tag" style="color:var(--indigo);background:rgba(79,70,229,0.08);">Designers</span><span class="tag slate">UI Engineers</span></div>
+        <div class="rule-aud"><span class="tag" style="color:var(--indigo);background:rgba(79,70,229,0.08);">Attention</span><span class="tag slate">Exp 02</span></div>
       </div>
       <div class="rule-row r-cor neu-pod stagger stg-4">
         <div class="rule-num">03</div>
-        <div class="rule-icon"><i data-lucide="gauge" stroke-width="2"></i></div>
+        <div class="rule-icon"><i data-lucide="pencil-ruler" stroke-width="2"></i></div>
         <div class="rule-text">
-          <h3>One Core Metric Per Frame</h3>
-          <p>Working memory holds roughly four chunks — spend them on one number, one claim, one image. Density is the enemy of retention; whitespace is persuasion.</p>
+          <h3>Memory Is Re-Written, Not Replayed</h3>
+          <p>Each recall is a fresh edit. "Smashed" added glass that never existed; a missing word got inserted by pure association.</p>
         </div>
-        <div class="rule-aud"><span class="tag coral">Analysts</span><span class="tag slate">Educators</span></div>
+        <div class="rule-aud"><span class="tag coral">Memory</span><span class="tag slate">Exps 05–06</span></div>
+      </div>
+      <div class="rule-row neu-pod stagger stg-5">
+        <div class="rule-num">04</div>
+        <div class="rule-icon"><i data-lucide="megaphone" stroke-width="2"></i></div>
+        <div class="rule-text">
+          <h3>Words Are Tiny Injections</h3>
+          <p>A single verb changed estimated speed by 8 mph and planted false evidence a week later. Framing isn't decoration — it's dosage.</p>
+        </div>
+        <div class="rule-aud"><span class="tag cobalt">Language</span><span class="tag slate">Exp 06</span></div>
+      </div>
+      <div class="rule-row r-ind neu-pod stagger stg-5">
+        <div class="rule-num">05</div>
+        <div class="rule-icon"><i data-lucide="check-check" stroke-width="2"></i></div>
+        <div class="rule-text">
+          <h3>You Test to Agree, Not to Know</h3>
+          <p>The room reached for the cards that confirmed the rule. Confirmation is comfortable; falsification is the actual science.</p>
+        </div>
+        <div class="rule-aud"><span class="tag" style="color:var(--indigo);background:rgba(79,70,229,0.08);">Reasoning</span><span class="tag slate">Exp 07</span></div>
+      </div>
+      <div class="rule-row r-cor neu-pod stagger stg-5">
+        <div class="rule-num">06</div>
+        <div class="rule-icon"><i data-lucide="users" stroke-width="2"></i></div>
+        <div class="rule-text">
+          <h3>Confidence Is Contagious</h3>
+          <p>Everyone shouted the same wrong answer because everyone else shouted first. Social proof feels like evidence — it isn't.</p>
+        </div>
+        <div class="rule-aud"><span class="tag coral">Social</span><span class="tag slate">All rounds</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============ SLIDE 9 : THE 10-MINUTE BLUEPRINT ============ -->
-<section class="slide" id="s9" data-title="The 10-Minute Blueprint" aria-label="Slide 9 of 10">
+<!-- ============ SLIDE 10 : FIELD MANUAL PART 2 + CLOSE ============ -->
+<section class="slide" id="s10" data-title="Three Defenses &amp; The Closing Loop" aria-label="Slide 10 of 10">
   <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
   <header class="slide-head stagger stg-1">
-    <span class="eyebrow"><i data-lucide="layout-template" stroke-width="2"></i> Blueprint · 09</span>
-    <h2 class="slide-title">The 10-Minute <span class="accent">Blueprint</span> — Before vs. After</h2>
-    <p class="slide-sub">The same talk, pitch, or lecture — rebuilt with ethical algorithmic pacing. Nothing is dumbed down; everything is sequenced for how attention actually works.</p>
-  </header>
-  <div class="slide-body">
-    <div class="ba-scroll stagger stg-2">
-      <table class="ba-table">
-        <thead><tr><th>Phase</th><th>Before · Default Protocol</th><th></th><th>After · Algorithmic Pacing</th></tr></thead>
-        <tbody>
-          <tr><td>Opening 0:00</td><td>"Can everyone hear me? Let me set up some context…"</td><td class="shift-cell"><i data-lucide="arrow-right" stroke-width="2"></i></td><td><b>Cold-open with the stakes:</b> one stat, one contradiction, one promise of payoff.</td></tr>
-          <tr><td>Setup 0:30</td><td>Bio, agenda, methodology — 4 minutes of toll-booth.</td><td class="shift-cell"><i data-lucide="arrow-right" stroke-width="2"></i></td><td><b>Progress bar visible;</b> credibility delivered inside the story, not before it.</td></tr>
-          <tr><td>Body 2:00</td><td>Seven equal-weight sections, monotone cadence.</td><td class="shift-cell"><i data-lucide="arrow-right" stroke-width="2"></i></td><td><b>Three pillars, serial open loops,</b> each closed with a visual state shift under 60 seconds.</td></tr>
-          <tr><td>Data 5:00</td><td>Full spreadsheet screenshot, 14 columns.</td><td class="shift-cell"><i data-lucide="arrow-right" stroke-width="2"></i></td><td><b>One core metric per frame;</b> the rest lives in the handout for the motivated.</td></tr>
-          <tr><td>Dip 7:00</td><td>Energy sags; audience quietly exits mentally.</td><td class="shift-cell"><i data-lucide="arrow-right" stroke-width="2"></i></td><td><b>Pattern interrupt:</b> a question, a toggle, a live counter — re-arm the orienting response.</td></tr>
-          <tr><td>Closing 9:00</td><td>"…so yeah, that's basically it. Any questions?"</td><td class="shift-cell"><i data-lucide="arrow-right" stroke-width="2"></i></td><td><b>Close every loop,</b> restate the single sentence you want remembered, hand out the next open loop.</td></tr>
-        </tbody>
-      </table>
-      <div class="ba-foot stagger stg-3"><i data-lucide="badge-check" stroke-width="2"></i> Ethical constraint: every hook must pay off in substance. Promise depth, deliver depth — never substitute arousal for truth.</div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ SLIDE 10 : CLOSING SYNTHESIS ============ -->
-<section class="slide" id="s10" data-title="Closing Synthesis &amp; Live Reveal" aria-label="Slide 10 of 10">
-  <div class="slide-field"><svg class="field-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision"></svg></div>
-  <header class="slide-head stagger stg-1">
-    <span class="eyebrow coral"><i data-lucide="flag" stroke-width="2"></i> Closing Synthesis · 10</span>
+    <span class="eyebrow coral"><i data-lucide="flag" stroke-width="2"></i> Field Manual · Part 2 · Closing</span>
+    <h2 class="slide-title">Three <span class="accent">Defenses</span></h2>
+    <p class="slide-sub">You cannot turn the machinery off. You can, however, install three habits that catch it in the act.</p>
   </header>
   <div class="slide-body">
     <div class="close-left stagger stg-2">
-      <p class="thesis">Attention is not the resource being competed for.<br><span class="accent">Behaviour is.</span> The feed taught your audience how to consume you —<br>the ethical move is to teach them something <span class="accent-c">worth keeping.</span></p>
-      <div class="pillar-stack">
-        <div class="pillar"><i data-lucide="target" stroke-width="2"></i><b>Pillar 01 · The Hook</b><span>— earn the first three seconds honestly.</span></div>
-        <div class="pillar"><i data-lucide="route" stroke-width="2"></i><b>Pillar 02 · The Loop</b><span>— disclose progressively, close serially.</span></div>
-        <div class="pillar"><i data-lucide="sparkles" stroke-width="2"></i><b>Pillar 03 · The Anchor</b><span>— shift state before the mind drifts.</span></div>
+      <div class="rules-col" style="justify-content:flex-start;">
+        <div class="rule-row neu-pod">
+          <div class="rule-num">01</div>
+          <div class="rule-icon"><i data-lucide="refresh-ccw" stroke-width="2"></i></div>
+          <div class="rule-text">
+            <h3>Seek Disconfirming Evidence</h3>
+            <p>Before you decide, ask out loud: "what would have to be true for me to be wrong?" Then go look for exactly that. Flip the 7, not the 4.</p>
+          </div>
+        </div>
+        <div class="rule-row r-ind neu-pod">
+          <div class="rule-num">02</div>
+          <div class="rule-icon"><i data-lucide="shield" stroke-width="2"></i></div>
+          <div class="rule-text">
+            <h3>Beware Leading Questions</h3>
+            <p>Hear the verb before you answer the question. "Smashed" versus "hit" is a difference of eight miles per hour — and a difference of fabricated memories.</p>
+          </div>
+        </div>
+        <div class="rule-row r-cor neu-pod">
+          <div class="rule-num">03</div>
+          <div class="rule-icon"><i data-lucide="sliders-horizontal" stroke-width="2"></i></div>
+          <div class="rule-text">
+            <h3>Slow Down When It Feels Obvious</h3>
+            <p>Conviction is a feeling, not a fact. When an answer arrives instantly and the room nods in unison — that speed is the alarm, not the reassurance.</p>
+          </div>
+        </div>
       </div>
+      <div class="callout-bar"><i data-lucide="badge-check" stroke-width="2"></i> Ethical constraint: every demonstration in this deck was designed to reveal the mechanism — never to leave anyone fooled. Trick responsibly: reveal immediately, explain honestly, and hand the audience the exit.</div>
     </div>
     <div class="close-right stagger stg-3">
+      <p class="thesis">Your brain is a brilliant guesser.<br><span class="accent">The guesses are not the truth.</span><br>Now you can hear the machinery <span class="accent-c">running.</span></p>
       <div class="neu-pod telemetry-stack">
         <div class="pod-label"><i data-lucide="satellite-dish" stroke-width="2"></i> Live Deck Telemetry</div>
         <div class="tele-row"><span class="k"><i data-lucide="network" stroke-width="2"></i> MQTT Sync</span><span class="v" id="tele-mqtt">CONNECTING</span></div>
@@ -1076,7 +1225,11 @@ body.remote-mode #remote-ui{display:flex;flex-direction:column;gap:clamp(14px,2.
       </div>
       <div class="reveal-btn-row">
         <button class="neu-btn" id="reveal-sync-btn"><i data-lucide="qr-code" stroke-width="2"></i> Live Remote Sync</button>
-        <button class="neu-btn" id="restart-btn"><i data-lucide="rotate-ccw" stroke-width="2"></i> Replay From Slide 1</button>
+      </div>
+      <div class="replay-row">
+        <button class="neu-btn" id="replay-s2" title="Jump back to Experiment 01"><i data-lucide="repeat" stroke-width="2"></i> Replay Exp 01 · Same or Different?</button>
+        <button class="neu-btn" id="replay-s6" title="Jump back to Experiment 05"><i data-lucide="brain" stroke-width="2"></i> Replay Exp 05 · Memory Inception</button>
+        <button class="neu-btn" id="restart-btn" title="Return to the title slide"><i data-lucide="rotate-ccw" stroke-width="2"></i> Back To Start</button>
       </div>
       <p class="pod-note" style="margin-top:0.6em;">Thank you. The loop opened on Slide 1 closes now — the next open loop is yours.</p>
     </div>
@@ -1088,109 +1241,98 @@ body.remote-mode #remote-ui{display:flex;flex-direction:column;gap:clamp(14px,2.
 <!-- =================== HUD : TOP-RIGHT FULLSCREEN & SYNC BAR =================== -->
 <div class="hud" id="topbar">
   <div id="audio-group" role="group" aria-label="Audio controls">
-    <button class="neu-btn icon-only" id="sfx-toggle" accesskey="x" title="Toggle action interface sounds (accesskey: x)" aria-label="Toggle action sounds" aria-pressed="true"><i data-lucide="volume-2" stroke-width="2"></i></button>
-    <span class="sep" aria-hidden="true"></span>
-    <button class="neu-btn icon-only" id="bgm-toggle" accesskey="b" title="Toggle ambient music (accesskey: b)" aria-label="Toggle ambient background music" aria-pressed="true"><i data-lucide="music" stroke-width="2"></i></button>
+    <button class="neu-btn icon-only" id="sfx-toggle" aria-label="Toggle action sounds" aria-pressed="true" title="Action sounds"><i data-lucide="volume-2" stroke-width="2"></i></button>
+    <span class="sep"></span>
+    <button class="neu-btn icon-only" id="bgm-toggle" aria-label="Toggle ambient music" aria-pressed="false" title="Ambient background music"><i data-lucide="music-off" stroke-width="2"></i></button>
   </div>
-  <button class="neu-btn icon-only" id="presenter-toggle" accesskey="c" title="Toggle presenter click zones (accesskey: c)" aria-label="Toggle presenter click mode"><i data-lucide="mouse-pointer-click" stroke-width="2"></i></button>
-  <button class="neu-btn" id="sync-btn" accesskey="r" title="Open phone remote sync modal (accesskey: r)" aria-haspopup="dialog">
-    <span id="sync-dot" aria-hidden="true"></span><span id="sync-label">SYNC</span>
+  <button class="neu-btn icon-only" id="fullscreen-btn" aria-label="Enter fullscreen" title="Fullscreen (F)"><i data-lucide="maximize-2" stroke-width="2"></i></button>
+  <button class="neu-btn" id="sync-btn" title="Open phone remote sync modal">
+    <span id="sync-dot"></span>
+    <span id="sync-label">LINKING</span>
+    <i data-lucide="smartphone" stroke-width="2"></i>
   </button>
-  <button class="neu-btn icon-only" id="fullscreen-btn" accesskey="f" title="Toggle fullscreen (accesskey: f)" aria-label="Toggle fullscreen"><i data-lucide="maximize-2" stroke-width="2"></i></button>
 </div>
 
-<!-- =================== HUD : BOTTOM-LEFT NAVIGATION =================== -->
+<!-- =================== HUD : BOTTOM-LEFT NAV CONTROLS =================== -->
 <div class="hud" id="navctl">
-  <button class="neu-btn icon-only" id="prev-btn" accesskey="p" title="Previous slide (accesskey: p)" aria-label="Previous slide"><i data-lucide="chevron-left" stroke-width="2"></i></button>
-  <button class="neu-btn icon-only" id="next-btn" accesskey="n" title="Next slide (accesskey: n)" aria-label="Next slide"><i data-lucide="chevron-right" stroke-width="2"></i></button>
-  <span class="kbd-hint">PgUp / PgDn</span>
+  <button class="neu-btn icon-only" id="prev-btn" aria-label="Previous slide" title="Previous (← / PageUp)"><i data-lucide="arrow-left" stroke-width="2"></i></button>
+  <button class="neu-btn icon-only" id="next-btn" aria-label="Next slide" title="Next (→ / Space / PageDown)"><i data-lucide="arrow-right" stroke-width="2"></i></button>
+  <button class="neu-btn icon-only" id="presenter-toggle" aria-label="Toggle presenter click zones" title="Presenter click mode"><i data-lucide="mouse-pointer-click" stroke-width="2"></i></button>
+  <span class="kbd-hint">← → · SPACE · 1–9,0 · F · ESC</span>
 </div>
 
-<!-- =================== HUD : BOTTOM-CENTER PROGRESS DOCK =================== -->
-<div class="hud" id="progress-dock" role="group" aria-label="Progression">
-  <div id="progress-track" aria-hidden="true"><!-- TOTAL segments built once at init --></div>
-  <div id="progress-telemetry" aria-live="polite">Slide <b id="tel-x">1</b> of 10 • <span id="tel-left">9 slides left</span></div>
+<!-- =================== HUD : BOTTOM-CENTER GLASSMORPHIC PROGRESS DOCK =================== -->
+<div class="hud" id="progress-dock" role="group" aria-label="Presentation progress">
+  <div id="progress-track" aria-hidden="true"><!-- exactly TOTAL segments generated once at init --></div>
+  <div id="progress-telemetry"><b id="tel-x">1</b> / <span id="tel-total">10</span> &nbsp;·&nbsp; <span id="tel-left">9 slides left</span></div>
 </div>
 
-<!-- Slide jump buttons (hidden, keyboard/HID accessible via accesskeys 1–0) -->
-<nav id="jump-nav" aria-label="Direct slide jump" style="position:fixed;left:-9999px;top:0;width:1px;height:1px;overflow:hidden;">
-  <button accesskey="1" data-jump="0">1</button><button accesskey="2" data-jump="1">2</button>
-  <button accesskey="3" data-jump="2">3</button><button accesskey="4" data-jump="3">4</button>
-  <button accesskey="5" data-jump="4">5</button><button accesskey="6" data-jump="5">6</button>
-  <button accesskey="7" data-jump="6">7</button><button accesskey="8" data-jump="7">8</button>
-  <button accesskey="9" data-jump="8">9</button><button accesskey="0" data-jump="9">10</button>
-</nav>
+<!-- =================== TOAST (remote nav events) =================== -->
+<div id="toast" role="status" aria-live="polite"><i data-lucide="radio-tower" stroke-width="2"></i><span id="toast-msg">Remote jump</span></div>
 
 <!-- =================== REMOTE SYNC MODAL =================== -->
-<div id="remote-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="rm-title">
-  <div id="remote-modal">
-    <button class="neu-btn icon-only" id="modal-close-x" aria-label="Close dialog" style="position:absolute;top:16px;right:18px;"><i data-lucide="x" stroke-width="2"></i></button>
-    <h3 id="rm-title"><i data-lucide="smartphone" stroke-width="2"></i> Phone Remote — Zero-Backend Sync</h3>
-    <p class="rm-hint">Open the link or scan the code on any phone. Commands travel peer-to-peer over MQTT WebSockets (broker.emqx.io) — no server of ours, typical latency under 50&nbsp;ms.</p>
+<div id="remote-modal-overlay">
+  <div id="remote-modal" role="dialog" aria-modal="true" aria-labelledby="rm-title">
+    <button class="neu-btn icon-only" id="modal-close-x" aria-label="Close modal"><i data-lucide="x" stroke-width="2"></i></button>
+    <h3 id="rm-title"><i data-lucide="qr-code" stroke-width="2"></i> Phone Presenter Remote</h3>
+    <p class="rm-hint" style="margin-top:0.6em;">Scan or open the link below on any phone. It becomes a zero-latency remote: PREV / NEXT / JUMP drive this board over a public MQTT broker — no backend, no install, no accounts.</p>
     <div class="rm-grid">
       <div class="rm-block">
-        <span class="rm-label">Remote Link · QR</span>
-        <div id="qr-box"><img id="qr-img" alt="QR code linking to the mobile presenter remote" width="220" height="220"></div>
-        <div id="remote-url" class="mono">—</div>
-        <div class="rm-actions">
-          <button class="neu-btn" id="copy-url-btn"><i data-lucide="copy" stroke-width="2"></i> Copy Link</button>
-          <a class="neu-btn" id="open-remote-tab" href="#" target="_blank" rel="noopener"><i data-lucide="external-link" stroke-width="2"></i> Open Remote</a>
-        </div>
+        <span class="rm-label">Live QR</span>
+        <div id="qr-box"><img id="qr-img" alt="QR code linking to the phone remote view" width="220" height="220"></div>
+        <span class="rm-label">Broker topic (pairing key)</span>
+        <span class="topic-mono" id="topic-preview">qinfinity/lalit/trust-your-brain-2026</span>
       </div>
       <div class="rm-block">
-        <span class="rm-label">Shared Room Topic</span>
-        <input id="room-input" type="text" spellcheck="false" aria-label="MQTT room topic" value="qinfinity/lalit/algo-persuasion-2026">
-        <div class="topic-mono" id="topic-preview">—</div>
+        <span class="rm-label">Remote URL</span>
+        <div id="remote-url">—</div>
+        <a class="neu-btn" id="open-remote-tab" href="#" target="_blank" rel="noopener" style="width:max-content;"><i data-lucide="external-link" stroke-width="2"></i> Open in new tab</a>
+        <span class="rm-label">Customise room pairing topic</span>
+        <input id="room-input" type="text" spellcheck="false" autocomplete="off" placeholder="your/unique/room-topic">
         <div class="rm-actions">
-          <button class="neu-btn" id="apply-room-btn"><i data-lucide="plug-zap" stroke-width="2"></i> Reconnect Broker</button>
+          <button class="neu-btn" id="apply-room-btn"><i data-lucide="wifi" stroke-width="2"></i> Apply &amp; Reconnect</button>
+          <button class="neu-btn" id="copy-url-btn"><i data-lucide="copy" stroke-width="2"></i> Copy Link</button>
         </div>
-        <span class="rm-label" style="margin-top:8px;">Connection Status</span>
-        <div class="tele-row"><span class="k mono" style="font-size:clamp(9px,0.7vw,13px);letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-c);">Broker wss://broker.emqx.io:8084/mqtt</span><span class="v mono" id="modal-status" style="font-family:var(--font-mono);font-weight:700;color:var(--ink-c);">…</span></div>
-        <p class="rm-hint">Tip: append <span class="mono">?room=your-name</span> to this deck URL to fork a private channel. Keys 1–0 also jump directly to slides; F toggles fullscreen.</p>
+        <span class="rm-label">Connection state</span>
+        <span id="modal-status" class="mono" style="font-size:clamp(11px,0.9vw,16px);letter-spacing:0.14em;color:var(--ink-c);">LINKING</span>
       </div>
     </div>
   </div>
 </div>
 
-<!-- =================== MOBILE PRESENTER REMOTE UI (?mode=remote) =================== -->
+<!-- =================== MOBILE PRESENTER REMOTE (?mode=remote) =================== -->
 <div id="remote-ui">
   <div class="rmu-head">
     <div>
-      <div class="rmu-title">Presenter Remote</div>
-      <div class="rmu-sub">Algorithmic Persuasion · 2026</div>
+      <div class="rmu-title">Can You Trust<br>Your Own Brain?</div>
+      <div class="rmu-sub">Presenter Remote · Lalit Mehta</div>
     </div>
-    <div class="rmu-status"><span id="rmu-dot" style="width:9px;height:9px;border-radius:50%;background:#94A3B8;display:inline-block;"></span><span id="rmu-status-txt">LINKING</span></div>
+    <div class="rmu-status"><span id="rmu-dot" style="width:10px;height:10px;border-radius:50%;background:#94A3B8;display:inline-block;"></span><span id="rmu-status-txt">LINKING</span></div>
   </div>
-  <div class="rmu-prog"><i id="rmu-prog-fill"></i></div>
   <div class="rmu-now">
     <div class="idx" id="rmu-idx">SLIDE 1 / 10 · BOARD VIEW</div>
-    <div class="name" id="rmu-name">Title &amp; Provocation</div>
-    <div class="rmu-cue" id="rmu-cue">Cold-open with energy. Point at the decay counter: "twelve seconds was the human baseline in 2004. Watch it fall."</div>
+    <div class="name" id="rmu-name">The Greeting Blind Spot</div>
+    <div class="rmu-cue" id="rmu-cue">—</div>
+    <div class="rmu-prog" style="margin-top:14px;"><i id="rmu-prog-fill"></i></div>
   </div>
   <div class="rmu-timer-row">
-    <span class="lbl">Elapsed · 10:00 Target</span>
+    <span class="lbl">Runtime</span>
     <span class="t mono" id="rmu-timer">00:00</span>
   </div>
   <div class="rmu-bigrow">
-    <button class="rmu-big" id="rmu-prev"><i data-lucide="chevron-left" stroke-width="2"></i>PREV</button>
-    <button class="rmu-big" id="rmu-next"><i data-lucide="chevron-right" stroke-width="2"></i>NEXT</button>
+    <button class="rmu-big" id="rmu-prev"><i data-lucide="arrow-left" stroke-width="2"></i>PREV</button>
+    <button class="rmu-big" id="rmu-next"><i data-lucide="arrow-right" stroke-width="2"></i>NEXT</button>
   </div>
   <div>
-    <div class="rmu-jump-lbl" style="margin-bottom:10px;">Quick Jump</div>
+    <div class="rmu-jump-lbl">Jump to slide</div>
     <div class="rmu-jump" id="rmu-jump"></div>
   </div>
-  <p class="rmu-status" style="justify-content:center;">Every tap publishes NAV over MQTT · board reacts &lt; 50 ms</p>
 </div>
 
-<!-- Toast for inbound remote events -->
-<div id="toast" role="status"><i data-lucide="radio-tower" stroke-width="2"></i><span id="toast-msg">Remote navigation</span></div>
-
-<script src="https://unpkg.com/lucide@latest"></script>
-<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 <script>
 'use strict';
 /* =========================================================================
-   ALGORITHMIC PERSUASION — DECK ENGINE
+   CAN YOU TRUST YOUR OWN BRAIN? — DECK ENGINE
    Sections: state · field · slides · input · telemetry · mqtt · interactions
    ========================================================================= */
 const $ = (s) => document.querySelector(s);
@@ -1201,29 +1343,19 @@ const easeOut = (t) => 1 - Math.pow(1 - t, 3);
 
 const params = new URLSearchParams(location.search);
 const IS_REMOTE = params.get('mode') === 'remote';
-/* shared room topic — default qinfinity/lalit/algo-persuasion-2026, customizable via ?room=xyz */
-let roomTopic = params.get('room') ? params.get('room') : 'qinfinity/lalit/algo-persuasion-2026';
+/* shared room topic — default qinfinity/lalit/trust-brain-2026, customizable via ?room=xyz */
+let roomTopic = params.get('room') ? params.get('room') : 'qinfinity/lalit/trust-brain-2026';
 
 /* ---------------------------------------------------------------------------
-   AUDIO ENGINE — synthesized, zero-asset, mesmerising sound design.
-   Action SFX for every click / slide / animation event + generative ambient
-   BGM pad. Both independently toggleable; persisted in localStorage.
+   AUDIO ENGINE — synthesized, zero-asset sound design. Action SFX for every
+   click / slide / demo event + generative ambient BGM pad. Both independently
+   toggleable; persisted in localStorage. Strict two-bus graph (sfxBus/bgmBus)
+   so muting BGM silences pad, bells, noise layer and reverb tail completely.
 --------------------------------------------------------------------------- */
 const AudioEngine = (() => {
-  /* FIX (PRIORITY 2 — complete BGM mute): strict two-bus audio graph.
-       SFX path : voices -> sfxDry -> sfxBus ------------------> master
-                \-> sfxWet -> convolver -> sfxWetGain -/
-       BGM path : voices -> bgmDry -> bgmBus ------------------> master
-                \-> bgmWet -> convolver -> bgmWetGain -> bgmBus -/
-     Every ambient source AND its reverb return now terminates behind
-     bgmBus, so muting BGM silences pad, bells, noise layer, reverb tail
-     and every future-scheduled note. SFX has its own parallel convolver
-     send behind sfxBus — the two mutes are fully independent. */
   let ctx = null, master = null, noiseBuf = null;
   let bgmBus = null, bgmDry = null, bgmWet = null, bgmConv = null, bgmWetGain = null;
   let sfxBus = null, sfxDry = null, sfxWet = null, sfxConv = null, sfxWetGain = null;
-  /* FIX: BGM defaults to OFF unless explicitly enabled previously — an
-     unrelated first gesture can never silently start the music */
   let bgmOn = false, sfxOn = true, bgmPlaying = false, bgmTimer = null, nextBellAt = 0;
   let bgmNodes = [];
   let bgmVol = 0.55, sfxVol = 0.8;
@@ -1233,7 +1365,6 @@ const AudioEngine = (() => {
   try { sfxOn = localStorage.getItem('ap-sfx') !== 'off'; } catch (e) {}
 
   function makeReverb() {
-    /* lightweight generated reverb (2.8s stereo decaying noise IR) */
     const cv = ctx.createConvolver();
     const len = Math.floor(ctx.sampleRate * 2.8);
     const ir = ctx.createBuffer(2, len, ctx.sampleRate);
@@ -1250,19 +1381,16 @@ const AudioEngine = (() => {
     if (!AC) return false;
     try { ctx = new AC(); } catch (e) { return false; }
     master = ctx.createGain(); master.gain.value = 0.9; master.connect(ctx.destination);
-    /* --- BGM chain: everything ambient terminates through bgmBus --- */
     bgmBus = ctx.createGain(); bgmBus.gain.value = 0.0001; bgmBus.connect(master);
     bgmDry = ctx.createGain(); bgmDry.gain.value = 1; bgmDry.connect(bgmBus);
     bgmWet = ctx.createGain(); bgmWet.gain.value = 0.34;
     bgmConv = makeReverb(); bgmWetGain = ctx.createGain(); bgmWetGain.gain.value = 1;
     bgmWet.connect(bgmConv); bgmConv.connect(bgmWetGain); bgmWetGain.connect(bgmBus);
-    /* --- SFX chain: independent dry + dedicated reverb send behind sfxBus --- */
     sfxBus = ctx.createGain(); sfxBus.gain.value = sfxVol; sfxBus.connect(master);
     sfxDry = ctx.createGain(); sfxDry.gain.value = 1; sfxDry.connect(sfxBus);
     sfxWet = ctx.createGain(); sfxWet.gain.value = 0.34;
     sfxConv = makeReverb(); sfxWetGain = ctx.createGain();
     sfxWet.connect(sfxConv); sfxConv.connect(sfxWetGain); sfxWetGain.connect(sfxBus);
-    /* shared white-noise buffer for airy/swish layers */
     const nlen = Math.floor(ctx.sampleRate * 1.2);
     noiseBuf = ctx.createBuffer(1, nlen, ctx.sampleRate);
     const nd = noiseBuf.getChannelData(0);
@@ -1275,13 +1403,11 @@ const AudioEngine = (() => {
     if (bgmTimer) { clearInterval(bgmTimer); bgmTimer = null; }
     if (!ctx) { bgmNodes = []; return; }
     const t = ctx.currentTime;
-    /* 1. fade the ENTIRE BGM output (dry + reverb returns ride on bgmBus) */
     try {
       bgmBus.gain.cancelScheduledValues(t);
       bgmBus.gain.setValueAtTime(Math.max(bgmBus.gain.value, 0.0001), t);
       bgmBus.gain.linearRampToValueAtTime(0.0001, t + 0.6);
     } catch (e) {}
-    /* 2/3. stop every live or future-scheduled ambient node, then drop refs */
     bgmNodes.forEach((n) => {
       try { if (n.stop) n.stop(t + 0.7); } catch (e) {}
       try { if (n.disconnect) n.disconnect(); } catch (e) {}
@@ -1302,8 +1428,8 @@ const AudioEngine = (() => {
     g.gain.exponentialRampToValueAtTime(vol, t0 + 0.015);
     g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
     o.connect(g);
-    g.connect(isBgm ? bgmDry : sfxDry);          /* dry path stays behind its bus */
-    g.connect(isBgm ? bgmWet : sfxWet);          /* reverb SEND — return also lands on the same bus */
+    g.connect(isBgm ? bgmDry : sfxDry);
+    g.connect(isBgm ? bgmWet : sfxWet);
     o.start(t0); o.stop(t0 + dur + 0.05);
   }
   function noiseHit(t0, dur, f0, f1, vol, q) {
@@ -1340,13 +1466,8 @@ const AudioEngine = (() => {
     try { SFX[name] && SFX[name](); } catch (e) {}
   }
 
-  /* FIX (action sounds not working): iOS/Android Chrome silently suspends the
-     AudioContext unless it is created/resumed INSIDE a real user-gesture task.
-     The old one-shot unlock listener was consumed by any first pointerdown —
-     including taps that hit a <button>, whose click handler then fired in a
-     separate, non-gesture task, leaving ctx permanently "suspended" and every
-     action sound inaudible. This dedicated synchronous listener re-arms on
-     every gesture for the whole session (zero cost once running). */
+  /* iOS/Android Chrome suspends the AudioContext unless resumed inside a real
+     user-gesture task — re-arm synchronously on every gesture for the session */
   window.addEventListener('pointerdown', () => {
     try { if (ctx && ctx.state === 'suspended') ctx.resume().catch(() => {}); } catch (e) {}
   }, true);
@@ -1381,8 +1502,6 @@ const AudioEngine = (() => {
     const alfo = ctx.createOscillator(); alfo.frequency.value = 0.07;
     const alg = ctx.createGain(); alg.gain.value = 320;
     alfo.connect(alg); alg.connect(abp.frequency); alfo.start();
-    /* FIX: noise layer routes through the BGM dry/wet sends — never a shared
-       convolver that could bypass bgmBus and keep ringing after mute */
     air.connect(abp); abp.connect(ag); ag.connect(bgmDry); ag.connect(bgmWet);
     air.start(); reg(air); reg(alfo);
     nextBellAt = now() + 4;
@@ -1397,9 +1516,6 @@ const AudioEngine = (() => {
       nextBellAt += 3.5 + Math.random() * 6;
     }
   }
-  /* FIX: mute tears down EVERYTHING ambient (nodes, scheduler, reverb tail via
-     the bus fade). Re-enable recreates cleanly — startBGM guards against
-     duplicate schedulers/oscillators via bgmPlaying, and stopBGM clears it. */
   function setBGM(on) {
     bgmOn = on;
     try { localStorage.setItem('ap-bgm', on ? 'on' : 'off'); } catch (e) {}
@@ -1417,36 +1533,10 @@ const AudioEngine = (() => {
     sfxOn = on;
     try { localStorage.setItem('ap-sfx', on ? 'on' : 'off'); } catch (e) {}
   }
-  /* FIX (BGM volume slider): live, persisted gain control for both buses */
-  function setBGMVolume(v) {
-    bgmVol = clamp(v, 0, 1);
-    try { localStorage.setItem('ap-bgmvol', String(bgmVol)); } catch (e) {}
-    if (ctx && bgmBus && bgmOn) {
-      bgmBus.gain.cancelScheduledValues(now());
-      bgmBus.gain.setValueAtTime(Math.max(bgmBus.gain.value, 0.0001), now());
-      bgmBus.gain.linearRampToValueAtTime(Math.max(bgmVol, 0.0001), now() + 0.12);
-    }
-  }
-  function setSFXVolume(v) {
-    sfxVol = clamp(v, 0, 1);
-    try { localStorage.setItem('ap-sfxvol', String(sfxVol)); } catch (e) {}
-    if (ctx && sfxBus) {
-      sfxBus.gain.cancelScheduledValues(now());
-      sfxBus.gain.setValueAtTime(sfxVol, now());
-    }
-  }
-  function unlock() {
-    /* FIX: gesture-unlock only resumes the AudioContext; it never starts or
-       re-starts BGM behind the user's back. Music begins ONLY via setBGM(true) */
-    ensure();
-  }
+  function unlock() { ensure(); }
   return {
-    play, unlock, setBGM, setSFX, setBGMVolume, setSFXVolume,
+    play, unlock, setBGM, setSFX,
     isBGM: () => bgmOn, isSFX: () => sfxOn,
-    getBGMVolume: () => bgmVol, getSFXVolume: () => sfxVol,
-    /* telemetry for regression tests: live ambient node count + scheduler id */
-    _bgmNodeCount: () => bgmNodes.length,
-    _bgmTimerActive: () => bgmTimer !== null,
     /* phonetic readout of the presenter's name — Web Speech API */
     pronounce() {
       try {
@@ -1505,19 +1595,34 @@ const T0 = Date.now();                       // presentation runtime epoch
 let slideIndex = 0;                          // current slide (0-based)
 const TOTAL = 10;
 
-/* Speaker cues surfaced in the phone remote */
+/* Speaker cues surfaced in the phone remote (from the talk plan) */
 const CUES = [
-  'Cold-open with energy. Point at the decay counter: "twelve seconds was the human baseline in 2004. Watch it fall."',
-  'Contrast the two panels. Ask: "when did YOUR audience last tolerate a slow setup?"',
-  'Trace the loop left to right. Stress: dopamine is prediction error, not pleasure.',
-  'Read the weak opening aloud, then hit the Hook Comparator. Let the silence do the work.',
-  'Gesture at the live progress dock below. Say: "this bar is closing loops on you, right now."',
-  'Wait for the kinetic demo to shift once before you speak. Demonstrate, then explain.',
-  'Slow down here. This is the ethical spine of the talk — nuance is the cost being paid.',
-  'Land the three rules as promises you will keep for the rest of the session.',
-  'Invite one volunteer to describe their own worst "toll-booth opening."',
-  'Hold on the thesis. Open Q&A while the runtime badge ticks live on screen.'
+  'Title + bridge test (0:45). Ask the room which square looks lighter; press ACT to bridge them. Landing line: same gray, judged by surroundings.',
+  'Size by comparison (1:15). Hands up BEFORE pressing ACT. The two orange circles are identical; one line on context: we judge size by the neighbours.',
+  'Duck or rabbit (1:15). Hands for duck vs rabbit first; ACT shows the duck reading, then the rabbit reading. Mention the Easter/October study as one study.',
+  'Attention arena (1:45). Stress: count WHITE bounces only, 12 seconds. Collect answers by hands; the answer is 15. ACT again to replay with highlights and ask who saw the star, the border, the square.',
+  'Memory words (1:45). Do not say the theme before the reveal. After the poll: the lure SLEEP was never shown. Keep the tone friendly — false recall here is normal memory.',
+  'Loftus & Palmer (1:15). Ask for a prediction before each reveal; use the verbs in order. The broken-glass follow-up had no glass in the film; add that the mechanism is still debated.',
+  'Secret rule (1:30). Ask yes/no before each ACT press; the surprise is 3-17-104 = YES. The rule is any three ascending numbers.',
+  'Confidence does not equal accuracy (0:45). Say both halves: confidence can be wrong, and that is not the same as confidence always being wrong.',
+  'Check yourself (0:45). Four habits; stress process over willpower — change the steps, not the person.',
+  'Closing + Q&A (0:30 + Q&A). Land the thesis line, then offer a replay of any experiment from the buttons on screen.'
 ];
+
+/* Short names for the progress dock tooltip + remote "now showing" */
+const SLIDE_NAMES = [
+  'Can You Trust Your Own Brain?',
+  'Same or Different?',
+  'Count the Passes',
+  'One Image, Two Animals',
+  'The Impossible Triangle',
+  'The Memory Inception',
+  'Where Were the Broken Glass?',
+  'Prove the Rule',
+  'Six Laws of Belief',
+  'Three Defenses & Close'
+];
+function slideName(idx) { return SLIDE_NAMES[clamp(idx, 0, TOTAL - 1)]; }
 
 /* ---------------------------------------------------------------------------
    PER-SLIDE GENERATIVE VECTOR FIELDS — one bespoke, content-relevant animated
@@ -1536,26 +1641,31 @@ const REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion:
 function makeField(n, build, step) {
   const svg = svgOf(n);
   if (!svg) return null;
-  const st = { svg, t: 0, raf: null, running: false, d: {} };
+  /* FIX (demo slides): fields flagged st.once draw ONE static frame and never
+     run an animation loop, so moving backgrounds never compete with stimuli. */
+  const st = { svg, t: 0, raf: null, running: false, once: false, d: {} };
   build(st);
   const loop = () => {
     if (!st.running) return;
     st.t += 1 / 60;
     try { step(st); } catch (e) {}
+    if (st.once) { st.running = false; return; }
     st.raf = requestAnimationFrame(loop);
   };
-  st.start = () => { if (st.running || REDUCED) return; st.running = true; st.raf = requestAnimationFrame(loop); };
+  st.start = () => {
+    if (st.running || REDUCED) return;
+    st.running = true;
+    if (st.once) { if (step) { try { step(st); } catch (e) {} } st.running = false; return; }
+    st.raf = requestAnimationFrame(loop);
+  };
   st.stop = () => { st.running = false; if (st.raf) cancelAnimationFrame(st.raf); };
   return st;
 }
 
 const fields = [];
 
-/* FIX (live-deck crash): setFocusForSlide was called by goTo()/init() but its
-   definition had been lost in an earlier edit — every navigation threw a
-   ReferenceError, killing transitions, HUD updates and MQTT publishing.
-   Restored as a no-op safe focus guard: never steals focus from an active
-   text input, otherwise blurs any stuck button focus so HID keyboards keep
+/* FIX (live-deck crash): setFocusForSlide guard — never steals focus from an
+   active text input; otherwise blurs stuck button focus so HID keyboards keep
    delivering keys to the window-level navigation listeners. */
 function setFocusForSlide(idx) {
   try {
@@ -1565,343 +1675,146 @@ function setFocusForSlide(idx) {
   } catch (e) {}
 }
 
-/* ---- 1 · Title: attention ribbons converging on an algorithmic attractor ---- */
+/* ---- 1 · Title: attention ribbons converging on an inquiry reticle ---- */
 fields.push(makeField(1, (f) => {
-  const grid = mk('g', {}), rib = mk('g', {}), ret = mk('g', {}), nd = mk('g', {});
-  f.svg.append(grid, rib, ret, nd);
+  const grid = mk('g', {}), rib = mk('g', {}), ret = mk('g', {});
+  f.svg.append(grid, rib, ret);
   for (let gx = 120; gx < 1920; gx += 240) for (let gy = 120; gy < 1080; gy += 240)
     grid.appendChild(mk('path', { d: `M ${gx-7} ${gy} H ${gx+7} M ${gx} ${gy-7} V ${gy+7}`, stroke: '#64748B', 'stroke-opacity': 0.10, 'stroke-width': 1, fill: 'none', 'vector-effect': 'non-scaling-stroke' }));
-  f.d.ribbons = [];
   for (let i = 0; i < 12; i++) {
-    const p = mk('path', { fill: 'none', stroke: `url(#${['rgA','rgB','rgC'][i % 3]})`, 'stroke-width': String(1 + (i % 4)), 'vector-effect': 'non-scaling-stroke' });
+    const y0 = 90 + (i / 11) * 900;
+    const mx1 = 420 + Math.sin(i * 1.3) * 120, my1 = y0 + Math.cos(i * 0.9) * 70;
+    const mx2 = 1080 + Math.sin(i * 0.7) * 90, my2 = lerp(y0, 300, 0.55);
+    const p = mk('path', {
+      d: `M -60 ${y0.toFixed(1)} C ${mx1.toFixed(1)} ${my1.toFixed(1)}, ${mx2.toFixed(1)} ${my2.toFixed(1)}, 1560 300`,
+      fill: 'none', stroke: `url(#${['rgA','rgB','rgC'][i % 3]})`, 'stroke-width': String(1 + (i % 4)),
+      'stroke-opacity': 0.5, 'vector-effect': 'non-scaling-stroke'
+    });
     if (i % 5 === 2) p.setAttribute('stroke-dasharray', '10 14');
     rib.appendChild(p);
-    f.d.ribbons.push({ el: p, seed: i * 137.508, yBase: 90 + (i / 11) * 900, amp: 40 + (i % 5) * 26, freq: 0.6 + (i % 7) * 0.17, phase: (i * 137.508 % 360) * Math.PI / 180, speed: 0.12 + (i % 6) * 0.035, dash: i % 5 === 2 });
   }
-  const r = mk('use', { href: '#sym-reticle' }); ret.appendChild(r);
-  const core = mk('use', { href: '#sym-core' }); ret.appendChild(core);
-  f.d.ret = r; f.d.core = core; f.d.ax = 1560; f.d.ay = 300;
-  f.d.nodes = [];
-  for (let m = 0; m < 7; m++) {
-    const c = mk('circle', { r: String(2.5 + (m % 3)), fill: ['#E11D48','#2563EB','#4F46E5'][m % 3], opacity: 0.5 });
-    nd.appendChild(c);
-    f.d.nodes.push({ el: c, t: m / 7, speed: 0.03 + (m % 4) * 0.012, row: m % 12 });
-  }
-}, (f) => {
-  const time = f.t;
-  f.d.ax = 1560 + Math.sin(time * 0.11) * 60;
-  f.d.ay = 300 + Math.cos(time * 0.09) * 46;
-  f.d.ret.setAttribute('transform', `translate(${f.d.ax.toFixed(1)} ${f.d.ay.toFixed(1)}) rotate(${(time * 6).toFixed(2)})`);
-  f.d.core.setAttribute('transform', `translate(${f.d.ax.toFixed(1)} ${f.d.ay.toFixed(1)})`);
-  const dashOff = time * 26;
-  for (const rb of f.d.ribbons) {
-    const drift = Math.sin(time * rb.speed + rb.phase) * rb.amp;
-    const y0 = rb.yBase + drift;
-    const mx1 = 420 + Math.sin(time * rb.speed * 0.7 + rb.seed) * 120;
-    const my1 = y0 + Math.cos(time * rb.freq * 0.5 + rb.phase) * rb.amp * 1.6;
-    const mx2 = 1080 + Math.sin(time * rb.speed * 0.9 + rb.phase * 2) * 90;
-    const my2 = lerp(y0, f.d.ay, 0.55) + Math.sin(time * rb.freq + rb.seed) * rb.amp * 0.7;
-    rb.el.setAttribute('d', `M -60 ${y0.toFixed(1)} C ${mx1.toFixed(1)} ${my1.toFixed(1)}, ${mx2.toFixed(1)} ${my2.toFixed(1)}, ${f.d.ax.toFixed(1)} ${f.d.ay.toFixed(1)}`);
-    if (rb.dash) rb.el.setAttribute('stroke-dashoffset', (-dashOff % 9999).toFixed(1));
-    rb._c = [y0, mx1, my1, mx2, my2];
-  }
-  for (const nod of f.d.nodes) {
-    nod.t += nod.speed / 60; if (nod.t > 1) nod.t -= 1;
-    const rb = f.d.ribbons[nod.row]; if (!rb || !rb._c) continue;
-    const [y0, mx1, my1, mx2, my2] = rb._c, tt = nod.t, mt = 1 - tt;
-    nod.el.setAttribute('cx', (mt*mt*mt*-60 + 3*mt*mt*tt*mx1 + 3*mt*tt*tt*mx2 + tt*tt*tt*f.d.ax).toFixed(1));
-    nod.el.setAttribute('cy', (mt*mt*mt*y0 + 3*mt*mt*tt*my1 + 3*mt*tt*tt*my2 + tt*tt*tt*f.d.ay).toFixed(1));
-  }
-}));
+  ret.appendChild(mk('use', { href: '#sym-reticle', transform: 'translate(1560 300)' }));
+  ret.appendChild(mk('use', { href: '#sym-core', transform: 'translate(1560 300)' }));
+}, null));
 
-/* ---- 2 · Collapse: legacy waveform decaying into fragmented noise blocks ---- */
+/* ---- 2 · Contrast: two gray families drifting toward one shared midpoint ---- */
 fields.push(makeField(2, (f) => {
-  const g1 = mk('g', {}), g2 = mk('g', {});
-  f.svg.append(g1, g2);
-  f.d.waves = [];
-  for (let w = 0; w < 5; w++) {
-    const p = mk('path', { fill: 'none', stroke: `url(#${['rgA','rgB','rgC'][w % 3]})`, 'stroke-width': String(1.4 + (w % 3)), 'vector-effect': 'non-scaling-stroke', opacity: 0.9 - w * 0.12 });
-    g1.appendChild(p);
-    f.d.waves.push({ el: p, base: 200 + w * 150, amp: 90 - w * 12, ph: w * 0.9 });
+  const g = mk('g', {}); f.svg.appendChild(g);
+  for (let i = 0; i < 14; i++) {
+    const light = i % 2 === 0;
+    const x = 90 + i * 132, y = 140 + (i % 5) * 150;
+    g.appendChild(mk('rect', { x, y, width: 74, height: 74, rx: 16,
+      fill: light ? '#E9EDF4' : '#3A4250', opacity: 0.14,
+      transform: `rotate(${(i * 7) % 24} ${x + 37} ${y + 37})` }));
   }
-  f.d.blocks = [];
-  for (let b = 0; b < 26; b++) {
-    const r = mk('rect', { width: 14, height: 14, rx: 3, fill: b % 4 ? '#2563EB' : '#E11D48', opacity: 0.10 });
-    g2.appendChild(r);
-    f.d.blocks.push({ el: r, x: 120 + b * 66, y: 950, seed: b * 47.3 });
-  }
-}, (f) => {
-  const t = f.t;
-  for (const w of f.d.waves) {
-    let dPath = 'M 0 ' + w.base;
-    for (let x = 0; x <= 1920; x += 64) {
-      const decay = 1 / (1 + x / 760);                        // amplitude collapse left→right
-      const chop = x > 1150 ? Math.sign(Math.sin(x * 0.05 + t)) * 26 : 0; // fragmentation zone
-      const y = w.base + Math.sin(x * 0.006 + t * (0.8 + w.ph * 0.2) + w.ph) * w.amp * decay + chop;
-      dPath += ` L ${x} ${y.toFixed(1)}`;
-    }
-    w.el.setAttribute('d', dPath);
-  }
-  for (const b of f.d.blocks) {
-    const jitter = Math.sin(t * 2.1 + b.seed) * 10 + Math.sin(t * 5.7 + b.seed * 2) * 4;
-    const fall = ((t * 40 + b.seed * 9) % 1080);
-    b.el.setAttribute('x', (b.x + Math.sin(t * 1.3 + b.seed) * 6).toFixed(1));
-    b.el.setAttribute('y', (fall - 40 + jitter).toFixed(1));
-    b.el.setAttribute('opacity', (0.05 + 0.10 * Math.abs(Math.sin(t + b.seed))).toFixed(3));
-  }
-}));
+  g.appendChild(mk('circle', { cx: 960, cy: 540, r: 150, fill: 'url(#attractorGlow)', opacity: 0.8 }));
+  g.appendChild(mk('circle', { cx: 960, cy: 540, r: 9, fill: '#7A7A7A', opacity: 0.85 }));
+}, null));
 
-/* ---- 3 · Dopamine loop: reward pulses orbiting a prediction-error ellipse ---- */
+/* ---- 3 · Attention: sparse gaze-fixation saccade path with hubs ---- */
 fields.push(makeField(3, (f) => {
+  const pts = [[320,240],[760,180],[1180,300],[1520,220],[1620,560],[1240,700],[820,640],[420,760],[240,520]];
+  let d = 'M ' + pts[0][0] + ' ' + pts[0][1];
+  for (let i = 1; i < pts.length; i++) d += ` L ${pts[i][0]} ${pts[i][1]}`;
+  d += ' L 320 240';
+  f.svg.appendChild(mk('path', { d, fill: 'none', stroke: 'url(#rgB)', 'stroke-width': 1.6,
+    'stroke-dasharray': '2 16', 'stroke-opacity': 0.7, 'vector-effect': 'non-scaling-stroke' }));
   const g = mk('g', {}); f.svg.appendChild(g);
-  const ell = mk('ellipse', { cx: 960, cy: 540, rx: 620, ry: 300, fill: 'none', stroke: 'url(#rgB)', 'stroke-width': 2, 'vector-effect': 'non-scaling-stroke', opacity: 0.8 });
-  const ell2 = mk('ellipse', { cx: 960, cy: 540, rx: 620, ry: 300, fill: 'none', stroke: 'url(#rgC)', 'stroke-width': 1.6, 'stroke-dasharray': '8 12', 'vector-effect': 'non-scaling-stroke', opacity: 0.7 });
-  const rot = mk('g', {});
-  rot.appendChild(ell); rot.appendChild(ell2);
-  g.appendChild(rot);
-  f.d.rot = rot;
-  f.d.pulses = [];
-  for (let i = 0; i < 4; i++) {
-    const halo = mk('circle', { r: 26, fill: 'url(#attractorGlow)' });
-    const c = mk('circle', { r: 7, fill: i % 2 ? '#4F46E5' : '#E11D48', opacity: 0.85 });
-    g.appendChild(halo); g.appendChild(c);
-    f.d.pulses.push({ c, halo, ph: i / 4, sp: 0.16 + (i % 3) * 0.05 });
-  }
-  const spark = mk('g', {}); g.appendChild(spark); f.d.spark = spark; f.d.sparks = [];
-}, (f) => {
-  const t = f.t;
-  f.d.rot.setAttribute('transform', `rotate(${(Math.sin(t * 0.12) * 4).toFixed(2)} 960 540)`);
-  for (const p of f.d.pulses) {
-    const a = (t * p.sp + p.ph) * Math.PI * 2;
-    const err = 1 + 0.10 * Math.sin(a * 3 + t);              // prediction-error wobble
-    const x = 960 + Math.cos(a) * 620 * err, y = 540 + Math.sin(a) * 300 * err;
-    p.c.setAttribute('cx', x.toFixed(1)); p.c.setAttribute('cy', y.toFixed(1));
-    p.halo.setAttribute('cx', x.toFixed(1)); p.halo.setAttribute('cy', y.toFixed(1));
-    p.c.setAttribute('opacity', (0.55 + 0.35 * Math.abs(Math.sin(a * 2))).toFixed(2));
-  }
-  /* intermittent reinforcement sparks at random pulse positions */
-  if (Math.random() < 0.02) {
-    const p = f.d.pulses[Math.floor(Math.random() * 4)];
-    const x = parseFloat(p.c.getAttribute('cx')), y = parseFloat(p.c.getAttribute('cy'));
-    const s = mk('circle', { cx: x, cy: y, r: 4, fill: '#4F46E5', opacity: 0.8 });
-    f.d.spark.appendChild(s); f.d.sparks.push({ el: s, life: 1 });
-  }
-  f.d.sparks = f.d.sparks.filter((s) => {
-    s.life -= 0.02;
-    s.el.setAttribute('r', (14 * (1 - s.life) + 3).toFixed(1));
-    s.el.setAttribute('opacity', (s.life * 0.7).toFixed(2));
-    if (s.life <= 0) { s.el.remove(); return false; }
-    return true;
+  pts.forEach((p, i) => {
+    g.appendChild(mk('circle', { cx: p[0], cy: p[1], r: 10 + (i % 3) * 6, fill: 'none',
+      stroke: i % 4 === 0 ? '#E11D48' : '#2563EB', 'stroke-opacity': 0.22, 'stroke-width': 1.2, 'vector-effect': 'non-scaling-stroke' }));
   });
-}));
+}, null));
 
-/* ---- 4 · Hook: concentric ripple rings emanating from a fixed gaze point ---- */
+/* ---- 4 · Bistable: nested ambiguous contours that refuse to resolve ---- */
 fields.push(makeField(4, (f) => {
-  const g = mk('g', {}); f.svg.appendChild(g);
-  const anchor = mk('circle', { cx: 1450, cy: 330, r: 6, fill: '#E11D48', opacity: 0.85 });
-  g.appendChild(anchor);
-  f.d.rings = [];
-  for (let i = 0; i < 7; i++) {
-    const c = mk('circle', { cx: 1450, cy: 330, r: 10, fill: 'none', stroke: i % 2 ? '#2563EB' : '#4F46E5', 'stroke-width': 1.4, 'vector-effect': 'non-scaling-stroke' });
-    g.appendChild(c);
-    f.d.rings.push({ el: c, ph: i / 7 });
+  const g = mk('g', { transform: 'translate(960 540)' }); f.svg.appendChild(g);
+  for (let i = 0; i < 5; i++) {
+    g.appendChild(mk('ellipse', { rx: 180 + i * 130, ry: 110 + i * 78, fill: 'none',
+      stroke: i % 2 ? '#4F46E5' : '#2563EB', 'stroke-opacity': 0.16, 'stroke-width': 1.4,
+      transform: `rotate(${i * 18})`, 'vector-effect': 'non-scaling-stroke' }));
   }
-  /* three-second fixation sweep wedge */
-  const wedge = mk('path', { d: 'M 1450 330 L 1450 30 A 300 300 0 0 1 1610 120 Z', fill: 'url(#attractorGlow)', opacity: 0.5 });
-  g.appendChild(wedge); f.d.wedge = wedge;
-}, (f) => {
-  const t = f.t;
-  for (const r of f.d.rings) {
-    const k = ((t * 0.22 + r.ph) % 1);
-    r.el.setAttribute('r', (12 + k * 760).toFixed(1));
-    r.el.setAttribute('stroke-opacity', (0.30 * (1 - k)).toFixed(3));
-  }
-  f.d.wedge.setAttribute('transform', `rotate(${(t * 24).toFixed(1)} 1450 330)`);
-  f.d.wedge.setAttribute('opacity', (0.28 + 0.18 * Math.sin(t * 2)).toFixed(2));
-}));
+  g.appendChild(mk('path', { d: 'M -260 40 C -120 -120, 120 -120, 260 40 C 120 160, -120 160, -260 40 Z',
+    fill: 'none', stroke: '#E11D48', 'stroke-opacity': 0.2, 'stroke-width': 1.6, 'vector-effect': 'non-scaling-stroke' }));
+}, null));
 
-/* ---- 5 · Zeigarnik: open arcs breathing closed and re-opened along a chain ---- */
+/* ---- 5 · Construction: locally consistent bars, globally impossible figure ---- */
 fields.push(makeField(5, (f) => {
-  const g = mk('g', {}); f.svg.appendChild(g);
-  f.d.arcs = [];
-  for (let i = 0; i < 6; i++) {
-    const p = mk('path', { fill: 'none', stroke: i === 5 ? '#E11D48' : '#4F46E5', 'stroke-width': 2.2, 'stroke-linecap': 'round', 'vector-effect': 'non-scaling-stroke', opacity: 0.55 });
-    g.appendChild(p);
-    f.d.arcs.push({ el: p, cx: 300 + i * 260, cy: 540 + (i % 2 ? 130 : -130), r: 120 + (i % 3) * 40, sp: 0.5 + i * 0.13 });
+  const g = mk('g', { transform: 'translate(960 540)' }); f.svg.appendChild(g);
+  const tri = [[0,-300],[280,190],[-280,190]];
+  for (let i = 0; i < 3; i++) {
+    const a = tri[i], b = tri[(i + 1) % 3];
+    g.appendChild(mk('line', { x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: ['#2563EB','#4F46E5','#E11D48'][i],
+      'stroke-opacity': 0.22, 'stroke-width': 26, 'stroke-linecap': 'round', 'vector-effect': 'non-scaling-stroke' }));
   }
-  const trail = mk('g', {}); g.appendChild(trail); f.d.trail = trail; f.d.dots = [];
-}, (f) => {
-  const t = f.t;
-  for (const a of f.d.arcs) {
-    const start = t * a.sp;
-    const span = Math.PI * (1.35 + 0.35 * Math.sin(t * 0.4 + a.cx));  // arc breathes → closes & re-opens
-    const end = start + span;
-    const x1 = a.cx + Math.cos(start) * a.r, y1 = a.cy + Math.sin(start) * a.r;
-    const x2 = a.cx + Math.cos(end) * a.r, y2 = a.cy + Math.sin(end) * a.r;
-    const large = span > Math.PI ? 1 : 0;
-    a.el.setAttribute('d', `M ${x1.toFixed(1)} ${y1.toFixed(1)} A ${a.r} ${a.r} 0 ${large} 1 ${x2.toFixed(1)} ${y2.toFixed(1)}`);
-    a.el.setAttribute('opacity', (0.30 + 0.30 * Math.abs(Math.sin(t * 0.5 + a.cx))).toFixed(2));
-    if (Math.random() < 0.05) {
-      const d = mk('circle', { cx: x2, cy: y2, r: 3, fill: '#2563EB', opacity: 0.6 });
-      f.d.trail.appendChild(d); f.d.dots.push({ el: d, life: 1 });
-    }
-  }
-  f.d.dots = f.d.dots.filter((d) => {
-    d.life -= 0.015;
-    d.el.setAttribute('opacity', (d.life * 0.5).toFixed(2));
-    d.el.setAttribute('r', (3 + (1 - d.life) * 5).toFixed(1));
-    if (d.life <= 0) { d.el.remove(); return false; }
-    return true;
-  });
-}));
+  tri.forEach((p) => g.appendChild(mk('circle', { cx: p[0], cy: p[1], r: 12, fill: 'none', stroke: '#64748B', 'stroke-opacity': 0.35, 'vector-effect': 'non-scaling-stroke' })));
+  g.appendChild(mk('use', { href: '#sym-reticle', transform: 'translate(430 -240) scale(0.6)', opacity: 0.5 }));
+}, null));
 
-/* ---- 6 · Micro-interactions: constellation of reactive perceptual dots ---- */
+/* ---- 6 · Association: semantic network — four shown words around one absent hub ---- */
 fields.push(makeField(6, (f) => {
-  const lines = mk('g', {}), dots = mk('g', {});
-  f.svg.append(lines, dots);
-  f.d.pts = [];
-  for (let i = 0; i < 34; i++) {
-    const c = mk('circle', { r: 2 + (i % 3), fill: i % 6 === 0 ? '#E11D48' : (i % 3 === 0 ? '#4F46E5' : '#2563EB'), opacity: 0.4 });
-    dots.appendChild(c);
-    f.d.pts.push({ el: c, ox: 100 + Math.random() * 1720, oy: 80 + Math.random() * 920, ax: 30 + Math.random() * 70, ay: 24 + Math.random() * 60, sx: 0.25 + Math.random() * 0.5, sy: 0.2 + Math.random() * 0.5, ph: Math.random() * 6.28, x: 0, y: 0 });
-  }
-  f.d.lines = [];
-  for (let i = 0; i < 16; i++) {
-    const l = mk('line', { stroke: '#2563EB', 'stroke-width': 1, 'vector-effect': 'non-scaling-stroke' });
-    lines.appendChild(l);
-    f.d.lines.push({ el: l, a: i * 2 % 34, b: (i * 5 + 3) % 34 });
-  }
-}, (f) => {
-  const t = f.t;
-  for (const p of f.d.pts) {
-    p.x = p.ox + Math.sin(t * p.sx + p.ph) * p.ax;
-    p.y = p.oy + Math.cos(t * p.sy + p.ph * 1.7) * p.ay;
-    p.el.setAttribute('cx', p.x.toFixed(1)); p.el.setAttribute('cy', p.y.toFixed(1));
-    p.el.setAttribute('opacity', (0.25 + 0.25 * Math.abs(Math.sin(t * 0.7 + p.ph))).toFixed(2));
-  }
-  for (const ln of f.d.lines) {
-    const a = f.d.pts[ln.a], b = f.d.pts[ln.b];
-    const dist = Math.hypot(a.x - b.x, a.y - b.y);
-    ln.el.setAttribute('x1', a.x.toFixed(1)); ln.el.setAttribute('y1', a.y.toFixed(1));
-    ln.el.setAttribute('x2', b.x.toFixed(1)); ln.el.setAttribute('y2', b.y.toFixed(1));
-    ln.el.setAttribute('stroke-opacity', dist < 300 ? ((1 - dist / 300) * 0.30).toFixed(3) : '0');
-  }
-}));
+  const hub = [960, 540];
+  const sat = [[520,300],[1420,320],[560,800],[1380,780]];
+  const g = mk('g', {}); f.svg.appendChild(g);
+  sat.forEach((p) => g.appendChild(mk('line', { x1: p[0], y1: p[1], x2: hub[0], y2: hub[1],
+    stroke: '#4F46E5', 'stroke-opacity': 0.16, 'stroke-width': 1.4, 'stroke-dasharray': '6 10', 'vector-effect': 'non-scaling-stroke' })));
+  g.appendChild(mk('circle', { cx: hub[0], cy: hub[1], r: 120, fill: 'url(#coralGlow)', opacity: 0.9 }));
+  g.appendChild(mk('circle', { cx: hub[0], cy: hub[1], r: 26, fill: 'none', stroke: '#E11D48', 'stroke-opacity': 0.3, 'stroke-dasharray': '4 6', 'vector-effect': 'non-scaling-stroke' }));
+  sat.forEach((p, i) => g.appendChild(mk('circle', { cx: p[0], cy: p[1], r: 16 + i * 2, fill: '#2563EB', opacity: 0.14 })));
+}, null));
 
-/* ---- 7 · Dark side: oscillating balance beam with sinking tension weights ---- */
+/* ---- 7 · Framing: one event wave re-drawn through five verbal filters ---- */
 fields.push(makeField(7, (f) => {
   const g = mk('g', {}); f.svg.appendChild(g);
-  const glow = mk('circle', { cx: 960, cy: 540, r: 300, fill: 'url(#coralGlow)', opacity: 0.6 });
-  const fulcrum = mk('path', { d: 'M 960 700 L 920 780 L 1000 780 Z', fill: 'none', stroke: '#4F46E5', 'stroke-opacity': 0.4, 'stroke-width': 2, 'vector-effect': 'non-scaling-stroke' });
-  g.append(glow, fulcrum);
-  const beam = mk('g', {}); g.appendChild(beam);
-  const bar = mk('rect', { x: 460, y: 690, width: 1000, height: 10, rx: 5, fill: 'url(#rgA)' });
-  beam.appendChild(bar);
-  f.d.beam = beam;
-  f.d.weights = [];
-  for (let i = 0; i < 6; i++) {
-    const w = mk('rect', { x: 500 + i * 160, y: 700, width: 46, height: 26, rx: 7, fill: i < 3 ? '#2563EB' : '#E11D48', opacity: 0.28 });
-    beam.appendChild(w);
-    f.d.weights.push({ el: w, side: i < 3 ? -1 : 1, ph: i * 1.1 });
+  for (let w = 0; w < 5; w++) {
+    const amp = 26 + w * 20, base = 200 + w * 150;
+    let d = 'M 0 ' + base;
+    for (let x = 0; x <= 1920; x += 48) {
+      const bump = Math.exp(-Math.pow((x - 960) / 300, 2)) * amp;
+      d += ` L ${x} ${(base - bump * Math.abs(Math.sin(x * 0.012 + w))).toFixed(1)}`;
+    }
+    g.appendChild(mk('path', { d, fill: 'none', stroke: `url(#${['rgA','rgB','rgC','rgA','rgB'][w]})`,
+      'stroke-width': String(1.2 + w * 0.4), 'stroke-opacity': 0.6, 'vector-effect': 'non-scaling-stroke' }));
   }
-  f.d.glow = glow;
-}, (f) => {
-  const t = f.t;
-  const tilt = Math.sin(t * 0.35) * 7 + Math.sin(t * 0.13) * 3;   // slow unstable seesaw
-  f.d.beam.setAttribute('transform', `rotate(${tilt.toFixed(2)} 960 695)`);
-  for (const w of f.d.weights) {
-    const sink = 700 + (18 + 10 * Math.sin(t * 0.6 + w.ph)) * (w.side > 0 ? (1 + tilt / 12) : (1 - tilt / 12));
-    w.el.setAttribute('y', sink.toFixed(1));
-    w.el.setAttribute('height', (26 + (w.side > 0 ? 14 + tilt : 14 - tilt)).toFixed(1));
-  }
-  f.d.glow.setAttribute('opacity', (0.35 + 0.25 * Math.abs(Math.sin(t * 0.3))).toFixed(2));
-}));
+}, null));
 
-/* ---- 8 · Synthesis: three tool-gears meshing and driving one output shaft ---- */
+/* ---- 8 · Reasoning: hypothesis nodes branching from one rule, one green path ---- */
 fields.push(makeField(8, (f) => {
-  const defs = mk('defs', {}); f.svg.appendChild(defs);
-  const teeth = 14, R = 120, r = 96;
-  let gd = '';
-  for (let i = 0; i < teeth; i++) {
-    const a0 = (i / teeth) * Math.PI * 2, a1 = ((i + 0.45) / teeth) * Math.PI * 2, a2 = ((i + 0.55) / teeth) * Math.PI * 2, a3 = ((i + 1) / teeth) * Math.PI * 2;
-    gd += `${i ? 'L' : 'M'} ${(Math.cos(a0) * r).toFixed(1)} ${(Math.sin(a0) * r).toFixed(1)} L ${(Math.cos(a1) * R).toFixed(1)} ${(Math.sin(a1) * R).toFixed(1)} L ${(Math.cos(a2) * R).toFixed(1)} ${(Math.sin(a2) * R).toFixed(1)} L ${(Math.cos(a3) * r).toFixed(1)} ${(Math.sin(a3) * r).toFixed(1)} `;
-  }
-  const gear = mk('path', { id: 'gear-s8', d: gd + 'Z', fill: 'none', 'stroke-width': 2, 'vector-effect': 'non-scaling-stroke' });
-  defs.appendChild(gear);
-  f.d.gears = [];
-  [[560, 420, 1], [900, 560, -1], [1240, 420, 1]].forEach((cfg, i) => {
-    const wrap = mk('g', {});
-    const u = mk('use', { href: '#gear-s8' });
-    u.setAttribute('stroke', ['#2563EB', '#4F46E5', '#E11D48'][i]);
-    u.setAttribute('stroke-opacity', '0.30');
-    const hub = mk('circle', { r: 14, fill: ['#2563EB', '#4F46E5', '#E11D48'][i], opacity: 0.35 });
-    wrap.append(u, hub);
-    f.svg.appendChild(wrap);
-    f.d.gears.push({ el: wrap, x: cfg[0], y: cfg[1], dir: cfg[2], off: i * 0.24 });
+  const g = mk('g', {}); f.svg.appendChild(g);
+  const root = [420, 540];
+  const leaves = [[1180,220],[1320,420],[1180,860],[1320,660]];
+  g.appendChild(mk('circle', { cx: root[0], cy: root[1], r: 130, fill: 'url(#attractorGlow)' }));
+  g.appendChild(mk('circle', { cx: root[0], cy: root[1], r: 16, fill: '#2563EB', opacity: 0.55 }));
+  leaves.forEach((p, i) => {
+    const hit = i === 3;
+    g.appendChild(mk('path', { d: `M ${root[0]} ${root[1]} C ${(root[0]+p[0])/2} ${root[1] + (i%2?160:-160)}, ${(root[0]+p[0])/2} ${p[1]}, ${p[0]} ${p[1]}`,
+      fill: 'none', stroke: hit ? '#059669' : '#64748B', 'stroke-opacity': hit ? 0.5 : 0.18, 'stroke-width': hit ? 2.4 : 1.4,
+      'stroke-dasharray': hit ? 'none' : '5 9', 'vector-effect': 'non-scaling-stroke' }));
+    g.appendChild(mk('circle', { cx: p[0], cy: p[1], r: 12, fill: hit ? '#059669' : '#64748B', opacity: hit ? 0.6 : 0.22 }));
   });
-  const shaft = mk('path', { d: 'M 1360 420 C 1520 420, 1560 540, 1720 540', fill: 'none', stroke: 'url(#rgC)', 'stroke-width': 2, 'stroke-dasharray': '6 10', 'vector-effect': 'non-scaling-stroke', opacity: 0.6 });
-  f.svg.appendChild(shaft);
-}, (f) => {
-  const t = f.t;
-  for (const gr of f.d.gears) {
-    gr.el.setAttribute('transform', `translate(${gr.x} ${gr.y}) rotate(${((t * 22 * gr.dir + gr.off * 360) % 360).toFixed(1)})`);
-  }
-}));
+}, null));
 
-/* ---- 9 · Blueprint: construction modules assembling themselves on a timeline ---- */
+/* ---- 9 · Calibration: confidence-vs-accuracy chart with an overconfidence gap ---- */
 fields.push(makeField(9, (f) => {
-  const base = mk('path', { d: 'M 120 860 H 1800', stroke: '#94A3B8', 'stroke-opacity': 0.35, 'stroke-width': 2, 'vector-effect': 'non-scaling-stroke', fill: 'none' });
-  f.svg.appendChild(base);
-  f.d.mods = [];
-  for (let i = 0; i < 10; i++) {
-    const gmod = mk('g', {});
-    const rect = mk('rect', { x: -44, y: -30, width: 88, height: 60, rx: 10, fill: 'none', stroke: i % 3 ? '#2563EB' : '#4F46E5', 'stroke-width': 1.6, 'vector-effect': 'non-scaling-stroke', opacity: 0.4 });
-    const fillBar = mk('rect', { x: -44, y: 12, width: 88, height: 18, rx: 6, fill: i % 4 === 3 ? '#E11D48' : '#2563EB', opacity: 0.18 });
-    gmod.append(rect, fillBar);
-    f.svg.appendChild(gmod);
-    f.d.mods.push({ el: gmod, fill: fillBar, tx: 160 + i * 176, ph: i * 0.55 });
-  }
-  const crane = mk('path', { d: 'M 0 -120 L 0 0 M -40 -120 L 40 -120', stroke: '#4F46E5', 'stroke-opacity': 0.5, 'stroke-width': 2, fill: 'none', 'vector-effect': 'non-scaling-stroke' });
-  f.svg.appendChild(crane); f.d.crane = crane;
-}, (f) => {
-  const t = f.t;
-  for (const m of f.d.mods) {
-    const settle = (Math.sin(t * 0.5 + m.ph) + 1) / 2;
-    const y = 860 - 40 - settle * 260 - (m.ph % 1) * 30;
-    m.el.setAttribute('transform', `translate(${(m.tx + Math.sin(t * 0.3 + m.ph) * 4).toFixed(1)} ${y.toFixed(1)}) rotate(${(Math.sin(t * 0.4 + m.ph) * 3).toFixed(2)})`);
-    m.el.setAttribute('opacity', (0.45 + 0.4 * settle).toFixed(2));
-    m.fill.setAttribute('width', (20 + 68 * settle).toFixed(1));
-  }
-  f.d.crane.setAttribute('transform', `translate(${(960 + Math.sin(t * 0.35) * 760).toFixed(1)} ${(560 + Math.cos(t * 0.5) * 60).toFixed(1)})`);
-}));
+  const g = mk('g', {}); f.svg.appendChild(g);
+  g.appendChild(mk('path', { d: 'M 320 880 H 1700 M 320 880 V 180', stroke: '#64748B', 'stroke-opacity': 0.3, 'stroke-width': 1.6, fill: 'none', 'vector-effect': 'non-scaling-stroke' }));
+  g.appendChild(mk('path', { d: 'M 320 880 L 1700 180', stroke: '#2563EB', 'stroke-opacity': 0.3, 'stroke-width': 1.6, 'stroke-dasharray': '8 10', fill: 'none', 'vector-effect': 'non-scaling-stroke' }));
+  g.appendChild(mk('path', { d: 'M 320 880 C 700 620, 1150 330, 1700 210', stroke: '#E11D48', 'stroke-opacity': 0.35, 'stroke-width': 2.4, fill: 'none', 'vector-effect': 'non-scaling-stroke' }));
+  for (let i = 0; i < 6; i++) g.appendChild(mk('circle', { cx: 420 + i * 240, cy: 800 - i * 118, r: 7, fill: '#4F46E5', opacity: 0.35 }));
+}, null));
 
-/* ---- 10 · Closing: converging speech bursts folding into one horizon line ---- */
+/* ---- 10 · Closing: horizon of folded experiments with rising question marks ---- */
 fields.push(makeField(10, (f) => {
   const g = mk('g', {}); f.svg.appendChild(g);
-  const sun = mk('circle', { cx: 960, cy: 620, r: 90, fill: 'url(#attractorGlow)' });
-  const horizon = mk('path', { d: 'M 100 620 H 1820', stroke: 'url(#rgA)', 'stroke-width': 2, 'vector-effect': 'non-scaling-stroke', fill: 'none', opacity: 0.8 });
-  g.append(sun, horizon);
-  f.d.sun = sun;
-  f.d.bursts = [];
-  for (let i = 0; i < 9; i++) {
-    const u = mk('use', { href: '#sym-burst' });
-    u.setAttribute('stroke', ['#2563EB', '#4F46E5', '#E11D48'][i % 3]);
-    u.setAttribute('stroke-width', 1.6);
-    g.appendChild(u);
-    f.d.bursts.push({ el: u, ox: 180 + (i % 5) * 380, oy: 200 + Math.floor(i / 5) * 620 + (i % 3) * 60, sc: 0.6 + (i % 4) * 0.3, ph: i * 0.7 });
+  g.appendChild(mk('circle', { cx: 960, cy: 640, r: 120, fill: 'url(#attractorGlow)' }));
+  g.appendChild(mk('path', { d: 'M 120 640 H 1800', stroke: 'url(#rgA)', 'stroke-width': 2, fill: 'none', 'stroke-opacity': 0.7, 'vector-effect': 'non-scaling-stroke' }));
+  for (let i = 0; i < 7; i++) {
+    const x = 260 + i * 230;
+    g.appendChild(mk('path', { d: `M ${x} 640 C ${x - 60} 520, ${x + 60} 470, ${x} 360`, fill: 'none',
+      stroke: ['#2563EB','#4F46E5','#E11D48'][i % 3], 'stroke-opacity': 0.2, 'stroke-width': 1.6, 'vector-effect': 'non-scaling-stroke' }));
+    g.appendChild(mk('circle', { cx: x, cy: 336, r: 5, fill: '#4F46E5', opacity: 0.3 }));
   }
-}, (f) => {
-  const t = f.t;
-  for (const b of f.d.bursts) {
-    const k = ((t * 0.10 + b.ph * 0.31) % 1);
-    const x = lerp(b.ox, 960, k);
-    const y = lerp(b.oy, 620, k);
-    const sc = b.sc * (1 - k * 0.75);
-    b.el.setAttribute('transform', `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${(t * 18 + b.ph * 40).toFixed(1)}) scale(${sc.toFixed(3)})`);
-    b.el.setAttribute('stroke-opacity', (0.42 * (1 - k) + 0.06).toFixed(3));
-  }
-  f.d.sun.setAttribute('r', (90 + Math.sin(t * 0.6) * 14).toFixed(1));
-}));
+}, null));
 
 function setActiveField(idx) {
   fields.forEach((fl, i) => { if (!fl) return; if (i === idx) fl.start(); else fl.stop(); });
@@ -1927,13 +1840,21 @@ function goTo(idx, opts) {
       s.classList.add(goingForward ? 'is-exit-up' : 'is-exit-down');
     }
   });
+  /* DEMO lifecycle: leaving a slide ALWAYS resets its demo, so every demo
+     (and every Replay button on slide 10) starts from a pristine state. */
+  if (!IS_REMOTE && typeof DEMO !== 'undefined' && DEMO[prevIdx] && prevIdx !== idx) DEMO[prevIdx].reset();
+  document.body.classList.toggle('stim-on', idx >= 0 && idx <= 6);
   slideIndex = idx;
   setFocusForSlide(idx);
   setActiveField(idx);
   updateHUD();
   onSlideEnter(idx);
   if (!opts.silent) AudioEngine.play(goingForward ? 'forward' : 'back');
-  if (!IS_REMOTE) publishNav(idx);
+  if (!IS_REMOTE) {
+    refreshActLabel();          /* sync the .act-btn label to DEMO[idx].label() */
+    publishNav(idx);
+    publishState();             /* board -> remote STATE (label + hasDemo) */
+  }
 }
 function next() { goTo(slideIndex + 1); }
 function prev() { goTo(slideIndex - 1); }
@@ -1945,6 +1866,7 @@ function updateHUD() {
   $$('#progress-track .pseg').forEach((el, i) => {
     el.classList.toggle('done', i < slideIndex);
     el.classList.toggle('current', i === slideIndex);
+    el.title = slideName(i);
   });
   $('#tel-x').textContent = x;
   $('#tel-left').textContent = (x === TOTAL) ? 'Final Slide' : ((TOTAL - x) + ' slides left');
@@ -1952,22 +1874,34 @@ function updateHUD() {
   /* remote UI sync */
   if (IS_REMOTE) {
     $('#rmu-idx').textContent = `SLIDE ${x} / ${TOTAL} · BOARD VIEW`;
-    $('#rmu-name').textContent = slides[slideIndex].dataset.title.replace(/&amp;/g, '&');
+    $('#rmu-name').textContent = slideName(slideIndex);
     $('#rmu-cue').textContent = CUES[slideIndex];
     $('#rmu-prog-fill').style.transform = `scaleX(${x / TOTAL})`;
     $$('#rmu-jump button').forEach((b, i) => b.classList.toggle('current', i === slideIndex));
+    applyRemoteState();
   }
   const ts = $('#tele-slide'); if (ts) ts.textContent = `${x} / ${TOTAL}`;
 }
 
 /* ---------------------------------------------------------------------------
-   INPUT HARDWARE: keyboard (Bluetooth HID), wheel, swipe, click zones, buttons
+   INPUT HARDWARE: keyboard (Bluetooth HID), wheel, swipe, click zones, buttons.
+   Wrapped in bindDeckInput() so the demo action keys (A / Tab) are checked
+   before navigation and every listener is registered exactly once at init.
 --------------------------------------------------------------------------- */
+function bindDeckInput() {
 window.addEventListener('keydown', (e) => {
   const k = e.key, c = e.code, kc = e.keyCode;
-  /* never hijack typing inside the room input */
-  if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
+  /* never hijack ANY deck shortcut while typing in a text field */
+  if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable)) {
     if (k === 'Escape') closeModal();
+    return;
+  }
+  /* DEMO ACTION keys: A or Tab trigger the active slide's next step.
+     Space/Enter/PageDown deliberately stay "next slide" only, so a Bluetooth
+     clicker can never fire an experiment by accident. */
+  if (!IS_REMOTE && (k === 'a' || k === 'A' || c === 'KeyA' || kc === 65 || k === 'Tab')) {
+    e.preventDefault();
+    triggerActiveSlideAction();
     return;
   }
   const isNext = (k === 'PageDown' || c === 'PageDown' || kc === 34 ||
@@ -2023,6 +1957,13 @@ $('#prev-btn').addEventListener('click', prev);
 const restartBtn = $('#restart-btn');
 if (restartBtn) restartBtn.addEventListener('click', () => goTo(0, { force: true }));
 $$('[data-jump]').forEach(b => b.addEventListener('click', () => goTo(parseInt(b.dataset.jump, 10))));
+[['#replay-s2', 1], ['#replay-s6', 5]].forEach(([sel, target]) => {
+  const b = $(sel);
+  if (b) b.addEventListener('click', () => {
+    goTo(target, { force: true });
+    showToast(`Replaying: ${slideName(target)}`);
+  });
+});
 
 /* presenter click-mode toggle + right/left zone clicks */
 $('#presenter-toggle').addEventListener('click', () => {
@@ -2031,6 +1972,7 @@ $('#presenter-toggle').addEventListener('click', () => {
 });
 $('#zone-next').addEventListener('click', next);
 $('#zone-prev').addEventListener('click', prev);
+} /* ---- end bindDeckInput ---- */
 
 /* ---------------------------------------------------------------------------
    FULLSCREEN (Android Chrome webkit fallback + dynamic icon/label)
@@ -2088,7 +2030,8 @@ function connectMQTT() {
       mqttOnline = true; setSyncStatus('online');
       mqttClient.subscribe(roomTopic, { qos: 0 }, () => {
         /* announce presence so late joiners sync to our view */
-        publishNav(slideIndex, true);
+        if (IS_REMOTE) publishNav(slideIndex);
+        else { publishNav(slideIndex, true); publishState(); }
       });
     });
     mqttClient.on('reconnect', () => setSyncStatus('linking'));
@@ -2098,15 +2041,39 @@ function connectMQTT() {
       if (topic !== roomTopic) return;
       let msg;
       try { msg = JSON.parse(payload.toString()); } catch (e) { return; }
-      if (!msg || msg.type !== 'NAV' || typeof msg.slideIndex !== 'number') return;
-      if (IS_REMOTE) {
-        /* phone view mirrors the board's authoritative index */
-        slideIndex = clamp(msg.slideIndex, 0, TOTAL - 1);
-        updateHUD();
-      } else {
-        /* board obeys inbound remote commands (<50ms transition budget) */
-        goTo(clamp(msg.slideIndex, 0, TOTAL - 1), { silent: true });
-        showToast(`Remote jump → Slide ${msg.slideIndex + 1}`);
+      if (!msg || typeof msg.slideIndex !== 'number') return;
+      /* ---------- NAV: existing behaviour + loop protection ---------- */
+      if (msg.type === 'NAV') {
+        if (IS_REMOTE) {
+          /* board-originated NAV only: the phone mirrors the authoritative index */
+          if (msg.src !== 'board') return;
+          slideIndex = clamp(msg.slideIndex, 0, TOTAL - 1);
+          updateHUD();
+        } else {
+          /* remote-originated NAV only — never obey our own echoes */
+          if (msg.src !== 'remote') return;
+          goTo(clamp(msg.slideIndex, 0, TOTAL - 1), { silent: true });
+          showToast(`Remote jump → Slide ${msg.slideIndex + 1}`);
+        }
+        return;
+      }
+      /* ---------- ACT: remote -> board. Ignore echoes + wrong-slide messages ---------- */
+      if (msg.type === 'ACT') {
+        if (IS_REMOTE) return;                 /* the remote never executes ACT */
+        if (msg.src !== 'remote') return;      /* never process our own echo */
+        if (msg.slideIndex !== slideIndex) return;
+        triggerActiveSlideAction();
+        return;
+      }
+      /* ---------- STATE: board -> remote label/name mirror ---------- */
+      if (msg.type === 'STATE') {
+        if (!IS_REMOTE) return;                /* the board ignores STATE */
+        if (msg.src !== 'board') return;
+        remoteState.label = (typeof msg.label === 'string' || msg.label === null) ? msg.label : null;
+        remoteState.hasDemo = !!msg.hasDemo;
+        remoteState.slideIndex = clamp(msg.slideIndex, 0, TOTAL - 1);
+        applyRemoteState();
+        return;
       }
     });
   } catch (e) { setSyncStatus('offline'); }
@@ -2120,6 +2087,35 @@ function publishNav(idx, isAnnounce) {
   } catch (e) {}
 }
 
+/* ---------------------------------------------------------------------------
+   DEMO ACTION SYSTEM — MQTT plumbing (additive; NAV stays exactly as before)
+   Board -> remote : {type:'STATE', slideIndex, label, hasDemo, timestamp, src:'board'}
+   Remote -> board : {type:'ACT',   slideIndex, timestamp, src:'remote'}
+--------------------------------------------------------------------------- */
+function publishState() {
+  if (IS_REMOTE || !mqttClient || !mqttOnline) return;
+  const d = DEMO[slideIndex];
+  let label = null;
+  try { label = d ? d.label() : null; } catch (e) { label = null; }
+  try {
+    mqttClient.publish(roomTopic, JSON.stringify({
+      type: 'STATE', slideIndex: slideIndex, label: label, hasDemo: !!d,
+      timestamp: Date.now(), src: 'board'
+    }), { qos: 0 });
+  } catch (e) {}
+}
+function publishAct() {
+  if (!mqttClient || !mqttOnline) return;
+  try {
+    mqttClient.publish(roomTopic, JSON.stringify({
+      type: 'ACT', slideIndex: slideIndex, timestamp: Date.now(), src: IS_REMOTE ? 'remote' : 'board'
+    }), { qos: 0 });
+  } catch (e) {}
+}
+
+/* ---------------------------------------------------------------------------
+   TOAST + REMOTE SYNC MODAL + QR
+--------------------------------------------------------------------------- */
 let toastTimer = null;
 function showToast(msg) {
   const t = $('#toast'); $('#toast-msg').textContent = msg;
@@ -2127,10 +2123,6 @@ function showToast(msg) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
 }
-
-/* ---------------------------------------------------------------------------
-   REMOTE SYNC MODAL + QR
---------------------------------------------------------------------------- */
 function remoteURL() {
   const u = new URL(location.href);
   u.searchParams.set('mode', 'remote');
@@ -2147,7 +2139,7 @@ function refreshModalLinks() {
   $('#room-input').value = roomTopic;
   const tr = $('#tele-room'); if (tr) tr.textContent = roomTopic;
 }
-function openModal() { refreshModalLinks(); $('#remote-modal-overlay').classList.add('open'); }
+function openModal() { refreshModalLinks(); $('#remote-modal-overlay').classList.add('open'); AudioEngine.play('open'); }
 function closeModal() { $('#remote-modal-overlay').classList.remove('open'); }
 $('#sync-btn').addEventListener('click', openModal);
 $('#reveal-sync-btn').addEventListener('click', openModal);
@@ -2163,133 +2155,8 @@ $('#apply-room-btn').addEventListener('click', () => {
 });
 
 /* ---------------------------------------------------------------------------
-   PER-SLIDE INTERACTIVE TELEMETRY
+   SLIDE 10 + REMOTE — runtime timers
 --------------------------------------------------------------------------- */
-/* Slide 1 — Attention Decay Counter: 12.0s -> 2.7s, loops every 9s */
-let decayRAF = null;
-const DECAY_CYCLE = 9000;
-function decayLoop() {
-  const el = $('#decay-num'), marker = $('#decay-marker'), fill = $('#decay-fillbar');
-  if (!el) return;
-  const tick = () => {
-    const t = (Date.now() % DECAY_CYCLE) / DECAY_CYCLE;
-    const eased = easeOut(t);
-    const val = lerp(12.0, 2.7, eased);
-    el.textContent = val.toFixed(1);
-    const pct = ((12.0 - val) / (12.0 - 2.7)) * 100;
-    /* GPU-safe: position via left on a static track, transform for centering only */
-    marker.style.left = pct.toFixed(2) + '%';
-    fill.style.transform = `scaleX(${pct / 100})`;
-    decayRAF = requestAnimationFrame(tick);
-  };
-  tick();
-}
-
-/* Slide 2 — friction meters animate in on entry */
-function primeFrictionMeters() {
-  const a = $('#m-legacy'), b = $('#m-feed');
-  if (a) setTimeout(() => { a.style.transform = 'scaleX(0.82)'; }, 350);
-  if (b) setTimeout(() => { b.style.transform = 'scaleX(0.11)'; }, 450);
-}
-
-/* Slide 3 — reward pulse travels the loop arc */
-let pulseRAF = null, pulseStarted = false;
-function loopPulse() {
-  if (pulseStarted) return; pulseStarted = true;
-  const c = $('#reward-pulse');
-  if (!c) return;
-  /* cubic P0(60,150) C1(260,20) C2(940,20) P3(1140,150) forward, then dashed return */
-  const tick = (now) => {
-    const t = (now % 3200) / 3200;
-    let x, y;
-    const tt = t < 0.5 ? t * 2 : (t - 0.5) * 2;
-    const mt = 1 - tt;
-    if (t < 0.5) {
-      x = mt*mt*mt*60 + 3*mt*mt*tt*260 + 3*mt*tt*tt*940 + tt*tt*tt*1140;
-      y = mt*mt*mt*150 + 3*mt*mt*tt*20 + 3*mt*tt*tt*20 + tt*tt*tt*150;
-    } else {
-      x = mt*mt*mt*1140 + 3*mt*mt*tt*940 + 3*mt*tt*tt*260 + tt*tt*tt*60;
-      y = mt*mt*mt*150 + 3*mt*mt*tt*250 + 3*mt*tt*tt*250 + tt*tt*tt*150;
-    }
-    c.setAttribute('cx', x.toFixed(1));
-    c.setAttribute('cy', y.toFixed(1));
-    c.setAttribute('opacity', (0.4 + 0.45 * Math.abs(Math.sin(tt * Math.PI))).toFixed(2));
-    pulseRAF = requestAnimationFrame(tick);
-  };
-  pulseRAF = requestAnimationFrame(tick);
-}
-
-/* Slide 4 — Hook Comparator */
-const HOOKS = {
-  weak: {
-    label: 'Weak Passive Opening',
-    text: '"So, today I\'m going to be talking a little bit about our quarterly metrics, and if everyone could please just give me two minutes of your time while I set up the context…"',
-    timing: ['0.0s preamble', '2.4s throat-clearing', '5.8s still no stakes', '9.1s exit threshold crossed'],
-    retention: 18,
-    verdict: '<i data-lucide="thumbs-down" stroke-width="2"></i> Attention leak at second 4',
-    bars: [0.9, 0.75, 0.55, 0.4, 0.3, 0.22, 0.18, 0.15, 0.13, 0.12]
-  },
-  strong: {
-    label: 'Algorithmic High-Retention Opening',
-    text: '"Your attention span is now shorter than a goldfish\'s measured baseline — and <em>this slide</em> is the proof. Nine seconds from now, most of you will have decided whether I deserve your next minute. Here\'s how that decision actually gets made."',
-    timing: ['0.0s conflict stated', '0.8s personal stakes', '1.9s open loop planted', '3.0s thesis delivered'],
-    retention: 87,
-    verdict: '<i data-lucide="flame" stroke-width="2"></i> Loop opened before second 3',
-    bars: [1, 0.98, 0.95, 0.92, 0.9, 0.88, 0.86, 0.84, 0.82, 0.8]
-  }
-};
-let hookState = 'weak';
-function buildRetentionBars() {
-  const wrap = $('#rbars');
-  if (!wrap || wrap.children.length) return;
-  for (let i = 0; i < 10; i++) {
-    const b = document.createElement('div');
-    b.className = 'rbar';
-    wrap.appendChild(b);
-  }
-}
-function renderHook() {
-  const h = HOOKS[hookState];
-  const card = $('#hook-card');
-  card.classList.toggle('state-strong', hookState === 'strong');
-  $('#hook-state-label').textContent = h.label;
-  $('#hook-quote').innerHTML = h.text;
-  const strip = $('#hook-timing');
-  strip.innerHTML = h.timing.map((t) => `<span>${t}</span>`).join('');
-  $('#hook-retention').textContent = h.retention;
-  $('#hook-verdict').innerHTML = h.verdict;
-  $$('#rbars .rbar').forEach((b, i) => { b.style.transform = `scaleY(${h.bars[i]})`; });
-  if (window.lucide) lucide.createIcons();
-}
-$('#hook-toggle').addEventListener('click', () => {
-  hookState = hookState === 'weak' ? 'strong' : 'weak';
-  renderHook();
-});
-
-/* Slide 6 — kinetic typography orienting demo */
-const KINETIC = ['Attention<span class="k-accent">.</span>', 'Rethought<span class="k-accent">.</span>', 'Every<span class="k-accent">.</span>', 'Three<span class="k-accent">.</span>', 'Seconds<span class="k-accent">.</span>'];
-let kIdx = 0, kNextIn = 17;
-function kineticTick() {
-  const w = $('#kinetic-word'), counter = $('#orient-counter');
-  if (!w) return;
-  kNextIn -= 1;
-  if (kNextIn <= 0) {
-    kIdx = (kIdx + 1) % KINETIC.length;
-    w.style.opacity = '0';
-    w.style.transform = 'translate3d(0,8px,0)';
-    setTimeout(() => {
-      w.innerHTML = KINETIC[kIdx];
-      w.style.transition = 'transform 0.4s cubic-bezier(0.22,1,0.36,1), opacity 0.35s ease';
-      w.style.opacity = '1';
-      w.style.transform = 'translate3d(0,0,0)';
-    }, 180);
-    kNextIn = 15 + Math.floor(Math.random() * 6); // 15–20s cadence
-  }
-  if (counter) counter.textContent = `next state shift in ${kNextIn}s`;
-}
-setInterval(kineticTick, 1000);
-
-/* Slide 10 + remote — runtime timers */
 function fmtTime(ms) {
   const s = Math.floor(ms / 1000);
   return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
@@ -2305,15 +2172,8 @@ setInterval(() => {
   }
 }, 1000);
 
-/* Per-slide entry hooks */
-function onSlideEnter(idx) {
-  if (idx === 1) primeFrictionMeters();
-  if (idx === 2) loopPulse();
-  if (idx === 3) renderHook();
-}
-
 /* ---------------------------------------------------------------------------
-   REMOTE UI BOOT (phone view)
+   REMOTE UI BOOT (phone view) — Prev / Next / JUMP plus the third big ACT
 --------------------------------------------------------------------------- */
 function bootRemoteUI() {
   document.body.classList.add('remote-mode');
@@ -2321,12 +2181,616 @@ function bootRemoteUI() {
   for (let i = 0; i < TOTAL; i++) {
     const b = document.createElement('button');
     b.textContent = i + 1;
+    b.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+    b.title = slideName(i);
     b.addEventListener('click', () => publishNav(i));
     jumpWrap.appendChild(b);
   }
   $('#rmu-next').addEventListener('click', () => publishNav(clamp(slideIndex + 1, 0, TOTAL - 1)));
   $('#rmu-prev').addEventListener('click', () => publishNav(clamp(slideIndex - 1, 0, TOTAL - 1)));
+  const actBtn = $('#rmu-act');
+  if (actBtn) actBtn.addEventListener('click', () => {
+    if (actBtn.disabled) return;
+    publishAct();
+  });
   updateHUD();
+  applyRemoteState();
+}
+
+/* Mirror of the board's current action label onto the remote ACT button */
+const remoteState = { label: null, hasDemo: false, slideIndex: 0 };
+function applyRemoteState() {
+  if (!IS_REMOTE) return;
+  const actBtn = $('#rmu-act');
+  if (!actBtn) return;
+  const showLabel = remoteState.slideIndex === slideIndex ? remoteState.label : null;
+  const enabled = remoteState.slideIndex === slideIndex && remoteState.hasDemo && !!showLabel;
+  actBtn.disabled = !enabled;
+  actBtn.innerHTML = `<i data-lucide="${enabled ? 'zap' : 'zap-off'}" stroke-width="2"></i>${enabled ? ' ' + showLabel : 'NO STEP'}`;
+  if (window.lucide) lucide.createIcons();
+}
+
+/* ---------------------------------------------------------------------------
+   PER-SLIDE INTERACTIVE DEMOS — Section 9 of the master prompt.
+   Contract per demo: act() advances one step; label() returns the CURRENT
+   pending action verb ("Bridge"/"Reveal"/"Run"/… ) or null when finished;
+   reset() restores the pristine pre-action state. Slides 8–10 have no demo.
+--------------------------------------------------------------------------- */
+const DEMO = new Array(TOTAL).fill(null);
+
+/* shared helpers ----------------------------------------------------------- */
+function setSteps(n, count) {
+  ['reveal', 'why', 'care'].forEach((kind, i) => {
+    const row = document.querySelector(`#s${n}-step-${kind}`);
+    if (row) row.classList.toggle('shown', i < count);
+  });
+}
+function primeStepTexts() {
+  for (let n = 2; n <= 8; n++) {
+    const rows = [['reveal', 'REVEALS'], ['why', 'WHYS'], ['care', 'CARES']];
+    rows.forEach(([kind, key]) => {
+      const el = document.querySelector(`#s${n}-${kind}-text`);
+      if (el && !el.textContent && window[key]) el.textContent = window[key][n] || '';
+    });
+  }
+}
+function refreshActLabel() {
+  if (IS_REMOTE) return;
+  const d = DEMO[slideIndex];
+  const lab = d ? d.label() : null;
+  $$('#slides .act-btn').forEach((b) => {
+    const own = b.id.indexOf('s' + (slideIndex + 1) + '-') === 0;
+    if (!own) return;
+    const ic = b.querySelector('i[data-lucide]');
+    const icon = ic ? ic.outerHTML : '';
+    b.innerHTML = icon + ' ' + (lab ? lab : (b.dataset.orig || 'Done'));
+    b.disabled = !lab;
+  });
+  if (window.lucide) lucide.createIcons();
+}
+function triggerActiveSlideAction() {
+  if (IS_REMOTE) return;
+  const d = DEMO[slideIndex];
+  if (!d) return;
+  try { d.act(); } catch (e) {}
+  refreshActLabel();
+  publishState();
+}
+function wireDemoButtons() {
+  /* remember original labels, then delegate every .act-btn click to the demo */
+  $$('#slides .act-btn').forEach((b) => {
+    const txt = b.textContent.trim();
+    b.dataset.orig = txt.charAt(0).toUpperCase() + txt.slice(1);
+    b.addEventListener('click', () => {
+      const m = b.id.match(/^s(\d+)-/);
+      if (!m) return;
+      const idx = parseInt(m[1], 10) - 1;
+      if (idx !== slideIndex) { goTo(idx); return; }
+      const d = DEMO[idx];
+      if (!d) return;
+      try { d.act(); } catch (e) {}
+      refreshActLabel();
+      publishState();
+    });
+  });
+  refreshActLabel();
+}
+
+/* timed-task helper: cancel ALL timers registered by a demo on reset -------- */
+function makeTimerBank() {
+  const ids = [], rafs = [];
+  return {
+    after(fn, ms) { const id = setTimeout(() => { fn(); }, ms); ids.push(id); return id; },
+    every(fn, ms) { const id = setInterval(fn, ms); ids.push(id); return id; },
+    raf(fn) { let live = true; const tick = (t) => { if (!live) return; fn(t); rafs.push(requestAnimationFrame(tick)); }; rafs.push(requestAnimationFrame(tick)); return () => { live = false; }; },
+    clear() { ids.forEach(clearTimeout); ids.length = 0; rafs.forEach(cancelAnimationFrame); rafs.length = 0; }
+  };
+}
+
+/* Reveal copy keyed by slide number ---------------------------------------- */
+const REVEALS = {
+  2: 'Both squares reflect the exact same light — RGB 128,128,128. Your visual system subtracted the shadow before telling you.',
+  3: 'You were told to watch the short sleeves. That instruction alone was enough to miss a gorilla-sized object for most viewers.',
+  4: 'Both readings are valid — the ink never changed. Your brain committed to one interpretation and hid the other from you.',
+  5: 'Each corner is locally perfect: three right angles. Globally impossible. Perception assembles parts, not wholes.',
+  6: 'SLEEP was never on the screen. Your own associations inserted it — and felt like a memory, not a guess.',
+  7: '"Smashed" raised speed estimates ~8 mph AND planted a false memory of broken glass a full week later.',
+  8: 'You hunted for confirmation. Only the cards that could BREAK the rule actually test it.'
+};
+const WHYS = {
+  2: 'Vision estimates surface reflectance by discounting illumination — relative, never absolute.',
+  3: 'Inattentional blindness: awareness needs resources, and counting passes spent all of them.',
+  4: 'Bistable figures: higher cortex injects meaning into ambiguous sensory data; only one reading runs at a time.',
+  5: 'The visual system builds 3-D models from 2-D cues and forgives local errors instead of global ones.',
+  6: 'DRM effect: remembering is reconstruction from traces plus general knowledge — the gist writes the detail.',
+  7: 'Misinformation effect: post-event language becomes part of the memory trace itself.',
+  8: 'Confirmation bias: testing costs effort; agreeing feels free.'
+};
+const CARES = {
+  2: 'Never trust a colour, brightness or size seen alone. Compare under identical conditions — pixels do, eyes don\'t.',
+  3: 'Multitasking while driving is the gorilla case. Whatever you focus on, everything else gets denied entry.',
+  4: 'Disagreement may be two different perceptions, not two opinions. Ask "what else could this be?" before arguing.',
+  5: 'Plausible stories feel true even when assembled from incompatible parts. Check the seams, not the look.',
+  6: 'Eyewitness confidence is not evidence. Interview with neutral questions — your wording edits their past.',
+  7: 'Watch your verbs in decks, interviews and feedback. "Smashed" vs "hit" is eight miles per hour and a fabricated memory.',
+  8: 'Before you decide, ask out loud: "what would prove me wrong?" Then go find exactly that.'
+};
+
+/* ---- DEMO 1 · Slide 1 — title bridge test ------------------------------- */
+DEMO[0] = (() => {
+  const wrap = $('#title-bridge-wrap');
+  if (!wrap) return null;
+  const svg = document.createElementNS(SVGNS, 'svg');
+  svg.setAttribute('viewBox', '0 0 800 300');
+  svg.setAttribute('shape-rendering', 'crispEdges');
+  wrap.insertBefore(svg, wrap.firstChild);
+  let phase = 0;               // 0 plain · 1 bridges · 2 strips · 3 done
+  const G = '#7a7a7a';
+  function draw() {
+    svg.replaceChildren();
+    svg.appendChild(mk('rect', { x: 40, y: 100, width: 80, height: 80, fill: G }));
+    svg.appendChild(mk('rect', { x: 680, y: 100, width: 80, height: 80, fill: G }));
+    if (phase >= 1) {
+      svg.appendChild(mk('rect', { x: 120, y: 122, width: 560, height: 18, fill: '#b9b9b9' }));
+      svg.appendChild(mk('rect', { x: 120, y: 162, width: 560, height: 18, fill: '#3f3f3f' }));
+    }
+    if (phase >= 2) {
+      svg.appendChild(mk('rect', { x: 20, y: 80, width: 120, height: 120, fill: '#111418' }));
+      svg.appendChild(mk('rect', { x: 660, y: 80, width: 120, height: 120, fill: '#111418' }));
+    }
+    const lab = (x, t) => { const e = mk('text', { x, y: 260, 'text-anchor': 'middle', fill: '#64748B', 'font-size': 20, 'font-family': 'monospace' }); e.textContent = t; svg.appendChild(e); };
+    lab(80, 'A'); lab(720, 'B');
+  }
+  function setReadout(txt) { const el = $('#title-bridge-readout'); if (el) el.textContent = txt; }
+  draw();
+  return {
+    act() {
+      phase++;
+      if (phase === 1) { AudioEngine.play('morph'); setReadout('Two connecting strips painted OVER the squares — same gray, opposite verdicts.'); }
+      else if (phase === 2) { AudioEngine.play('reveal'); setReadout('Isolated from their surrounds, A and B match exactly. RGB 128,128,128. Context did the judging.'); }
+      else { setReadout('Your brain discounts the shadow before you ever see it. Same or different is answered by the neighbourhood, not the square.'); }
+    },
+    label() { return phase === 0 ? 'Bridge' : phase === 1 ? 'Isolate' : phase === 2 ? 'Explain' : null; },
+    reset() { phase = 0; draw(); setReadout('Which square looks lighter — A or B? (They reflect identical light.)'); }
+  };
+})();
+
+/* ---- DEMO 2 · Slide 2 — grays round 1 + identical-grays round 2 --------- */
+DEMO[1] = (() => {
+  const svg = $('#gray-svg');
+  if (!svg) return null;
+  let round = 1, revealed = false, r2 = 0;   // r2: 0 ask · 1 side-by-side · 2 removed · 3 done
+  const tag = $('#gray-count-tag'), q = $('#gray-q');
+  function drawRound1() {
+    svg.replaceChildren();
+    svg.appendChild(mk('rect', { x: 0, y: 0, width: 1200, height: 640, fill: '#EDEFF3' }));
+    svg.appendChild(mk('polygon', { points: '150,120 750,120 900,520 300,520', fill: '#C9CDD6' }));
+    const shadow = mk('polygon', { points: '560,180 1050,180 1050,560 480,560', fill: '#5B6270', opacity: 0.55 });
+    svg.appendChild(shadow);
+    svg.appendChild(mk('rect', { x: 300, y: 200, width: 150, height: 150, fill: '#7a7a7a' }));
+    svg.appendChild(mk('rect', { x: 720, y: 330, width: 150, height: 150, fill: '#7a7a7a' }));
+    const lab = (x, y, t) => { const e = mk('text', { x, y, fill: '#FFFFFF', 'font-size': 40, 'font-family': 'monospace' }); e.textContent = t; svg.appendChild(e); };
+    lab(355, 290, 'A'); lab(775, 420, 'B');
+    tag.textContent = 'Round 1 / 2';
+    q.textContent = 'Which square looks lighter — A, B, or are they the same? Shout your first instinct.';
+  }
+  function drawRound2() {
+    svg.replaceChildren();
+    svg.appendChild(mk('rect', { x: 0, y: 0, width: 1200, height: 640, fill: '#111418' }));
+    if (r2 >= 1) {
+      svg.appendChild(mk('rect', { x: 300, y: 240, width: 150, height: 150, fill: '#7a7a7a' }));
+      svg.appendChild(mk('rect', { x: 750, y: 240, width: 150, height: 150, fill: '#7a7a7a' }));
+      const lab = (x, t) => { const e = mk('text', { x, y: 460, fill: '#94A3B8', 'font-size': 36, 'font-family': 'monospace', 'text-anchor': 'middle' }); e.textContent = t; svg.appendChild(e); };
+      lab(375, 'A'); lab(825, 'B');
+    }
+    if (r2 === 0) q.textContent = 'Round 2 — same question, no shadows, no story. Which looks lighter now?';
+    if (r2 === 1) q.textContent = 'Side by side on a neutral ground. Still a favourite?';
+    if (r2 === 2) q.textContent = 'Strip everything but the two squares: identical pixels. RGB 128,128,128 — measured, not felt.';
+    if (r2 >= 3) q.textContent = 'Perception is a best-guess estimate of reflectance — not a measurement of light.';
+  }
+  function paint() { (round === 1 && !revealed) ? drawRound1() : drawRound2(); }
+  paint();
+  return {
+    act() {
+      if (round === 1 && !revealed) {
+        revealed = true; AudioEngine.play('morph');
+        q.textContent = 'Press NEXT ROUND for the identical-grays test — same question, no shadow to blame.';
+        setSteps(2, 1);
+        return;
+      }
+      if (round === 1 && revealed) { round = 2; r2 = 0; tag.textContent = 'Round 2 / 2'; AudioEngine.play('jump'); paint(); return; }
+      if (r2 < 3) { r2++; AudioEngine.play(r2 === 2 ? 'reveal' : 'morph'); paint(); }
+      if (r2 >= 2) setSteps(2, r2 >= 3 ? 3 : 2);
+    },
+    label() {
+      if (round === 1 && !revealed) return 'Reveal';
+      if (round === 1 && revealed) return 'Next Round';
+      if (r2 === 0) return 'Compare';
+      if (r2 === 1) return 'Isolate';
+      if (r2 === 2) return 'Explain';
+      return null;
+    },
+    reset() { round = 1; revealed = false; r2 = 0; setSteps(2, 0); tag.textContent = 'Round 1 / 2'; drawRound1(); }
+  };
+})();
+
+/* ---- DEMO 3 · Slide 3 — 12-second pass-counting simulation -------------- */
+DEMO[2] = (() => {
+  const svg = $('#pass-svg');
+  if (!svg) return null;
+  const bank = makeTimerBank();
+  let state = 'idle';           // idle · running · asked · counted · done
+  let white = 0, black = 0;
+  const dots = [], people = [];
+  const clockEl = $('#pass-clock'), scoreEl = $('#pass-score'), q = $('#gorilla-q');
+  const tag = $('#pass-phase-tag');
+  svg.appendChild(mk('rect', { x: 0, y: 0, width: 1200, height: 640, fill: '#141A24', rx: 18 }));
+  const court = mk('ellipse', { cx: 600, cy: 330, rx: 430, ry: 210, fill: 'none', stroke: '#2A3446', 'stroke-width': 2 });
+  svg.appendChild(court);
+  const TEAM = [{ c: '#E8ECF2', n: 3 }, { c: '#20242C', n: 3 }];
+  TEAM.forEach((t, ti) => {
+    for (let i = 0; i < t.n; i++) {
+      const c = mk('circle', { r: 26, fill: t.c, opacity: 0.92 });
+      svg.appendChild(c);
+      people.push({ el: c, team: ti, ph: i * 2.1 + ti * 0.7, ox: 300 + i * 150 + ti * 60, oy: 250 + (i % 2) * 160 });
+    }
+  });
+  const ball = mk('circle', { r: 13, fill: '#F5F7FA', stroke: '#94A3B8', 'stroke-width': 1 });
+  svg.appendChild(ball);
+  const gorilla = mk('g', { opacity: 0 });
+  gorilla.appendChild(mk('ellipse', { cx: 0, cy: 0, rx: 62, ry: 46, fill: '#7C2D12' }));
+  gorilla.appendChild(mk('circle', { cx: -34, cy: -30, r: 20, fill: '#7C2D12' }));
+  gorilla.appendChild(mk('circle', { cx: 34, cy: -30, r: 20, fill: '#7C2D12' }));
+  gorilla.appendChild(mk('rect', { x: -14, y: -14, width: 28, height: 20, rx: 8, fill: '#F5F7FA', opacity: 0.9 }));
+  svg.appendChild(gorilla);
+  const hlStar = mk('path', { d: 'M 1120 90 l 10 22 24 3 -17 17 4 24 -21 -11 -21 11 4 -24 -17 -17 24 -3 Z', fill: '#FBBF24', opacity: 0 });
+  svg.appendChild(hlStar);
+  const hlBorder = mk('rect', { x: 8, y: 8, width: 1184, height: 624, rx: 18, fill: 'none', stroke: '#34D399', 'stroke-width': 6, opacity: 0 });
+  svg.appendChild(hlBorder);
+  const hlSquare = mk('rect', { x: 560, y: 300, width: 80, height: 80, fill: '#F472B6', opacity: 0 });
+  svg.appendChild(hlSquare);
+
+  function layout(t) {
+    people.forEach((p) => {
+      const x = p.ox + Math.sin(t * 0.9 + p.ph) * 130;
+      const y = p.oy + Math.cos(t * 0.7 + p.ph * 1.3) * 90;
+      p.el.setAttribute('cx', x.toFixed(1)); p.el.setAttribute('cy', y.toFixed(1));
+      p._x = x; p._y = y;
+    });
+  }
+  function runSim() {
+    state = 'running';
+    white = 0; black = 0;
+    tag.textContent = 'Live · 12 s';
+    clockEl.textContent = '12.0';
+    scoreEl.textContent = 'white — · black —';
+    q.textContent = 'Count the passes made by the WHITE team only. Go.';
+    let elapsed = 0;
+    const order = [0, 1, 0, 1, 0, 1, 0, 1];   // alternating team possession
+    let oi = 0, segT = 0, from = null, to = null;
+    const stop = bank.raf(() => {
+      elapsed += 1 / 60; segT += 1 / 60;
+      layout(elapsed);
+      if (!from || !to || segT > 1.2) {
+        if (from && to && segT > 1.2) { oi++; }
+        const team = order[oi % order.length];
+        const mates = people.filter((p) => p.team === team);
+        const opp = people.filter((p) => p.team !== team);
+        from = mates[(oi) % mates.length];
+        to = opp[(oi * 2 + team) % opp.length];
+        segT = 0;
+        if (team === 0) white++; else black++;
+        scoreEl.textContent = `white ${white} · black ${black}`;
+      }
+      const k = Math.min(segT / 1.2, 1);
+      ball.setAttribute('cx', lerp(from._x, to._x, k).toFixed(1));
+      ball.setAttribute('cy', lerp(from._y, to._y, k).toFixed(1));
+      const left = Math.max(0, 12 - elapsed);
+      clockEl.textContent = left.toFixed(1);
+      if (elapsed > 4 && elapsed < 10) {
+        const gx = lerp(1250, -60, (elapsed - 4) / 6);
+        gorilla.setAttribute('transform', `translate(${gx} 330)`);
+        gorilla.setAttribute('opacity', 0.95);
+      } else gorilla.setAttribute('opacity', 0);
+      if (elapsed >= 12) { stop(); finishRun(); }
+    });
+  }
+  function finishRun() {
+    state = 'asked';
+    tag.textContent = 'Collect answers';
+    q.textContent = 'How many passes did the WHITE team make? Hands up — commit before I reveal.';
+  }
+  function revealCount() {
+    state = 'counted';
+    tag.textContent = 'Answer revealed';
+    q.textContent = 'The real count was 15. Now: who saw the gorilla? (It walked through at second 4.)';
+    setSteps(3, 1);
+    AudioEngine.play('reveal');
+  }
+  function highlightPass() {
+    state = 'done';
+    tag.textContent = 'Invisible-G test';
+    hlStar.setAttribute('opacity', 0.95);
+    hlBorder.setAttribute('opacity', 0.9);
+    hlSquare.setAttribute('opacity', 0.85);
+    q.textContent = 'Replay showed extras: a yellow star, a green border, a pink square — most rooms see none of them. Focus is exclusion.';
+    setSteps(3, 3);
+    AudioEngine.play('morph');
+  }
+  return {
+    act() {
+      if (state === 'idle') runSim();
+      else if (state === 'asked') revealCount();
+      else if (state === 'counted') highlightPass();
+    },
+    label() { return state === 'idle' ? 'Run' : state === 'asked' ? 'Reveal' : state === 'counted' ? 'Highlight' : null; },
+    reset() {
+      bank.clear(); state = 'idle';
+      tag.textContent = 'Ready';
+      clockEl.textContent = '12.0';
+      scoreEl.textContent = 'white — · black —';
+      q.textContent = 'Count the passes made by the WHITE team only. Twelve seconds. No rewinds.';
+      gorilla.setAttribute('opacity', 0);
+      hlStar.setAttribute('opacity', 0); hlBorder.setAttribute('opacity', 0); hlSquare.setAttribute('opacity', 0);
+      setSteps(3, 0);
+      layout(0);
+      ball.setAttribute('cx', 300); ball.setAttribute('cy', 250);
+    }
+  };
+})();
+
+/* ---- DEMO 4 · Slide 4 — duck/rabbit disambiguation arrows --------------- */
+DEMO[3] = (() => {
+  const svg = $('#dr-svg');
+  if (!svg) return null;
+  const capEl = $('#dr-caption');
+  let mode = 0;   // 0 naive · 1 duck annotated · 2 rabbit annotated · 3 done
+  const CAPS = [
+    'What is it? Commit with your hands — duck or rabbit?',
+    'DUCK reading: the bumps become a beak, the ears trail behind the head.',
+    'RABBIT reading: the same curves are ears reaching up, the beak becomes a nose.',
+    'One drawing, two complete worlds — and you can only see one at a time. Meaning is injected, not received.'
+  ];
+  const duckAnno = mk('g', { opacity: 0, 'pointer-events': 'none' });
+  duckAnno.appendChild(mk('path', { d: 'M 300 250 C 380 210, 470 210, 520 250', fill: 'none', stroke: '#F59E0B', 'stroke-width': 5, 'stroke-linecap': 'round' }));
+  duckAnno.appendChild(mk('path', { d: 'M 520 250 L 640 268 L 520 296 Z', fill: '#F59E0B' }));
+  duckAnno.appendChild(mk('circle', { cx: 430, cy: 240, r: 8, fill: '#F59E0B' }));
+  duckAnno.appendChild(mk('path', { d: 'M 330 300 C 250 340, 250 420, 330 460', fill: 'none', stroke: '#F59E0B', 'stroke-width': 5, 'stroke-dasharray': '10 10' }));
+  const t1 = mk('text', { x: 660, y: 300, fill: '#F59E0B', 'font-size': 30, 'font-family': 'monospace' }); t1.textContent = 'beak';
+  duckAnno.appendChild(t1);
+  const rabbitAnno = mk('g', { opacity: 0, 'pointer-events': 'none' });
+  rabbitAnno.appendChild(mk('path', { d: 'M 470 220 C 520 120, 590 110, 620 190 C 600 240, 540 260, 470 220 Z', fill: 'none', stroke: '#34D399', 'stroke-width': 5 }));
+  rabbitAnno.appendChild(mk('path', { d: 'M 420 210 C 440 110, 500 90, 530 170', fill: 'none', stroke: '#34D399', 'stroke-width': 5 }));
+  rabbitAnno.appendChild(mk('circle', { cx: 400, cy: 260, r: 8, fill: '#34D399' }));
+  const t2 = mk('text', { x: 640, y: 160, fill: '#34D399', 'font-size': 30, 'font-family': 'monospace' }); t2.textContent = 'ears';
+  rabbitAnno.appendChild(t2);
+  svg.appendChild(duckAnno); svg.appendChild(rabbitAnno);
+  function paint() {
+    duckAnno.setAttribute('opacity', mode === 1 || mode === 3 ? 0.95 : 0);
+    rabbitAnno.setAttribute('opacity', mode === 2 ? 0.95 : 0);
+    if (mode === 3) rabbitAnno.setAttribute('opacity', 0.5);
+    capEl.textContent = CAPS[mode];
+  }
+  return {
+    act() { if (mode < 3) { mode++; AudioEngine.play(mode === 1 ? 'morph' : mode === 2 ? 'kinetic' : 'reveal'); paint(); } if (mode === 3) setSteps(4, 3); else if (mode >= 1) setSteps(4, mode); },
+    label() { return mode === 0 ? 'Show Duck' : mode === 1 ? 'Show Rabbit' : mode === 2 ? 'Both Readings' : null; },
+    reset() { mode = 0; setSteps(4, 0); paint(); }
+  };
+})();
+
+/* ---- DEMO 5 · Slide 5 — Penrose triangle assembly + edge probe ---------- */
+DEMO[4] = (() => {
+  const svg = $('#penrose-svg');
+  if (!svg) return null;
+  const bank = makeTimerBank();
+  const statusEl = $('#tri-status'), q = $('#tri-q');
+  let mode = 0;   // 0 empty · 1 assembled · 2 probing · 3 verdict
+  const bars = [];
+  const COL = ['#2563EB', '#4F46E5', '#E11D48'];
+  const geo = [
+    { a: [600, 150], b: [880, 640] },
+    { a: [880, 640], b: [320, 640] },
+    { a: [320, 640], b: [600, 150] }
+  ];
+  geo.forEach((g, i) => {
+    const ln = mk('line', { x1: g.a[0], y1: g.a[1], x2: g.b[0], y2: g.b[1], stroke: COL[i], 'stroke-width': 54, 'stroke-linecap': 'butt', opacity: 0 });
+    svg.appendChild(ln);
+    bars.push(ln);
+  });
+  const probe = mk('circle', { r: 22, fill: 'none', stroke: '#F59E0B', 'stroke-width': 5, opacity: 0 });
+  svg.appendChild(probe);
+  const probeDot = mk('circle', { r: 6, fill: '#F59E0B', opacity: 0 });
+  svg.appendChild(probeDot);
+  function show(n) { bars.forEach((b, i) => b.setAttribute('opacity', i < n ? 1 : 0)); }
+  function assemble() {
+    mode = 1; show(0);
+    statusEl.textContent = 'assembling…';
+    let i = 0;
+    const step = () => {
+      if (i < 3) { show(i + 1); AudioEngine.play('kinetic'); i++; bank.after(step, 420); }
+      else { statusEl.textContent = 'impossible · assembled'; q.textContent = 'Every corner is a perfect right angle. Trace any edge with the probe — it lands somewhere impossible.'; }
+    };
+    bank.after(step, 200);
+  }
+  function probeEdge() {
+    mode = 2;
+    statusEl.textContent = 'probing edges';
+    const path = [[600, 150], [880, 640], [320, 640], [600, 150]];
+    let seg = 0, t = 0;
+    probe.setAttribute('opacity', 1); probeDot.setAttribute('opacity', 1);
+    const stop = bank.raf(() => {
+      const a = path[seg], b = path[(seg + 1) % path.length];
+      t += 0.012;
+      if (t >= 1) { t = 0; seg++; AudioEngine.play('tap'); if (seg >= path.length - 1) { stop(); verdict(); return; } }
+      const x = lerp(a[0], b[0], t), y = lerp(a[1], b[1], t);
+      probe.setAttribute('cx', x); probe.setAttribute('cy', y);
+      probeDot.setAttribute('cx', x); probeDot.setAttribute('cy', y);
+    });
+  }
+  function verdict() {
+    mode = 3;
+    statusEl.textContent = 'locally fine · globally impossible';
+    probe.setAttribute('opacity', 0); probeDot.setAttribute('opacity', 0);
+    q.textContent = 'Three flawless 2-D drawings stitched into one 3-D object that cannot exist. Your brain signed off on the story anyway.';
+    setSteps(5, 3);
+    AudioEngine.play('reveal');
+  }
+  return {
+    act() { if (mode === 0) assemble(); else if (mode === 1) probeEdge(); else if (mode === 2) verdict(); },
+    label() { return mode === 0 ? 'Assemble' : mode === 1 ? 'Probe' : mode === 2 ? 'Verdict' : null; },
+    reset() { bank.clear(); mode = 0; show(0); probe.setAttribute('opacity', 0); probeDot.setAttribute('opacity', 0); statusEl.textContent = 'ready'; q.textContent = 'Press ASSEMBLE and watch three plausible corners build one impossible object.'; setSteps(5, 0); }
+  };
+})();
+
+/* ---- DEMO 6 · Slide 6 — DRM word flash + poll + verdict ----------------- */
+DEMO[5] = (() => {
+  const runBtn = $('#drm-run-btn'), verdictBtn = $('#drm-verdict-btn'), resetBtn = $('#drm-reset-btn');
+  const idle = $('#drm-idle'), showV = $('#drm-show'), pollV = $('#drm-poll'), resultV = $('#drm-result');
+  const wordEl = $('#drm-word'), chips = $('#drm-chips'), tiles = $('#drm-tiles'), dots = $('#drm-dots'), readout = $('#drm-readout');
+  if (!runBtn) return null;
+  const bank = makeTimerBank();
+  const LIST = ['BED', 'REST', 'AWAKE', 'TIRED'];   // SLEEP is the lure — never shown
+  let mode = 0;   // 0 idle · 1 flashing · 2 poll · 3 verdict · 4 done
+  for (let i = 0; i < 4; i++) dots.appendChild(mk ? Object.assign(document.createElement('span'), { className: 'drm-dot' }) : null);
+  function setDots(active) { Array.from(dots.children).forEach((d, i) => d.classList.toggle('on', i === active)); }
+  function view(v) { [idle, showV, pollV, resultV].forEach((x) => x.classList.toggle('on', x === v)); }
+  function buildChips() {
+    chips.replaceChildren();
+    [...LIST, 'SLEEP'].sort().concat(['DREAM']).forEach((w) => {
+      const b = document.createElement('button');
+      b.className = 'poll-chip neu-btn'; b.type = 'button'; b.textContent = w;
+      b.addEventListener('click', () => { AudioEngine.play('tap'); if (mode === 2) { b.classList.add('picked'); } });
+      chips.appendChild(b);
+    });
+  }
+  function flash() {
+    mode = 1; view(showV);
+    runBtn.disabled = true;
+    let i = 0;
+    const nextWord = () => {
+      if (i >= LIST.length) { bank.after(endFlash, 900); return; }
+      wordEl.textContent = LIST[i]; setDots(i);
+      AudioEngine.play('kinetic');
+      wordEl.classList.remove('pop'); void wordEl.offsetWidth; wordEl.classList.add('pop');
+      i++;
+      bank.after(nextWord, 2000);
+    };
+    nextWord();
+  }
+  function endFlash() {
+    mode = 2; view(pollV); buildChips(); setDots(-1);
+    readout.textContent = 'Four words flashed for two seconds each. Now vote — which word was on the screen?';
+    verdictBtn.disabled = false;
+    AudioEngine.play('open');
+  }
+  function verdict() {
+    mode = 3; view(resultV);
+    tiles.replaceChildren();
+    const mkTile = (word, pct, lie) => {
+      const t = document.createElement('div');
+      t.className = 'drm-tile' + (lie ? ' lie' : '');
+      t.innerHTML = `<div class="w">${word}</div><div class="bar"><i style="transform:scaleX(${pct / 100})"></i></div><div class="p">${pct}% said “yes”</div>`;
+      tiles.appendChild(t);
+    };
+    mkTile('BED', 98, false); mkTile('TIRED', 94, false); mkTile('REST', 90, false); mkTile('AWAKE', 72, false);
+    mkTile('SLEEP', 81, true);
+    Array.from(chips.querySelectorAll('.poll-chip')).forEach((b) => { if (b.textContent === 'SLEEP') b.classList.add('was-lure'); });
+    readout.textContent = 'SLEEP was never shown. ~80% of rooms confidently "remember" it — insertion by association, felt as recollection.';
+    setSteps(6, 3);
+    verdictBtn.disabled = true;
+    AudioEngine.play('reveal');
+    bank.after(() => { mode = 4; refreshActLabel(); publishState(); }, 100);
+  }
+  return {
+    act() { if (mode === 0) flash(); else if (mode === 2) verdict(); },
+    label() { return mode === 0 ? 'Run' : mode === 2 ? 'Verdict' : null; },
+    reset() {
+      bank.clear(); mode = 0; view(idle); setDots(-1);
+      runBtn.disabled = false; verdictBtn.disabled = true;
+      readout.textContent = 'No notes, no repetition. Encoding happens whether you intend it or not.';
+      tiles.replaceChildren(); chips.replaceChildren();
+      setSteps(6, 0);
+    }
+  };
+})();
+
+/* ---- DEMO 7 · Slide 7 — Loftus & Palmer verb cycle + glass reveal ------- */
+DEMO[6] = (() => {
+  const verbEl = $('#lp-verb'), tag = $('#lp-verb-tag'), glass = $('#lp-glass');
+  if (!verbEl) return null;
+  const VERBS = ['SMASHED', 'HIT', 'BUMPED', 'COLLIDED', 'CONTACTED'];
+  const MPH = { SMASHED: 40.5, HIT: 32.2, BUMPED: 34.0, COLLIDED: 36.0, CONTACTED: 30.8 };
+  let vi = 0, revealed = false;
+  function paintBars() {
+    $$('#lp-chips .lp-chip').forEach((c) => c.classList.toggle('active', c.dataset.v === VERBS[vi].toLowerCase()));
+    $$('.lp-bar-row').forEach((row) => {
+      const k = row.dataset.k;
+      const mph = { hit: 32.2, bumped: 34.0, collided: 36.0, contacted: 30.8, smashed: 40.5 }[k];
+      const fill = row.querySelector('.lp-bar-fill');
+      const on = k === VERBS[vi].toLowerCase();
+      fill.style.transform = `scaleX(${(mph / 45).toFixed(3)})`;
+      row.classList.toggle('active', on);
+    });
+    verbEl.textContent = VERBS[vi];
+    tag.textContent = 'verb: ' + VERBS[vi].toLowerCase();
+  }
+  paintBars();
+  return {
+    act() {
+      if (!revealed) {
+        vi = (vi + 1) % VERBS.length;
+        AudioEngine.play(vi === 0 ? 'reveal' : 'morph');
+        paintBars();
+        setSteps(7, 1);
+        if (vi === VERBS.length - 1) { revealed = true; glass.classList.add('shown'); setSteps(7, 3); AudioEngine.play('chime'); }
+      }
+    },
+    label() { return revealed ? null : 'Cycle Verb'; },
+    reset() { vi = 0; revealed = false; glass.classList.remove('shown'); setSteps(7, 0); paintBars(); }
+  };
+})();
+
+/* ---- DEMO 8 · Slide 8 — secret-rule sequence test ----------------------- */
+DEMO[7] = (() => {
+  const svg = $('#rule-svg'), checkBtn = $('#s8-check-btn'), clearBtn = $('#s8-clear-btn'), out = $('#rule-out');
+  if (!svg) return null;
+  const SEQ = [[1, 2, 4], [2, 4, 6], [1, 3, 5], [3, 1, 2], [1, 2, 3], [3, 17, 104]];
+  let si = 0, verdicts = 0;
+  const cardW = 340, gap = 40;
+  function drawTriplet() {
+    svg.replaceChildren();
+    SEQ[si].forEach((num, i) => {
+      const x = 80 + i * (cardW + gap) - (SEQ[si].length - 3) * 60;
+      const g = mk('g', {});
+      g.appendChild(mk('rect', { x, y: 140, width: 220, height: 300, rx: 26, fill: 'none', stroke: '#2563EB', 'stroke-width': 3, 'stroke-opacity': 0.5 }));
+      const t = mk('text', { x: x + 110, y: 310, 'text-anchor': 'middle', fill: 'var(--ink, #0F172A)', 'font-size': 96, 'font-family': 'monospace' });
+      t.textContent = num;
+      g.appendChild(t);
+      svg.appendChild(g);
+    });
+    out.textContent = `Sequence ${si + 1} of ${SEQ.length}: ${SEQ[si].join(' – ')} · Does it follow the rule? Vote yes/no, then press CHECK.`;
+  }
+  drawTriplet();
+  function check() {
+    const yes = [true, true, true, false, true, true][si];
+    const surprise = si === 5;
+    out.innerHTML = `<b>${yes ? 'YES ✓' : 'NO ✗'}</b> — ${surprise ? '3·17·104 follows the rule. The rule was never "add two" — it was simply: any three ascending numbers. You built a theory and kept testing its friends.' : 'Room agrees? Good — now notice how fast everyone stopped asking what ELSE could fit.'}`;
+    AudioEngine.play(surprise ? 'chime' : 'reveal');
+    setSteps(8, surprise ? 3 : 1);
+    si++; verdicts++;
+    if (si < SEQ.length) drawTriplet();
+    else { out.innerHTML += '<br>Press CLEAR to run the whole ladder again.'; }
+  }
+  return {
+    act() { if (si < SEQ.length) check(); },
+    label() { return si < SEQ.length ? 'Check' : null; },
+    reset() { si = 0; drawTriplet(); setSteps(8, 0); }
+  };
+})();
+
+/* Per-slide entry hooks (light-touch; demos are entry-neutral) ------------- */
+function onSlideEnter(idx) {
+  if (idx === 9) { const tm = $('#tele-mqtt'); if (tm) tm.textContent = mqttOnline ? 'ONLINE · WSS' : 'LINKING'; }
 }
 
 /* ---------------------------------------------------------------------------
@@ -2344,9 +2808,8 @@ function init() {
   }
   setActiveField(0);
   setFocusForSlide(0);
-  buildRetentionBars();
-  renderHook();
-  decayLoop();
+  document.body.classList.toggle('stim-on', !IS_REMOTE);
+  bindDeckInput();
   if (IS_REMOTE) {
     bootRemoteUI();
   } else {
@@ -2357,6 +2820,8 @@ function init() {
   }
   connectMQTT();
   refreshModalLinks();
+  wireDemoButtons();
+  primeStepTexts();
   if (window.lucide) lucide.createIcons();
   /* re-run icon creation after dynamic innerHTML swaps */
   setInterval(() => { if (window.lucide) lucide.createIcons(); }, 2500);
