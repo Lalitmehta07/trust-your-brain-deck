@@ -1,0 +1,1502 @@
+
+<script>
+'use strict';
+/* =========================================================================
+   CAN YOU TRUST YOUR OWN BRAIN? — DECK ENGINE
+   Sections: state · field · slides · input · telemetry · mqtt · interactions
+   ========================================================================= */
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => Array.from(document.querySelectorAll(s));
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const easeOut = (t) => 1 - Math.pow(1 - t, 3);
+
+const params = new URLSearchParams(location.search);
+const IS_REMOTE = params.get('mode') === 'remote';
+/* shared room topic — default qinfinity/lalit/trust-brain-2026, customizable via ?room=xyz */
+let roomTopic = params.get('room') ? params.get('room') : 'qinfinity/lalit/trust-brain-2026';
+
+/* ---------------------------------------------------------------------------
+   AUDIO ENGINE — synthesized, zero-asset sound design. Action SFX for every
+   click / slide / demo event + generative ambient BGM pad. Both independently
+   toggleable; persisted in localStorage. Strict two-bus graph (sfxBus/bgmBus)
+   so muting BGM silences pad, bells, noise layer and reverb tail completely.
+--------------------------------------------------------------------------- */
+const AudioEngine = (() => {
+  let ctx = null, master = null, noiseBuf = null;
+  let bgmBus = null, bgmDry = null, bgmWet = null, bgmConv = null, bgmWetGain = null;
+  let sfxBus = null, sfxDry = null, sfxWet = null, sfxConv = null, sfxWetGain = null;
+  let bgmOn = false, sfxOn = true, bgmPlaying = false, bgmTimer = null, nextBellAt = 0;
+  let bgmNodes = [];
+  let bgmVol = 0.55, sfxVol = 0.8;
+  try { const v = parseFloat(localStorage.getItem('ap-bgmvol')); if (!isNaN(v)) bgmVol = clamp(v, 0, 1); } catch (e) {}
+  try { const v = parseFloat(localStorage.getItem('ap-sfxvol')); if (!isNaN(v)) sfxVol = clamp(v, 0, 1); } catch (e) {}
+  try { bgmOn = localStorage.getItem('ap-bgm') === 'on'; } catch (e) {}
+  try { sfxOn = localStorage.getItem('ap-sfx') !== 'off'; } catch (e) {}
+
+  function makeReverb() {
+    const cv = ctx.createConvolver();
+    const len = Math.floor(ctx.sampleRate * 2.8);
+    const ir = ctx.createBuffer(2, len, ctx.sampleRate);
+    for (let ch = 0; ch < 2; ch++) {
+      const d = ir.getChannelData(ch);
+      for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.4);
+    }
+    cv.buffer = ir;
+    return cv;
+  }
+  function ensure() {
+    if (ctx) { if (ctx.state === 'suspended') ctx.resume().catch(() => {}); return true; }
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return false;
+    try { ctx = new AC(); } catch (e) { return false; }
+    master = ctx.createGain(); master.gain.value = 0.9; master.connect(ctx.destination);
+    bgmBus = ctx.createGain(); bgmBus.gain.value = 0.0001; bgmBus.connect(master);
+    bgmDry = ctx.createGain(); bgmDry.gain.value = 1; bgmDry.connect(bgmBus);
+    bgmWet = ctx.createGain(); bgmWet.gain.value = 0.34;
+    bgmConv = makeReverb(); bgmWetGain = ctx.createGain(); bgmWetGain.gain.value = 1;
+    bgmWet.connect(bgmConv); bgmConv.connect(bgmWetGain); bgmWetGain.connect(bgmBus);
+    sfxBus = ctx.createGain(); sfxBus.gain.value = sfxVol; sfxBus.connect(master);
+    sfxDry = ctx.createGain(); sfxDry.gain.value = 1; sfxDry.connect(sfxBus);
+    sfxWet = ctx.createGain(); sfxWet.gain.value = 0.34;
+    sfxConv = makeReverb(); sfxWetGain = ctx.createGain();
+    sfxWet.connect(sfxConv); sfxConv.connect(sfxWetGain); sfxWetGain.connect(sfxBus);
+    const nlen = Math.floor(ctx.sampleRate * 1.2);
+    noiseBuf = ctx.createBuffer(1, nlen, ctx.sampleRate);
+    const nd = noiseBuf.getChannelData(0);
+    for (let i = 0; i < nlen; i++) nd[i] = Math.random() * 2 - 1;
+    return true;
+  }
+
+  function stopBGM() {
+    bgmPlaying = false;
+    if (bgmTimer) { clearInterval(bgmTimer); bgmTimer = null; }
+    if (!ctx) { bgmNodes = []; return; }
+    const t = ctx.currentTime;
+    try {
+      bgmBus.gain.cancelScheduledValues(t);
+      bgmBus.gain.setValueAtTime(Math.max(bgmBus.gain.value, 0.0001), t);
+      bgmBus.gain.linearRampToValueAtTime(0.0001, t + 0.6);
+    } catch (e) {}
+    bgmNodes.forEach((n) => {
+      try { if (n.stop) n.stop(t + 0.7); } catch (e) {}
+      try { if (n.disconnect) n.disconnect(); } catch (e) {}
+    });
+    bgmNodes = [];
+  }
+
+  const now = () => ctx.currentTime;
+  function reg(node) { bgmNodes.push(node); return node; }
+  function tone(freq, t0, dur, type, vol, glideTo, bus) {
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    const isBgm = (bus === bgmBus);
+    if (isBgm) reg(o);
+    o.type = type || 'sine';
+    o.frequency.setValueAtTime(freq, t0);
+    if (glideTo) o.frequency.exponentialRampToValueAtTime(glideTo, t0 + dur);
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(vol, t0 + 0.015);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    o.connect(g);
+    g.connect(isBgm ? bgmDry : sfxDry);
+    g.connect(isBgm ? bgmWet : sfxWet);
+    o.start(t0); o.stop(t0 + dur + 0.05);
+  }
+  function noiseHit(t0, dur, f0, f1, vol, q) {
+    const src = ctx.createBufferSource(); src.buffer = noiseBuf;
+    const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = q || 1.1;
+    bp.frequency.setValueAtTime(f0, t0);
+    bp.frequency.exponentialRampToValueAtTime(f1, t0 + dur);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(vol, t0 + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    src.connect(bp); bp.connect(g);
+    g.connect(sfxDry); g.connect(sfxWet);
+    src.start(t0); src.stop(t0 + dur + 0.05);
+  }
+
+  /* ---- action sounds: soft, glassy, pentatonic — satisfying, never harsh ---- */
+  const SFX = {
+    tap()     { const t = now(); tone(1180, t, 0.09, 'triangle', 0.10); noiseHit(t, 0.05, 3200, 1400, 0.03); },
+    toggle()  { const t = now(); tone(660, t, 0.10, 'triangle', 0.09); tone(990, t + 0.055, 0.12, 'sine', 0.07); },
+    forward() { const t = now(); [523.25, 659.25, 783.99].forEach((f, i) => tone(f, t + i * 0.06, 0.5, 'sine', 0.085)); noiseHit(t, 0.22, 900, 2600, 0.028, 0.8); },
+    back()    { const t = now(); [783.99, 659.25, 523.25].forEach((f, i) => tone(f, t + i * 0.06, 0.5, 'sine', 0.075)); noiseHit(t, 0.2, 2400, 800, 0.024, 0.8); },
+    jump()    { const t = now(); tone(440, t, 0.32, 'triangle', 0.09, 1318.5); tone(880, t + 0.05, 0.4, 'sine', 0.05); },
+    reveal()  { const t = now(); [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach((f, i) => tone(f, t + i * 0.07, 0.9, 'sine', 0.07)); tone(261.6, t, 1.4, 'triangle', 0.05); },
+    open()    { const t = now(); tone(392, t, 0.4, 'sine', 0.08, 784); tone(587.3, t + 0.08, 0.5, 'sine', 0.05); },
+    close()   { const t = now(); tone(784, t, 0.3, 'sine', 0.07, 392); },
+    morph()   { const t = now(); tone(329.6, t, 0.5, 'triangle', 0.07, 659.3); tone(493.9, t + 0.1, 0.55, 'sine', 0.05, 987.8); },
+    kinetic() { const t = now(); tone(1567.98, t, 0.35, 'sine', 0.05); tone(2349.3, t + 0.02, 0.25, 'sine', 0.03); },
+    chime()   { const t = now(); tone(1046.5, t, 1.6, 'sine', 0.06); tone(1567.98, t + 0.02, 1.2, 'sine', 0.035); }
+  };
+  function play(name) {
+    if (!sfxOn || IS_REMOTE) return;
+    if (!ensure()) return;
+    try { SFX[name] && SFX[name](); } catch (e) {}
+  }
+
+  /* iOS/Android Chrome suspends the AudioContext unless resumed inside a real
+     user-gesture task — re-arm synchronously on every gesture for the session */
+  window.addEventListener('pointerdown', () => {
+    try { if (ctx && ctx.state === 'suspended') ctx.resume().catch(() => {}); } catch (e) {}
+  }, true);
+  window.addEventListener('keydown', () => {
+    try { if (ctx && ctx.state === 'suspended') ctx.resume().catch(() => {}); } catch (e) {}
+  }, true);
+
+  /* ---- ambient generative BGM: warm detuned pad + sparse bell rain ---- */
+  const PENTA = [523.25, 587.33, 659.25, 783.99, 880.0, 1046.5];
+  function startBGM() {
+    if (bgmPlaying || !ensure() || !bgmOn) return;
+    bgmPlaying = true;
+    const base = [130.81, 196.0, 261.63]; // C3 · G3 · C4 — open fifths, calm
+    base.forEach((f, i) => {
+      [-3.5, 3.5].forEach((cents) => {
+        const o = ctx.createOscillator(); o.type = i === 2 ? 'triangle' : 'sine';
+        o.frequency.value = f; o.detune.value = cents;
+        const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 620 + i * 240; lp.Q.value = 0.5;
+        const g = ctx.createGain(); g.gain.value = 0.0001;
+        g.gain.exponentialRampToValueAtTime(i === 2 ? 0.016 : 0.026, now() + 6);
+        const lfo = ctx.createOscillator(); lfo.frequency.value = 0.045 + i * 0.017;
+        const lg = ctx.createGain(); lg.gain.value = 0.011;
+        lfo.connect(lg); lg.connect(g.gain); lfo.start();
+        o.connect(lp); lp.connect(g); g.connect(bgmDry); g.connect(bgmWet);
+        o.start(); reg(o); reg(lfo);
+      });
+    });
+    const air = ctx.createBufferSource(); air.buffer = noiseBuf; air.loop = true;
+    const abp = ctx.createBiquadFilter(); abp.type = 'bandpass'; abp.frequency.value = 900; abp.Q.value = 0.4;
+    const ag = ctx.createGain(); ag.gain.value = 0.0001;
+    ag.gain.linearRampToValueAtTime(0.0045, now() + 8);
+    const alfo = ctx.createOscillator(); alfo.frequency.value = 0.07;
+    const alg = ctx.createGain(); alg.gain.value = 320;
+    alfo.connect(alg); alg.connect(abp.frequency); alfo.start();
+    air.connect(abp); abp.connect(ag); ag.connect(bgmDry); ag.connect(bgmWet);
+    air.start(); reg(air); reg(alfo);
+    nextBellAt = now() + 4;
+    bgmTimer = setInterval(scheduleBells, 1500);
+  }
+  function scheduleBells() {
+    if (!ctx || !bgmOn || !bgmPlaying) return;
+    while (nextBellAt < ctx.currentTime + 2) {
+      const f = PENTA[Math.floor(Math.random() * PENTA.length)];
+      tone(f, nextBellAt, 2.6, 'sine', 0.035 + Math.random() * 0.02, null, bgmBus);
+      tone(f * 2, nextBellAt + 0.01, 1.6, 'sine', 0.012, null, bgmBus);
+      nextBellAt += 3.5 + Math.random() * 6;
+    }
+  }
+  function setBGM(on) {
+    bgmOn = on;
+    try { localStorage.setItem('ap-bgm', on ? 'on' : 'off'); } catch (e) {}
+    if (on) {
+      if (!ensure()) return;
+      startBGM();
+      if (bgmBus) {
+        bgmBus.gain.cancelScheduledValues(now());
+        bgmBus.gain.setValueAtTime(Math.max(bgmBus.gain.value, 0.0001), now());
+        bgmBus.gain.linearRampToValueAtTime(Math.max(bgmVol, 0.0001), now() + 1.4);
+      }
+    } else stopBGM();
+  }
+  function setSFX(on) {
+    sfxOn = on;
+    try { localStorage.setItem('ap-sfx', on ? 'on' : 'off'); } catch (e) {}
+  }
+  function unlock() { ensure(); }
+  return {
+    play, unlock, setBGM, setSFX,
+    isBGM: () => bgmOn, isSFX: () => sfxOn,
+    /* phonetic readout of the presenter's name — Web Speech API */
+    pronounce() {
+      try {
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance('luh, lit. Lalit Mehta.');
+          u.lang = 'en-IN'; u.rate = 0.82; u.pitch = 1.0; u.volume = 1;
+          const pick = (window.speechSynthesis.getVoices() || [])
+            .find(v => /en[-_]IN/i.test(v.lang)) ||
+            (window.speechSynthesis.getVoices() || []).find(v => /^en/i.test(v.lang));
+          if (pick) u.voice = pick;
+          window.speechSynthesis.speak(u);
+        }
+      } catch (e) {}
+    }
+  };
+})();
+
+/* global gesture unlock — browsers require a user gesture before audio can start */
+['pointerdown', 'keydown', 'touchstart'].forEach((ev) => {
+  window.addEventListener(ev, () => AudioEngine.unlock(), { once: true, passive: true });
+});
+
+/* HUD audio toggle buttons */
+function refreshAudioIcons() {
+  const s = $('#sfx-toggle'), b = $('#bgm-toggle');
+  if (s) {
+    s.innerHTML = `<i data-lucide="${AudioEngine.isSFX() ? 'volume-2' : 'volume-x'}" stroke-width="2"></i>`;
+    s.classList.toggle('muted', !AudioEngine.isSFX());
+    s.setAttribute('aria-pressed', String(AudioEngine.isSFX()));
+  }
+  if (b) {
+    b.innerHTML = `<i data-lucide="${AudioEngine.isBGM() ? 'music' : 'music-off'}" stroke-width="2"></i>`;
+    b.classList.toggle('muted', !AudioEngine.isBGM());
+    b.setAttribute('aria-pressed', String(AudioEngine.isBGM()));
+  }
+  if (window.lucide) lucide.createIcons();
+}
+document.addEventListener('DOMContentLoaded', () => {
+  $('#sfx-toggle').addEventListener('click', () => {
+    AudioEngine.setSFX(!AudioEngine.isSFX());
+    refreshAudioIcons();
+    AudioEngine.play('toggle');
+  });
+  $('#bgm-toggle').addEventListener('click', () => {
+    AudioEngine.setBGM(!AudioEngine.isBGM());
+    refreshAudioIcons();
+    AudioEngine.play('toggle');
+  });
+  const pb = $('#pronounce-btn');
+  if (pb) pb.addEventListener('click', () => { AudioEngine.play('chime'); AudioEngine.pronounce(); });
+  refreshAudioIcons();
+});
+
+const T0 = Date.now();                       // presentation runtime epoch
+let slideIndex = 0;                          // current slide (0-based)
+const TOTAL = 10;
+
+/* Speaker cues surfaced in the phone remote (from the talk plan) */
+const CUES = [
+  'Title + bridge test (0:45). Ask the room which square looks lighter; press ACT to bridge them. Landing line: same gray, judged by surroundings.',
+  'Size by comparison (1:15). Hands up BEFORE pressing ACT. The two orange circles are identical; one line on context: we judge size by the neighbours.',
+  'Duck or rabbit (1:15). Hands for duck vs rabbit first; ACT shows the duck reading, then the rabbit reading. Mention the Easter/October study as one study.',
+  'Attention arena (1:45). Stress: count WHITE bounces only, 12 seconds. Collect answers by hands; the answer is 15. ACT again to replay with highlights and ask who saw the star, the border, the square.',
+  'Memory words (1:45). Do not say the theme before the reveal. After the poll: the lure SLEEP was never shown. Keep the tone friendly — false recall here is normal memory.',
+  'Loftus & Palmer (1:15). Ask for a prediction before each reveal; use the verbs in order. The broken-glass follow-up had no glass in the film; add that the mechanism is still debated.',
+  'Secret rule (1:30). Ask yes/no before each ACT press; the surprise is 3-17-104 = YES. The rule is any three ascending numbers.',
+  'Confidence does not equal accuracy (0:45). Say both halves: confidence can be wrong, and that is not the same as confidence always being wrong.',
+  'Check yourself (0:45). Four habits; stress process over willpower — change the steps, not the person.',
+  'Closing + Q&A (0:30 + Q&A). Land the thesis line, then offer a replay of any experiment from the buttons on screen.'
+];
+
+/* Short names for the progress dock tooltip + remote "now showing" */
+const SLIDE_NAMES = [
+  'Can You Trust Your Own Brain?',
+  'Same or Different?',
+  'Count the Passes',
+  'One Image, Two Animals',
+  'The Impossible Triangle',
+  'The Memory Inception',
+  'Where Were the Broken Glass?',
+  'Prove the Rule',
+  'Six Laws of Belief',
+  'Three Defenses & Close'
+];
+function slideName(idx) { return SLIDE_NAMES[clamp(idx, 0, TOTAL - 1)]; }
+
+/* ---------------------------------------------------------------------------
+   PER-SLIDE GENERATIVE VECTOR FIELDS — one bespoke, content-relevant animated
+   SVG field INSIDE the slide stage for each of the 10 slides. Each field owns
+   its own RAF loop; only the active slide animates (others stay paused).
+--------------------------------------------------------------------------- */
+const SVGNS = 'http://www.w3.org/2000/svg';
+const mk = (tag, attrs) => {
+  const el = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) el.setAttribute(k, attrs[k]);
+  return el;
+};
+const svgOf = (n) => document.querySelector('#s' + n + ' .slide-field svg');
+const REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function makeField(n, build, step) {
+  const svg = svgOf(n);
+  if (!svg) return null;
+  /* FIX (demo slides): fields flagged st.once draw ONE static frame and never
+     run an animation loop, so moving backgrounds never compete with stimuli. */
+  const st = { svg, t: 0, raf: null, running: false, once: false, d: {} };
+  build(st);
+  const loop = () => {
+    if (!st.running) return;
+    st.t += 1 / 60;
+    try { step(st); } catch (e) {}
+    if (st.once) { st.running = false; return; }
+    st.raf = requestAnimationFrame(loop);
+  };
+  st.start = () => {
+    if (st.running || REDUCED) return;
+    st.running = true;
+    if (st.once) { if (step) { try { step(st); } catch (e) {} } st.running = false; return; }
+    st.raf = requestAnimationFrame(loop);
+  };
+  st.stop = () => { st.running = false; if (st.raf) cancelAnimationFrame(st.raf); };
+  return st;
+}
+
+const fields = [];
+
+/* FIX (live-deck crash): setFocusForSlide guard — never steals focus from an
+   active text input; otherwise blurs stuck button focus so HID keyboards keep
+   delivering keys to the window-level navigation listeners. */
+function setFocusForSlide(idx) {
+  try {
+    const ae = document.activeElement;
+    if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA' || ae.isContentEditable)) return;
+    if (ae && typeof ae.blur === 'function' && ae !== document.body) ae.blur();
+  } catch (e) {}
+}
+
+/* ---- 1 · Title: attention ribbons converging on an inquiry reticle ---- */
+fields.push(makeField(1, (f) => {
+  const grid = mk('g', {}), rib = mk('g', {}), ret = mk('g', {});
+  f.svg.append(grid, rib, ret);
+  for (let gx = 120; gx < 1920; gx += 240) for (let gy = 120; gy < 1080; gy += 240)
+    grid.appendChild(mk('path', { d: `M ${gx-7} ${gy} H ${gx+7} M ${gx} ${gy-7} V ${gy+7}`, stroke: '#64748B', 'stroke-opacity': 0.10, 'stroke-width': 1, fill: 'none', 'vector-effect': 'non-scaling-stroke' }));
+  for (let i = 0; i < 12; i++) {
+    const y0 = 90 + (i / 11) * 900;
+    const mx1 = 420 + Math.sin(i * 1.3) * 120, my1 = y0 + Math.cos(i * 0.9) * 70;
+    const mx2 = 1080 + Math.sin(i * 0.7) * 90, my2 = lerp(y0, 300, 0.55);
+    const p = mk('path', {
+      d: `M -60 ${y0.toFixed(1)} C ${mx1.toFixed(1)} ${my1.toFixed(1)}, ${mx2.toFixed(1)} ${my2.toFixed(1)}, 1560 300`,
+      fill: 'none', stroke: `url(#${['rgA','rgB','rgC'][i % 3]})`, 'stroke-width': String(1 + (i % 4)),
+      'stroke-opacity': 0.5, 'vector-effect': 'non-scaling-stroke'
+    });
+    if (i % 5 === 2) p.setAttribute('stroke-dasharray', '10 14');
+    rib.appendChild(p);
+  }
+  ret.appendChild(mk('use', { href: '#sym-reticle', transform: 'translate(1560 300)' }));
+  ret.appendChild(mk('use', { href: '#sym-core', transform: 'translate(1560 300)' }));
+}, null));
+
+/* ---- 2 · Contrast: two gray families drifting toward one shared midpoint ---- */
+fields.push(makeField(2, (f) => {
+  const g = mk('g', {}); f.svg.appendChild(g);
+  for (let i = 0; i < 14; i++) {
+    const light = i % 2 === 0;
+    const x = 90 + i * 132, y = 140 + (i % 5) * 150;
+    g.appendChild(mk('rect', { x, y, width: 74, height: 74, rx: 16,
+      fill: light ? '#E9EDF4' : '#3A4250', opacity: 0.14,
+      transform: `rotate(${(i * 7) % 24} ${x + 37} ${y + 37})` }));
+  }
+  g.appendChild(mk('circle', { cx: 960, cy: 540, r: 150, fill: 'url(#attractorGlow)', opacity: 0.8 }));
+  g.appendChild(mk('circle', { cx: 960, cy: 540, r: 9, fill: '#7A7A7A', opacity: 0.85 }));
+}, null));
+
+/* ---- 3 · Attention: sparse gaze-fixation saccade path with hubs ---- */
+fields.push(makeField(3, (f) => {
+  const pts = [[320,240],[760,180],[1180,300],[1520,220],[1620,560],[1240,700],[820,640],[420,760],[240,520]];
+  let d = 'M ' + pts[0][0] + ' ' + pts[0][1];
+  for (let i = 1; i < pts.length; i++) d += ` L ${pts[i][0]} ${pts[i][1]}`;
+  d += ' L 320 240';
+  f.svg.appendChild(mk('path', { d, fill: 'none', stroke: 'url(#rgB)', 'stroke-width': 1.6,
+    'stroke-dasharray': '2 16', 'stroke-opacity': 0.7, 'vector-effect': 'non-scaling-stroke' }));
+  const g = mk('g', {}); f.svg.appendChild(g);
+  pts.forEach((p, i) => {
+    g.appendChild(mk('circle', { cx: p[0], cy: p[1], r: 10 + (i % 3) * 6, fill: 'none',
+      stroke: i % 4 === 0 ? '#E11D48' : '#2563EB', 'stroke-opacity': 0.22, 'stroke-width': 1.2, 'vector-effect': 'non-scaling-stroke' }));
+  });
+}, null));
+
+/* ---- 4 · Bistable: nested ambiguous contours that refuse to resolve ---- */
+fields.push(makeField(4, (f) => {
+  const g = mk('g', { transform: 'translate(960 540)' }); f.svg.appendChild(g);
+  for (let i = 0; i < 5; i++) {
+    g.appendChild(mk('ellipse', { rx: 180 + i * 130, ry: 110 + i * 78, fill: 'none',
+      stroke: i % 2 ? '#4F46E5' : '#2563EB', 'stroke-opacity': 0.16, 'stroke-width': 1.4,
+      transform: `rotate(${i * 18})`, 'vector-effect': 'non-scaling-stroke' }));
+  }
+  g.appendChild(mk('path', { d: 'M -260 40 C -120 -120, 120 -120, 260 40 C 120 160, -120 160, -260 40 Z',
+    fill: 'none', stroke: '#E11D48', 'stroke-opacity': 0.2, 'stroke-width': 1.6, 'vector-effect': 'non-scaling-stroke' }));
+}, null));
+
+/* ---- 5 · Construction: locally consistent bars, globally impossible figure ---- */
+fields.push(makeField(5, (f) => {
+  const g = mk('g', { transform: 'translate(960 540)' }); f.svg.appendChild(g);
+  const tri = [[0,-300],[280,190],[-280,190]];
+  for (let i = 0; i < 3; i++) {
+    const a = tri[i], b = tri[(i + 1) % 3];
+    g.appendChild(mk('line', { x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: ['#2563EB','#4F46E5','#E11D48'][i],
+      'stroke-opacity': 0.22, 'stroke-width': 26, 'stroke-linecap': 'round', 'vector-effect': 'non-scaling-stroke' }));
+  }
+  tri.forEach((p) => g.appendChild(mk('circle', { cx: p[0], cy: p[1], r: 12, fill: 'none', stroke: '#64748B', 'stroke-opacity': 0.35, 'vector-effect': 'non-scaling-stroke' })));
+  g.appendChild(mk('use', { href: '#sym-reticle', transform: 'translate(430 -240) scale(0.6)', opacity: 0.5 }));
+}, null));
+
+/* ---- 6 · Association: semantic network — four shown words around one absent hub ---- */
+fields.push(makeField(6, (f) => {
+  const hub = [960, 540];
+  const sat = [[520,300],[1420,320],[560,800],[1380,780]];
+  const g = mk('g', {}); f.svg.appendChild(g);
+  sat.forEach((p) => g.appendChild(mk('line', { x1: p[0], y1: p[1], x2: hub[0], y2: hub[1],
+    stroke: '#4F46E5', 'stroke-opacity': 0.16, 'stroke-width': 1.4, 'stroke-dasharray': '6 10', 'vector-effect': 'non-scaling-stroke' })));
+  g.appendChild(mk('circle', { cx: hub[0], cy: hub[1], r: 120, fill: 'url(#coralGlow)', opacity: 0.9 }));
+  g.appendChild(mk('circle', { cx: hub[0], cy: hub[1], r: 26, fill: 'none', stroke: '#E11D48', 'stroke-opacity': 0.3, 'stroke-dasharray': '4 6', 'vector-effect': 'non-scaling-stroke' }));
+  sat.forEach((p, i) => g.appendChild(mk('circle', { cx: p[0], cy: p[1], r: 16 + i * 2, fill: '#2563EB', opacity: 0.14 })));
+}, null));
+
+/* ---- 7 · Framing: one event wave re-drawn through five verbal filters ---- */
+fields.push(makeField(7, (f) => {
+  const g = mk('g', {}); f.svg.appendChild(g);
+  for (let w = 0; w < 5; w++) {
+    const amp = 26 + w * 20, base = 200 + w * 150;
+    let d = 'M 0 ' + base;
+    for (let x = 0; x <= 1920; x += 48) {
+      const bump = Math.exp(-Math.pow((x - 960) / 300, 2)) * amp;
+      d += ` L ${x} ${(base - bump * Math.abs(Math.sin(x * 0.012 + w))).toFixed(1)}`;
+    }
+    g.appendChild(mk('path', { d, fill: 'none', stroke: `url(#${['rgA','rgB','rgC','rgA','rgB'][w]})`,
+      'stroke-width': String(1.2 + w * 0.4), 'stroke-opacity': 0.6, 'vector-effect': 'non-scaling-stroke' }));
+  }
+}, null));
+
+/* ---- 8 · Reasoning: hypothesis nodes branching from one rule, one green path ---- */
+fields.push(makeField(8, (f) => {
+  const g = mk('g', {}); f.svg.appendChild(g);
+  const root = [420, 540];
+  const leaves = [[1180,220],[1320,420],[1180,860],[1320,660]];
+  g.appendChild(mk('circle', { cx: root[0], cy: root[1], r: 130, fill: 'url(#attractorGlow)' }));
+  g.appendChild(mk('circle', { cx: root[0], cy: root[1], r: 16, fill: '#2563EB', opacity: 0.55 }));
+  leaves.forEach((p, i) => {
+    const hit = i === 3;
+    g.appendChild(mk('path', { d: `M ${root[0]} ${root[1]} C ${(root[0]+p[0])/2} ${root[1] + (i%2?160:-160)}, ${(root[0]+p[0])/2} ${p[1]}, ${p[0]} ${p[1]}`,
+      fill: 'none', stroke: hit ? '#059669' : '#64748B', 'stroke-opacity': hit ? 0.5 : 0.18, 'stroke-width': hit ? 2.4 : 1.4,
+      'stroke-dasharray': hit ? 'none' : '5 9', 'vector-effect': 'non-scaling-stroke' }));
+    g.appendChild(mk('circle', { cx: p[0], cy: p[1], r: 12, fill: hit ? '#059669' : '#64748B', opacity: hit ? 0.6 : 0.22 }));
+  });
+}, null));
+
+/* ---- 9 · Calibration: confidence-vs-accuracy chart with an overconfidence gap ---- */
+fields.push(makeField(9, (f) => {
+  const g = mk('g', {}); f.svg.appendChild(g);
+  g.appendChild(mk('path', { d: 'M 320 880 H 1700 M 320 880 V 180', stroke: '#64748B', 'stroke-opacity': 0.3, 'stroke-width': 1.6, fill: 'none', 'vector-effect': 'non-scaling-stroke' }));
+  g.appendChild(mk('path', { d: 'M 320 880 L 1700 180', stroke: '#2563EB', 'stroke-opacity': 0.3, 'stroke-width': 1.6, 'stroke-dasharray': '8 10', fill: 'none', 'vector-effect': 'non-scaling-stroke' }));
+  g.appendChild(mk('path', { d: 'M 320 880 C 700 620, 1150 330, 1700 210', stroke: '#E11D48', 'stroke-opacity': 0.35, 'stroke-width': 2.4, fill: 'none', 'vector-effect': 'non-scaling-stroke' }));
+  for (let i = 0; i < 6; i++) g.appendChild(mk('circle', { cx: 420 + i * 240, cy: 800 - i * 118, r: 7, fill: '#4F46E5', opacity: 0.35 }));
+}, null));
+
+/* ---- 10 · Closing: horizon of folded experiments with rising question marks ---- */
+fields.push(makeField(10, (f) => {
+  const g = mk('g', {}); f.svg.appendChild(g);
+  g.appendChild(mk('circle', { cx: 960, cy: 640, r: 120, fill: 'url(#attractorGlow)' }));
+  g.appendChild(mk('path', { d: 'M 120 640 H 1800', stroke: 'url(#rgA)', 'stroke-width': 2, fill: 'none', 'stroke-opacity': 0.7, 'vector-effect': 'non-scaling-stroke' }));
+  for (let i = 0; i < 7; i++) {
+    const x = 260 + i * 230;
+    g.appendChild(mk('path', { d: `M ${x} 640 C ${x - 60} 520, ${x + 60} 470, ${x} 360`, fill: 'none',
+      stroke: ['#2563EB','#4F46E5','#E11D48'][i % 3], 'stroke-opacity': 0.2, 'stroke-width': 1.6, 'vector-effect': 'non-scaling-stroke' }));
+    g.appendChild(mk('circle', { cx: x, cy: 336, r: 5, fill: '#4F46E5', opacity: 0.3 }));
+  }
+}, null));
+
+function setActiveField(idx) {
+  fields.forEach((fl, i) => { if (!fl) return; if (i === idx) fl.start(); else fl.stop(); });
+}
+
+/* ---------------------------------------------------------------------------
+   SLIDE ENGINE — transitions animate ONLY translate3d + opacity (GPU-safe)
+--------------------------------------------------------------------------- */
+const slides = $$('.slide');
+let transitioning = false;
+
+function goTo(idx, opts) {
+  opts = opts || {};
+  idx = clamp(idx, 0, TOTAL - 1);
+  if (idx === slideIndex && document.querySelector('.slide.is-active') && !opts.force) return;
+  const prevIdx = slideIndex;
+  const goingForward = idx >= prevIdx;
+  slides.forEach((s, i) => {
+    s.classList.remove('is-active', 'is-exit-up', 'is-exit-down');
+    if (i === idx) {
+      s.classList.add('is-active');
+    } else if (i === prevIdx && i !== idx) {
+      s.classList.add(goingForward ? 'is-exit-up' : 'is-exit-down');
+    }
+  });
+  /* DEMO lifecycle: leaving a slide ALWAYS resets its demo, so every demo
+     (and every Replay button on slide 10) starts from a pristine state. */
+  if (!IS_REMOTE && typeof DEMO !== 'undefined' && DEMO[prevIdx] && prevIdx !== idx) DEMO[prevIdx].reset();
+  document.body.classList.toggle('stim-on', idx >= 0 && idx <= 6);
+  slideIndex = idx;
+  setFocusForSlide(idx);
+  setActiveField(idx);
+  updateHUD();
+  onSlideEnter(idx);
+  if (!opts.silent) AudioEngine.play(goingForward ? 'forward' : 'back');
+  if (!IS_REMOTE) {
+    refreshActLabel();          /* sync the .act-btn label to DEMO[idx].label() */
+    publishNav(idx);
+    publishState();             /* board -> remote STATE (label + hasDemo) */
+  }
+}
+function next() { goTo(slideIndex + 1); }
+function prev() { goTo(slideIndex - 1); }
+
+function updateHUD() {
+  const x = slideIndex + 1;
+  $('#chip-num').textContent = String(x).padStart(2, '0');
+  /* segmented dock: single authoritative state pass driven by slideIndex */
+  $$('#progress-track .pseg').forEach((el, i) => {
+    el.classList.toggle('done', i < slideIndex);
+    el.classList.toggle('current', i === slideIndex);
+    el.title = slideName(i);
+  });
+  $('#tel-x').textContent = x;
+  $('#tel-left').textContent = (x === TOTAL) ? 'Final Slide' : ((TOTAL - x) + ' slides left');
+  const mini = $('#mini-prog-fill'); if (mini) mini.style.transform = `scaleX(${x / TOTAL})`;
+  /* remote UI sync */
+  if (IS_REMOTE) {
+    $('#rmu-idx').textContent = `SLIDE ${x} / ${TOTAL} · BOARD VIEW`;
+    $('#rmu-name').textContent = slideName(slideIndex);
+    $('#rmu-cue').textContent = CUES[slideIndex];
+    $('#rmu-prog-fill').style.transform = `scaleX(${x / TOTAL})`;
+    $$('#rmu-jump button').forEach((b, i) => b.classList.toggle('current', i === slideIndex));
+    applyRemoteState();
+  }
+  const ts = $('#tele-slide'); if (ts) ts.textContent = `${x} / ${TOTAL}`;
+}
+
+/* ---------------------------------------------------------------------------
+   INPUT HARDWARE: keyboard (Bluetooth HID), wheel, swipe, click zones, buttons.
+   Wrapped in bindDeckInput() so the demo action keys (A / Tab) are checked
+   before navigation and every listener is registered exactly once at init.
+--------------------------------------------------------------------------- */
+function bindDeckInput() {
+window.addEventListener('keydown', (e) => {
+  const k = e.key, c = e.code, kc = e.keyCode;
+  /* never hijack ANY deck shortcut while typing in a text field */
+  if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable)) {
+    if (k === 'Escape') closeModal();
+    return;
+  }
+  /* DEMO ACTION keys: A or Tab trigger the active slide's next step.
+     Space/Enter/PageDown deliberately stay "next slide" only, so a Bluetooth
+     clicker can never fire an experiment by accident. */
+  if (!IS_REMOTE && (k === 'a' || k === 'A' || c === 'KeyA' || kc === 65 || k === 'Tab')) {
+    e.preventDefault();
+    triggerActiveSlideAction();
+    return;
+  }
+  const isNext = (k === 'PageDown' || c === 'PageDown' || kc === 34 ||
+                  k === 'ArrowRight' || k === 'ArrowDown' || c === 'ArrowRight' || c === 'ArrowDown' ||
+                  k === ' ' || c === 'Space' || kc === 32 ||
+                  k === 'Enter' || kc === 13 || c === 'KeyN' || kc === 78);
+  const isPrev = (k === 'PageUp' || c === 'PageUp' || kc === 33 ||
+                  k === 'ArrowLeft' || k === 'ArrowUp' || c === 'ArrowLeft' || c === 'ArrowUp' ||
+                  k === 'Backspace' || kc === 8 || c === 'KeyP' || kc === 80);
+  if (isNext) { e.preventDefault(); next(); return; }
+  if (isPrev) { e.preventDefault(); prev(); return; }
+  if (c === 'KeyF' || kc === 70 || k === 'F11' || kc === 122) { e.preventDefault(); toggleFullscreen(); return; }
+  if (c === 'Escape' || kc === 27) { closeModal(); return; }
+  /* direct jump: digits 1..9 -> slides 1..9 ; 0 -> slide 10 */
+  let n = -1;
+  if (/^[1-9]$/.test(k)) n = parseInt(k, 10) - 1;
+  else if (k === '0') n = 9;
+  else if (c && /^Digit[1-9]$/.test(c)) n = parseInt(c.slice(5), 10) - 1;
+  else if (c === 'Digit0') n = 9;
+  if (n >= 0) { e.preventDefault(); goTo(n); }
+}, { passive: false });
+
+/* debounced mouse wheel navigation */
+let wheelLock = 0;
+window.addEventListener('wheel', (e) => {
+  if (IS_REMOTE) return;
+  const nowT = Date.now();
+  if (nowT - wheelLock < 650) return;
+  if (Math.abs(e.deltaY) < 12) return;
+  wheelLock = nowT;
+  if (e.deltaY > 0) next(); else prev();
+}, { passive: true });
+
+/* touch swipe (board + phone both use this file) */
+let touchX = null, touchY = null;
+window.addEventListener('touchstart', (e) => {
+  if (IS_REMOTE) return;
+  if (e.touches.length !== 1) return;
+  touchX = e.touches[0].clientX; touchY = e.touches[0].clientY;
+}, { passive: true });
+window.addEventListener('touchend', (e) => {
+  if (!IS_REMOTE && touchX !== null) {
+    const dx = e.changedTouches[0].clientX - touchX;
+    const dy = e.changedTouches[0].clientY - touchY;
+    if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy)) { if (dx < 0) next(); else prev(); }
+    touchX = null;
+  }
+}, { passive: true });
+
+/* HUD buttons */
+$('#next-btn').addEventListener('click', next);
+$('#prev-btn').addEventListener('click', prev);
+const restartBtn = $('#restart-btn');
+if (restartBtn) restartBtn.addEventListener('click', () => goTo(0, { force: true }));
+$$('[data-jump]').forEach(b => b.addEventListener('click', () => goTo(parseInt(b.dataset.jump, 10))));
+[['#replay-s2', 1], ['#replay-s6', 5]].forEach(([sel, target]) => {
+  const b = $(sel);
+  if (b) b.addEventListener('click', () => {
+    goTo(target, { force: true });
+    showToast(`Replaying: ${slideName(target)}`);
+  });
+});
+
+/* presenter click-mode toggle + right/left zone clicks */
+$('#presenter-toggle').addEventListener('click', () => {
+  document.body.classList.toggle('presenter-click');
+  $('#presenter-toggle').classList.toggle('is-on');
+});
+$('#zone-next').addEventListener('click', next);
+$('#zone-prev').addEventListener('click', prev);
+} /* ---- end bindDeckInput ---- */
+
+/* ---------------------------------------------------------------------------
+   FULLSCREEN (Android Chrome webkit fallback + dynamic icon/label)
+--------------------------------------------------------------------------- */
+function enterFS() {
+  const el = document.documentElement;
+  if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
+  else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+  else if (el.webkitRequestFullScreen) el.webkitRequestFullScreen();
+}
+function exitFS() {
+  if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+  else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+}
+function isFS() { return !!(document.fullscreenElement || document.webkitFullscreenElement); }
+function toggleFullscreen() { isFS() ? exitFS() : enterFS(); }
+function refreshFSIcon() {
+  const btn = $('#fullscreen-btn');
+  btn.innerHTML = `<i data-lucide="${isFS() ? 'minimize-2' : 'maximize-2'}" stroke-width="2"></i>`;
+  btn.setAttribute('aria-label', isFS() ? 'Exit fullscreen' : 'Enter fullscreen');
+  if (window.lucide) lucide.createIcons();
+}
+$('#fullscreen-btn').addEventListener('click', toggleFullscreen);
+document.addEventListener('fullscreenchange', refreshFSIcon);
+document.addEventListener('webkitfullscreenchange', refreshFSIcon);
+
+/* ---------------------------------------------------------------------------
+   MQTT ZERO-BACKEND PHONE SYNC (broker.emqx.io over WSS)
+--------------------------------------------------------------------------- */
+const BROKER = 'wss://broker.emqx.io:8084/mqtt';
+let mqttClient = null, mqttOnline = false;
+
+function setSyncStatus(state) {
+  const dot = $('#sync-dot'), lbl = $('#sync-label');
+  const ms = $('#modal-status'), tm = $('#tele-mqtt');
+  const rdot = $('#rmu-dot'), rt = $('#rmu-status-txt');
+  if (dot) { dot.className = ''; dot.classList.add(state === 'online' ? 'online' : (state === 'offline' ? 'offline' : '')); }
+  const txt = state === 'online' ? 'SYNCED' : (state === 'offline' ? 'OFFLINE' : 'LINKING');
+  if (lbl) lbl.textContent = txt;
+  if (ms) { ms.textContent = state.toUpperCase(); ms.style.color = state === 'online' ? 'var(--emerald)' : (state === 'offline' ? 'var(--coral)' : 'var(--ink-c)'); }
+  if (tm) { tm.textContent = state === 'online' ? 'ONLINE · WSS' : txt; tm.classList.toggle('online', state === 'online'); }
+  if (rdot) rdot.style.background = state === 'online' ? '#059669' : (state === 'offline' ? '#E11D48' : '#94A3B8');
+  if (rt) rt.textContent = txt;
+}
+
+function connectMQTT() {
+  if (typeof mqtt === 'undefined') { setSyncStatus('offline'); return; }
+  try {
+    if (mqttClient) { try { mqttClient.end(true); } catch (e) {} }
+    mqttClient = mqtt.connect(BROKER, {
+      clientId: 'qp-' + Math.random().toString(16).slice(2, 10),
+      keepalive: 30, reconnectPeriod: 2500, connectTimeout: 6000
+    });
+    mqttClient.on('connect', () => {
+      mqttOnline = true; setSyncStatus('online');
+      mqttClient.subscribe(roomTopic, { qos: 0 }, () => {
+        /* announce presence so late joiners sync to our view */
+        if (IS_REMOTE) publishNav(slideIndex);
+        else { publishNav(slideIndex, true); publishState(); }
+      });
+    });
+    mqttClient.on('reconnect', () => setSyncStatus('linking'));
+    mqttClient.on('close', () => { mqttOnline = false; setSyncStatus('offline'); });
+    mqttClient.on('error', () => setSyncStatus('offline'));
+    mqttClient.on('message', (topic, payload) => {
+      if (topic !== roomTopic) return;
+      let msg;
+      try { msg = JSON.parse(payload.toString()); } catch (e) { return; }
+      if (!msg || typeof msg.slideIndex !== 'number') return;
+      /* ---------- NAV: existing behaviour + loop protection ---------- */
+      if (msg.type === 'NAV') {
+        if (IS_REMOTE) {
+          /* board-originated NAV only: the phone mirrors the authoritative index */
+          if (msg.src !== 'board') return;
+          slideIndex = clamp(msg.slideIndex, 0, TOTAL - 1);
+          updateHUD();
+        } else {
+          /* remote-originated NAV only — never obey our own echoes */
+          if (msg.src !== 'remote') return;
+          goTo(clamp(msg.slideIndex, 0, TOTAL - 1), { silent: true });
+          showToast(`Remote jump → Slide ${msg.slideIndex + 1}`);
+        }
+        return;
+      }
+      /* ---------- ACT: remote -> board. Ignore echoes + wrong-slide messages ---------- */
+      if (msg.type === 'ACT') {
+        if (IS_REMOTE) return;                 /* the remote never executes ACT */
+        if (msg.src !== 'remote') return;      /* never process our own echo */
+        if (msg.slideIndex !== slideIndex) return;
+        triggerActiveSlideAction();
+        return;
+      }
+      /* ---------- STATE: board -> remote label/name mirror ---------- */
+      if (msg.type === 'STATE') {
+        if (!IS_REMOTE) return;                /* the board ignores STATE */
+        if (msg.src !== 'board') return;
+        remoteState.label = (typeof msg.label === 'string' || msg.label === null) ? msg.label : null;
+        remoteState.hasDemo = !!msg.hasDemo;
+        remoteState.slideIndex = clamp(msg.slideIndex, 0, TOTAL - 1);
+        applyRemoteState();
+        return;
+      }
+    });
+  } catch (e) { setSyncStatus('offline'); }
+}
+
+function publishNav(idx, isAnnounce) {
+  if (!IS_REMOTE && !isAnnounce && mqttClient == null) return;
+  if (!mqttClient || !mqttOnline) return;
+  try {
+    mqttClient.publish(roomTopic, JSON.stringify({ type: 'NAV', slideIndex: idx, timestamp: Date.now(), src: IS_REMOTE ? 'remote' : 'board' }), { qos: 0 });
+  } catch (e) {}
+}
+
+/* ---------------------------------------------------------------------------
+   DEMO ACTION SYSTEM — MQTT plumbing (additive; NAV stays exactly as before)
+   Board -> remote : {type:'STATE', slideIndex, label, hasDemo, timestamp, src:'board'}
+   Remote -> board : {type:'ACT',   slideIndex, timestamp, src:'remote'}
+--------------------------------------------------------------------------- */
+function publishState() {
+  if (IS_REMOTE || !mqttClient || !mqttOnline) return;
+  const d = DEMO[slideIndex];
+  let label = null;
+  try { label = d ? d.label() : null; } catch (e) { label = null; }
+  try {
+    mqttClient.publish(roomTopic, JSON.stringify({
+      type: 'STATE', slideIndex: slideIndex, label: label, hasDemo: !!d,
+      timestamp: Date.now(), src: 'board'
+    }), { qos: 0 });
+  } catch (e) {}
+}
+function publishAct() {
+  if (!mqttClient || !mqttOnline) return;
+  try {
+    mqttClient.publish(roomTopic, JSON.stringify({
+      type: 'ACT', slideIndex: slideIndex, timestamp: Date.now(), src: IS_REMOTE ? 'remote' : 'board'
+    }), { qos: 0 });
+  } catch (e) {}
+}
+
+/* ---------------------------------------------------------------------------
+   TOAST + REMOTE SYNC MODAL + QR
+--------------------------------------------------------------------------- */
+let toastTimer = null;
+function showToast(msg) {
+  const t = $('#toast'); $('#toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+}
+function remoteURL() {
+  const u = new URL(location.href);
+  u.searchParams.set('mode', 'remote');
+  u.searchParams.set('room', roomTopic);
+  return u.toString();
+}
+function refreshModalLinks() {
+  const url = remoteURL();
+  $('#remote-url').textContent = url;
+  $('#open-remote-tab').href = url;
+  const qr = $('#qr-img');
+  if (qr) qr.src = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&color=0f172a&bgcolor=ffffff&data=' + encodeURIComponent(url);
+  $('#topic-preview').textContent = roomTopic;
+  $('#room-input').value = roomTopic;
+  const tr = $('#tele-room'); if (tr) tr.textContent = roomTopic;
+}
+function openModal() { refreshModalLinks(); $('#remote-modal-overlay').classList.add('open'); AudioEngine.play('open'); }
+function closeModal() { $('#remote-modal-overlay').classList.remove('open'); }
+$('#sync-btn').addEventListener('click', openModal);
+$('#reveal-sync-btn').addEventListener('click', openModal);
+$('#modal-close-x').addEventListener('click', closeModal);
+$('#remote-modal-overlay').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeModal(); });
+$('#copy-url-btn').addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText(remoteURL()); showToast('Remote link copied'); }
+  catch (e) { showToast('Copy blocked — long-press the link'); }
+});
+$('#apply-room-btn').addEventListener('click', () => {
+  const v = $('#room-input').value.trim();
+  if (v) { roomTopic = v; refreshModalLinks(); setSyncStatus('linking'); connectMQTT(); showToast('Broker reconnected on new topic'); }
+});
+
+/* ---------------------------------------------------------------------------
+   SLIDE 10 + REMOTE — runtime timers
+--------------------------------------------------------------------------- */
+function fmtTime(ms) {
+  const s = Math.floor(ms / 1000);
+  return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+}
+setInterval(() => {
+  const el = $('#qa-timer');
+  if (el) el.textContent = fmtTime(Date.now() - T0);
+  const rt = $('#rmu-timer');
+  if (rt) {
+    const ms = Date.now() - T0;
+    rt.textContent = fmtTime(ms);
+    rt.classList.toggle('over', ms > 10 * 60 * 1000);
+  }
+}, 1000);
+
+/* ---------------------------------------------------------------------------
+   REMOTE UI BOOT (phone view) — Prev / Next / JUMP plus the third big ACT
+--------------------------------------------------------------------------- */
+function bootRemoteUI() {
+  document.body.classList.add('remote-mode');
+  const jumpWrap = $('#rmu-jump');
+  for (let i = 0; i < TOTAL; i++) {
+    const b = document.createElement('button');
+    b.textContent = i + 1;
+    b.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+    b.title = slideName(i);
+    b.addEventListener('click', () => publishNav(i));
+    jumpWrap.appendChild(b);
+  }
+  $('#rmu-next').addEventListener('click', () => publishNav(clamp(slideIndex + 1, 0, TOTAL - 1)));
+  $('#rmu-prev').addEventListener('click', () => publishNav(clamp(slideIndex - 1, 0, TOTAL - 1)));
+  const actBtn = $('#rmu-act');
+  if (actBtn) actBtn.addEventListener('click', () => {
+    if (actBtn.disabled) return;
+    publishAct();
+  });
+  updateHUD();
+  applyRemoteState();
+}
+
+/* Mirror of the board's current action label onto the remote ACT button */
+const remoteState = { label: null, hasDemo: false, slideIndex: 0 };
+function applyRemoteState() {
+  if (!IS_REMOTE) return;
+  const actBtn = $('#rmu-act');
+  if (!actBtn) return;
+  const showLabel = remoteState.slideIndex === slideIndex ? remoteState.label : null;
+  const enabled = remoteState.slideIndex === slideIndex && remoteState.hasDemo && !!showLabel;
+  actBtn.disabled = !enabled;
+  actBtn.innerHTML = `<i data-lucide="${enabled ? 'zap' : 'zap-off'}" stroke-width="2"></i>${enabled ? ' ' + showLabel : 'NO STEP'}`;
+  if (window.lucide) lucide.createIcons();
+}
+
+/* ---------------------------------------------------------------------------
+   PER-SLIDE INTERACTIVE DEMOS — Section 9 of the master prompt.
+   Contract per demo: act() advances one step; label() returns the CURRENT
+   pending action verb ("Bridge"/"Reveal"/"Run"/… ) or null when finished;
+   reset() restores the pristine pre-action state. Slides 8–10 have no demo.
+--------------------------------------------------------------------------- */
+const DEMO = new Array(TOTAL).fill(null);
+
+/* shared helpers ----------------------------------------------------------- */
+function setSteps(n, count) {
+  ['reveal', 'why', 'care'].forEach((kind, i) => {
+    const row = document.querySelector(`#s${n}-step-${kind}`);
+    if (row) row.classList.toggle('shown', i < count);
+  });
+}
+function primeStepTexts() {
+  for (let n = 2; n <= 8; n++) {
+    const rows = [['reveal', 'REVEALS'], ['why', 'WHYS'], ['care', 'CARES']];
+    rows.forEach(([kind, key]) => {
+      const el = document.querySelector(`#s${n}-${kind}-text`);
+      if (el && !el.textContent && window[key]) el.textContent = window[key][n] || '';
+    });
+  }
+}
+function refreshActLabel() {
+  if (IS_REMOTE) return;
+  const d = DEMO[slideIndex];
+  const lab = d ? d.label() : null;
+  $$('#slides .act-btn').forEach((b) => {
+    const own = b.id.indexOf('s' + (slideIndex + 1) + '-') === 0;
+    if (!own) return;
+    const ic = b.querySelector('i[data-lucide]');
+    const icon = ic ? ic.outerHTML : '';
+    b.innerHTML = icon + ' ' + (lab ? lab : (b.dataset.orig || 'Done'));
+    b.disabled = !lab;
+  });
+  if (window.lucide) lucide.createIcons();
+}
+function triggerActiveSlideAction() {
+  if (IS_REMOTE) return;
+  const d = DEMO[slideIndex];
+  if (!d) return;
+  try { d.act(); } catch (e) {}
+  refreshActLabel();
+  publishState();
+}
+function wireDemoButtons() {
+  /* remember original labels, then delegate every .act-btn click to the demo */
+  $$('#slides .act-btn').forEach((b) => {
+    const txt = b.textContent.trim();
+    b.dataset.orig = txt.charAt(0).toUpperCase() + txt.slice(1);
+    b.addEventListener('click', () => {
+      const m = b.id.match(/^s(\d+)-/);
+      if (!m) return;
+      const idx = parseInt(m[1], 10) - 1;
+      if (idx !== slideIndex) { goTo(idx); return; }
+      const d = DEMO[idx];
+      if (!d) return;
+      try { d.act(); } catch (e) {}
+      refreshActLabel();
+      publishState();
+    });
+  });
+  refreshActLabel();
+}
+
+/* timed-task helper: cancel ALL timers registered by a demo on reset -------- */
+function makeTimerBank() {
+  const ids = [], rafs = [];
+  return {
+    after(fn, ms) { const id = setTimeout(() => { fn(); }, ms); ids.push(id); return id; },
+    every(fn, ms) { const id = setInterval(fn, ms); ids.push(id); return id; },
+    raf(fn) { let live = true; const tick = (t) => { if (!live) return; fn(t); rafs.push(requestAnimationFrame(tick)); }; rafs.push(requestAnimationFrame(tick)); return () => { live = false; }; },
+    clear() { ids.forEach(clearTimeout); ids.length = 0; rafs.forEach(cancelAnimationFrame); rafs.length = 0; }
+  };
+}
+
+/* Reveal copy keyed by slide number ---------------------------------------- */
+const REVEALS = {
+  2: 'Both squares reflect the exact same light — RGB 128,128,128. Your visual system subtracted the shadow before telling you.',
+  3: 'You were told to watch the short sleeves. That instruction alone was enough to miss a gorilla-sized object for most viewers.',
+  4: 'Both readings are valid — the ink never changed. Your brain committed to one interpretation and hid the other from you.',
+  5: 'Each corner is locally perfect: three right angles. Globally impossible. Perception assembles parts, not wholes.',
+  6: 'SLEEP was never on the screen. Your own associations inserted it — and felt like a memory, not a guess.',
+  7: '"Smashed" raised speed estimates ~8 mph AND planted a false memory of broken glass a full week later.',
+  8: 'You hunted for confirmation. Only the cards that could BREAK the rule actually test it.'
+};
+const WHYS = {
+  2: 'Vision estimates surface reflectance by discounting illumination — relative, never absolute.',
+  3: 'Inattentional blindness: awareness needs resources, and counting passes spent all of them.',
+  4: 'Bistable figures: higher cortex injects meaning into ambiguous sensory data; only one reading runs at a time.',
+  5: 'The visual system builds 3-D models from 2-D cues and forgives local errors instead of global ones.',
+  6: 'DRM effect: remembering is reconstruction from traces plus general knowledge — the gist writes the detail.',
+  7: 'Misinformation effect: post-event language becomes part of the memory trace itself.',
+  8: 'Confirmation bias: testing costs effort; agreeing feels free.'
+};
+const CARES = {
+  2: 'Never trust a colour, brightness or size seen alone. Compare under identical conditions — pixels do, eyes don\'t.',
+  3: 'Multitasking while driving is the gorilla case. Whatever you focus on, everything else gets denied entry.',
+  4: 'Disagreement may be two different perceptions, not two opinions. Ask "what else could this be?" before arguing.',
+  5: 'Plausible stories feel true even when assembled from incompatible parts. Check the seams, not the look.',
+  6: 'Eyewitness confidence is not evidence. Interview with neutral questions — your wording edits their past.',
+  7: 'Watch your verbs in decks, interviews and feedback. "Smashed" vs "hit" is eight miles per hour and a fabricated memory.',
+  8: 'Before you decide, ask out loud: "what would prove me wrong?" Then go find exactly that.'
+};
+
+/* ---- DEMO 1 · Slide 1 — title bridge test ------------------------------- */
+DEMO[0] = (() => {
+  const wrap = $('#title-bridge-wrap');
+  if (!wrap) return null;
+  const svg = document.createElementNS(SVGNS, 'svg');
+  svg.setAttribute('viewBox', '0 0 800 300');
+  svg.setAttribute('shape-rendering', 'crispEdges');
+  wrap.insertBefore(svg, wrap.firstChild);
+  let phase = 0;               // 0 plain · 1 bridges · 2 strips · 3 done
+  const G = '#7a7a7a';
+  function draw() {
+    svg.replaceChildren();
+    svg.appendChild(mk('rect', { x: 40, y: 100, width: 80, height: 80, fill: G }));
+    svg.appendChild(mk('rect', { x: 680, y: 100, width: 80, height: 80, fill: G }));
+    if (phase >= 1) {
+      svg.appendChild(mk('rect', { x: 120, y: 122, width: 560, height: 18, fill: '#b9b9b9' }));
+      svg.appendChild(mk('rect', { x: 120, y: 162, width: 560, height: 18, fill: '#3f3f3f' }));
+    }
+    if (phase >= 2) {
+      svg.appendChild(mk('rect', { x: 20, y: 80, width: 120, height: 120, fill: '#111418' }));
+      svg.appendChild(mk('rect', { x: 660, y: 80, width: 120, height: 120, fill: '#111418' }));
+    }
+    const lab = (x, t) => { const e = mk('text', { x, y: 260, 'text-anchor': 'middle', fill: '#64748B', 'font-size': 20, 'font-family': 'monospace' }); e.textContent = t; svg.appendChild(e); };
+    lab(80, 'A'); lab(720, 'B');
+  }
+  function setReadout(txt) { const el = $('#title-bridge-readout'); if (el) el.textContent = txt; }
+  draw();
+  return {
+    act() {
+      phase++;
+      if (phase === 1) { AudioEngine.play('morph'); setReadout('Two connecting strips painted OVER the squares — same gray, opposite verdicts.'); }
+      else if (phase === 2) { AudioEngine.play('reveal'); setReadout('Isolated from their surrounds, A and B match exactly. RGB 128,128,128. Context did the judging.'); }
+      else { setReadout('Your brain discounts the shadow before you ever see it. Same or different is answered by the neighbourhood, not the square.'); }
+    },
+    label() { return phase === 0 ? 'Bridge' : phase === 1 ? 'Isolate' : phase === 2 ? 'Explain' : null; },
+    reset() { phase = 0; draw(); setReadout('Which square looks lighter — A or B? (They reflect identical light.)'); }
+  };
+})();
+
+/* ---- DEMO 2 · Slide 2 — grays round 1 + identical-grays round 2 --------- */
+DEMO[1] = (() => {
+  const svg = $('#gray-svg');
+  if (!svg) return null;
+  let round = 1, revealed = false, r2 = 0;   // r2: 0 ask · 1 side-by-side · 2 removed · 3 done
+  const tag = $('#gray-count-tag'), q = $('#gray-q');
+  function drawRound1() {
+    svg.replaceChildren();
+    svg.appendChild(mk('rect', { x: 0, y: 0, width: 1200, height: 640, fill: '#EDEFF3' }));
+    svg.appendChild(mk('polygon', { points: '150,120 750,120 900,520 300,520', fill: '#C9CDD6' }));
+    const shadow = mk('polygon', { points: '560,180 1050,180 1050,560 480,560', fill: '#5B6270', opacity: 0.55 });
+    svg.appendChild(shadow);
+    svg.appendChild(mk('rect', { x: 300, y: 200, width: 150, height: 150, fill: '#7a7a7a' }));
+    svg.appendChild(mk('rect', { x: 720, y: 330, width: 150, height: 150, fill: '#7a7a7a' }));
+    const lab = (x, y, t) => { const e = mk('text', { x, y, fill: '#FFFFFF', 'font-size': 40, 'font-family': 'monospace' }); e.textContent = t; svg.appendChild(e); };
+    lab(355, 290, 'A'); lab(775, 420, 'B');
+    tag.textContent = 'Round 1 / 2';
+    q.textContent = 'Which square looks lighter — A, B, or are they the same? Shout your first instinct.';
+  }
+  function drawRound2() {
+    svg.replaceChildren();
+    svg.appendChild(mk('rect', { x: 0, y: 0, width: 1200, height: 640, fill: '#111418' }));
+    if (r2 >= 1) {
+      svg.appendChild(mk('rect', { x: 300, y: 240, width: 150, height: 150, fill: '#7a7a7a' }));
+      svg.appendChild(mk('rect', { x: 750, y: 240, width: 150, height: 150, fill: '#7a7a7a' }));
+      const lab = (x, t) => { const e = mk('text', { x, y: 460, fill: '#94A3B8', 'font-size': 36, 'font-family': 'monospace', 'text-anchor': 'middle' }); e.textContent = t; svg.appendChild(e); };
+      lab(375, 'A'); lab(825, 'B');
+    }
+    if (r2 === 0) q.textContent = 'Round 2 — same question, no shadows, no story. Which looks lighter now?';
+    if (r2 === 1) q.textContent = 'Side by side on a neutral ground. Still a favourite?';
+    if (r2 === 2) q.textContent = 'Strip everything but the two squares: identical pixels. RGB 128,128,128 — measured, not felt.';
+    if (r2 >= 3) q.textContent = 'Perception is a best-guess estimate of reflectance — not a measurement of light.';
+  }
+  function paint() { (round === 1 && !revealed) ? drawRound1() : drawRound2(); }
+  paint();
+  return {
+    act() {
+      if (round === 1 && !revealed) {
+        revealed = true; AudioEngine.play('morph');
+        q.textContent = 'Press NEXT ROUND for the identical-grays test — same question, no shadow to blame.';
+        setSteps(2, 1);
+        return;
+      }
+      if (round === 1 && revealed) { round = 2; r2 = 0; tag.textContent = 'Round 2 / 2'; AudioEngine.play('jump'); paint(); return; }
+      if (r2 < 3) { r2++; AudioEngine.play(r2 === 2 ? 'reveal' : 'morph'); paint(); }
+      if (r2 >= 2) setSteps(2, r2 >= 3 ? 3 : 2);
+    },
+    label() {
+      if (round === 1 && !revealed) return 'Reveal';
+      if (round === 1 && revealed) return 'Next Round';
+      if (r2 === 0) return 'Compare';
+      if (r2 === 1) return 'Isolate';
+      if (r2 === 2) return 'Explain';
+      return null;
+    },
+    reset() { round = 1; revealed = false; r2 = 0; setSteps(2, 0); tag.textContent = 'Round 1 / 2'; drawRound1(); }
+  };
+})();
+
+/* ---- DEMO 3 · Slide 3 — 12-second pass-counting simulation -------------- */
+DEMO[2] = (() => {
+  const svg = $('#pass-svg');
+  if (!svg) return null;
+  const bank = makeTimerBank();
+  let state = 'idle';           // idle · running · asked · counted · done
+  let white = 0, black = 0;
+  const dots = [], people = [];
+  const clockEl = $('#pass-clock'), scoreEl = $('#pass-score'), q = $('#gorilla-q');
+  const tag = $('#pass-phase-tag');
+  svg.appendChild(mk('rect', { x: 0, y: 0, width: 1200, height: 640, fill: '#141A24', rx: 18 }));
+  const court = mk('ellipse', { cx: 600, cy: 330, rx: 430, ry: 210, fill: 'none', stroke: '#2A3446', 'stroke-width': 2 });
+  svg.appendChild(court);
+  const TEAM = [{ c: '#E8ECF2', n: 3 }, { c: '#20242C', n: 3 }];
+  TEAM.forEach((t, ti) => {
+    for (let i = 0; i < t.n; i++) {
+      const c = mk('circle', { r: 26, fill: t.c, opacity: 0.92 });
+      svg.appendChild(c);
+      people.push({ el: c, team: ti, ph: i * 2.1 + ti * 0.7, ox: 300 + i * 150 + ti * 60, oy: 250 + (i % 2) * 160 });
+    }
+  });
+  const ball = mk('circle', { r: 13, fill: '#F5F7FA', stroke: '#94A3B8', 'stroke-width': 1 });
+  svg.appendChild(ball);
+  const gorilla = mk('g', { opacity: 0 });
+  gorilla.appendChild(mk('ellipse', { cx: 0, cy: 0, rx: 62, ry: 46, fill: '#7C2D12' }));
+  gorilla.appendChild(mk('circle', { cx: -34, cy: -30, r: 20, fill: '#7C2D12' }));
+  gorilla.appendChild(mk('circle', { cx: 34, cy: -30, r: 20, fill: '#7C2D12' }));
+  gorilla.appendChild(mk('rect', { x: -14, y: -14, width: 28, height: 20, rx: 8, fill: '#F5F7FA', opacity: 0.9 }));
+  svg.appendChild(gorilla);
+  const hlStar = mk('path', { d: 'M 1120 90 l 10 22 24 3 -17 17 4 24 -21 -11 -21 11 4 -24 -17 -17 24 -3 Z', fill: '#FBBF24', opacity: 0 });
+  svg.appendChild(hlStar);
+  const hlBorder = mk('rect', { x: 8, y: 8, width: 1184, height: 624, rx: 18, fill: 'none', stroke: '#34D399', 'stroke-width': 6, opacity: 0 });
+  svg.appendChild(hlBorder);
+  const hlSquare = mk('rect', { x: 560, y: 300, width: 80, height: 80, fill: '#F472B6', opacity: 0 });
+  svg.appendChild(hlSquare);
+
+  function layout(t) {
+    people.forEach((p) => {
+      const x = p.ox + Math.sin(t * 0.9 + p.ph) * 130;
+      const y = p.oy + Math.cos(t * 0.7 + p.ph * 1.3) * 90;
+      p.el.setAttribute('cx', x.toFixed(1)); p.el.setAttribute('cy', y.toFixed(1));
+      p._x = x; p._y = y;
+    });
+  }
+  function runSim() {
+    state = 'running';
+    white = 0; black = 0;
+    tag.textContent = 'Live · 12 s';
+    clockEl.textContent = '12.0';
+    scoreEl.textContent = 'white — · black —';
+    q.textContent = 'Count the passes made by the WHITE team only. Go.';
+    let elapsed = 0;
+    const order = [0, 1, 0, 1, 0, 1, 0, 1];   // alternating team possession
+    let oi = 0, segT = 0, from = null, to = null;
+    const stop = bank.raf(() => {
+      elapsed += 1 / 60; segT += 1 / 60;
+      layout(elapsed);
+      if (!from || !to || segT > 1.2) {
+        if (from && to && segT > 1.2) { oi++; }
+        const team = order[oi % order.length];
+        const mates = people.filter((p) => p.team === team);
+        const opp = people.filter((p) => p.team !== team);
+        from = mates[(oi) % mates.length];
+        to = opp[(oi * 2 + team) % opp.length];
+        segT = 0;
+        if (team === 0) white++; else black++;
+        scoreEl.textContent = `white ${white} · black ${black}`;
+      }
+      const k = Math.min(segT / 1.2, 1);
+      ball.setAttribute('cx', lerp(from._x, to._x, k).toFixed(1));
+      ball.setAttribute('cy', lerp(from._y, to._y, k).toFixed(1));
+      const left = Math.max(0, 12 - elapsed);
+      clockEl.textContent = left.toFixed(1);
+      if (elapsed > 4 && elapsed < 10) {
+        const gx = lerp(1250, -60, (elapsed - 4) / 6);
+        gorilla.setAttribute('transform', `translate(${gx} 330)`);
+        gorilla.setAttribute('opacity', 0.95);
+      } else gorilla.setAttribute('opacity', 0);
+      if (elapsed >= 12) { stop(); finishRun(); }
+    });
+  }
+  function finishRun() {
+    state = 'asked';
+    tag.textContent = 'Collect answers';
+    q.textContent = 'How many passes did the WHITE team make? Hands up — commit before I reveal.';
+  }
+  function revealCount() {
+    state = 'counted';
+    tag.textContent = 'Answer revealed';
+    q.textContent = 'The real count was 15. Now: who saw the gorilla? (It walked through at second 4.)';
+    setSteps(3, 1);
+    AudioEngine.play('reveal');
+  }
+  function highlightPass() {
+    state = 'done';
+    tag.textContent = 'Invisible-G test';
+    hlStar.setAttribute('opacity', 0.95);
+    hlBorder.setAttribute('opacity', 0.9);
+    hlSquare.setAttribute('opacity', 0.85);
+    q.textContent = 'Replay showed extras: a yellow star, a green border, a pink square — most rooms see none of them. Focus is exclusion.';
+    setSteps(3, 3);
+    AudioEngine.play('morph');
+  }
+  return {
+    act() {
+      if (state === 'idle') runSim();
+      else if (state === 'asked') revealCount();
+      else if (state === 'counted') highlightPass();
+    },
+    label() { return state === 'idle' ? 'Run' : state === 'asked' ? 'Reveal' : state === 'counted' ? 'Highlight' : null; },
+    reset() {
+      bank.clear(); state = 'idle';
+      tag.textContent = 'Ready';
+      clockEl.textContent = '12.0';
+      scoreEl.textContent = 'white — · black —';
+      q.textContent = 'Count the passes made by the WHITE team only. Twelve seconds. No rewinds.';
+      gorilla.setAttribute('opacity', 0);
+      hlStar.setAttribute('opacity', 0); hlBorder.setAttribute('opacity', 0); hlSquare.setAttribute('opacity', 0);
+      setSteps(3, 0);
+      layout(0);
+      ball.setAttribute('cx', 300); ball.setAttribute('cy', 250);
+    }
+  };
+})();
+
+/* ---- DEMO 4 · Slide 4 — duck/rabbit disambiguation arrows --------------- */
+DEMO[3] = (() => {
+  const svg = $('#dr-svg');
+  if (!svg) return null;
+  const capEl = $('#dr-caption');
+  let mode = 0;   // 0 naive · 1 duck annotated · 2 rabbit annotated · 3 done
+  const CAPS = [
+    'What is it? Commit with your hands — duck or rabbit?',
+    'DUCK reading: the bumps become a beak, the ears trail behind the head.',
+    'RABBIT reading: the same curves are ears reaching up, the beak becomes a nose.',
+    'One drawing, two complete worlds — and you can only see one at a time. Meaning is injected, not received.'
+  ];
+  const duckAnno = mk('g', { opacity: 0, 'pointer-events': 'none' });
+  duckAnno.appendChild(mk('path', { d: 'M 300 250 C 380 210, 470 210, 520 250', fill: 'none', stroke: '#F59E0B', 'stroke-width': 5, 'stroke-linecap': 'round' }));
+  duckAnno.appendChild(mk('path', { d: 'M 520 250 L 640 268 L 520 296 Z', fill: '#F59E0B' }));
+  duckAnno.appendChild(mk('circle', { cx: 430, cy: 240, r: 8, fill: '#F59E0B' }));
+  duckAnno.appendChild(mk('path', { d: 'M 330 300 C 250 340, 250 420, 330 460', fill: 'none', stroke: '#F59E0B', 'stroke-width': 5, 'stroke-dasharray': '10 10' }));
+  const t1 = mk('text', { x: 660, y: 300, fill: '#F59E0B', 'font-size': 30, 'font-family': 'monospace' }); t1.textContent = 'beak';
+  duckAnno.appendChild(t1);
+  const rabbitAnno = mk('g', { opacity: 0, 'pointer-events': 'none' });
+  rabbitAnno.appendChild(mk('path', { d: 'M 470 220 C 520 120, 590 110, 620 190 C 600 240, 540 260, 470 220 Z', fill: 'none', stroke: '#34D399', 'stroke-width': 5 }));
+  rabbitAnno.appendChild(mk('path', { d: 'M 420 210 C 440 110, 500 90, 530 170', fill: 'none', stroke: '#34D399', 'stroke-width': 5 }));
+  rabbitAnno.appendChild(mk('circle', { cx: 400, cy: 260, r: 8, fill: '#34D399' }));
+  const t2 = mk('text', { x: 640, y: 160, fill: '#34D399', 'font-size': 30, 'font-family': 'monospace' }); t2.textContent = 'ears';
+  rabbitAnno.appendChild(t2);
+  svg.appendChild(duckAnno); svg.appendChild(rabbitAnno);
+  function paint() {
+    duckAnno.setAttribute('opacity', mode === 1 || mode === 3 ? 0.95 : 0);
+    rabbitAnno.setAttribute('opacity', mode === 2 ? 0.95 : 0);
+    if (mode === 3) rabbitAnno.setAttribute('opacity', 0.5);
+    capEl.textContent = CAPS[mode];
+  }
+  return {
+    act() { if (mode < 3) { mode++; AudioEngine.play(mode === 1 ? 'morph' : mode === 2 ? 'kinetic' : 'reveal'); paint(); } if (mode === 3) setSteps(4, 3); else if (mode >= 1) setSteps(4, mode); },
+    label() { return mode === 0 ? 'Show Duck' : mode === 1 ? 'Show Rabbit' : mode === 2 ? 'Both Readings' : null; },
+    reset() { mode = 0; setSteps(4, 0); paint(); }
+  };
+})();
+
+/* ---- DEMO 5 · Slide 5 — Penrose triangle assembly + edge probe ---------- */
+DEMO[4] = (() => {
+  const svg = $('#penrose-svg');
+  if (!svg) return null;
+  const bank = makeTimerBank();
+  const statusEl = $('#tri-status'), q = $('#tri-q');
+  let mode = 0;   // 0 empty · 1 assembled · 2 probing · 3 verdict
+  const bars = [];
+  const COL = ['#2563EB', '#4F46E5', '#E11D48'];
+  const geo = [
+    { a: [600, 150], b: [880, 640] },
+    { a: [880, 640], b: [320, 640] },
+    { a: [320, 640], b: [600, 150] }
+  ];
+  geo.forEach((g, i) => {
+    const ln = mk('line', { x1: g.a[0], y1: g.a[1], x2: g.b[0], y2: g.b[1], stroke: COL[i], 'stroke-width': 54, 'stroke-linecap': 'butt', opacity: 0 });
+    svg.appendChild(ln);
+    bars.push(ln);
+  });
+  const probe = mk('circle', { r: 22, fill: 'none', stroke: '#F59E0B', 'stroke-width': 5, opacity: 0 });
+  svg.appendChild(probe);
+  const probeDot = mk('circle', { r: 6, fill: '#F59E0B', opacity: 0 });
+  svg.appendChild(probeDot);
+  function show(n) { bars.forEach((b, i) => b.setAttribute('opacity', i < n ? 1 : 0)); }
+  function assemble() {
+    mode = 1; show(0);
+    statusEl.textContent = 'assembling…';
+    let i = 0;
+    const step = () => {
+      if (i < 3) { show(i + 1); AudioEngine.play('kinetic'); i++; bank.after(step, 420); }
+      else { statusEl.textContent = 'impossible · assembled'; q.textContent = 'Every corner is a perfect right angle. Trace any edge with the probe — it lands somewhere impossible.'; }
+    };
+    bank.after(step, 200);
+  }
+  function probeEdge() {
+    mode = 2;
+    statusEl.textContent = 'probing edges';
+    const path = [[600, 150], [880, 640], [320, 640], [600, 150]];
+    let seg = 0, t = 0;
+    probe.setAttribute('opacity', 1); probeDot.setAttribute('opacity', 1);
+    const stop = bank.raf(() => {
+      const a = path[seg], b = path[(seg + 1) % path.length];
+      t += 0.012;
+      if (t >= 1) { t = 0; seg++; AudioEngine.play('tap'); if (seg >= path.length - 1) { stop(); verdict(); return; } }
+      const x = lerp(a[0], b[0], t), y = lerp(a[1], b[1], t);
+      probe.setAttribute('cx', x); probe.setAttribute('cy', y);
+      probeDot.setAttribute('cx', x); probeDot.setAttribute('cy', y);
+    });
+  }
+  function verdict() {
+    mode = 3;
+    statusEl.textContent = 'locally fine · globally impossible';
+    probe.setAttribute('opacity', 0); probeDot.setAttribute('opacity', 0);
+    q.textContent = 'Three flawless 2-D drawings stitched into one 3-D object that cannot exist. Your brain signed off on the story anyway.';
+    setSteps(5, 3);
+    AudioEngine.play('reveal');
+  }
+  return {
+    act() { if (mode === 0) assemble(); else if (mode === 1) probeEdge(); else if (mode === 2) verdict(); },
+    label() { return mode === 0 ? 'Assemble' : mode === 1 ? 'Probe' : mode === 2 ? 'Verdict' : null; },
+    reset() { bank.clear(); mode = 0; show(0); probe.setAttribute('opacity', 0); probeDot.setAttribute('opacity', 0); statusEl.textContent = 'ready'; q.textContent = 'Press ASSEMBLE and watch three plausible corners build one impossible object.'; setSteps(5, 0); }
+  };
+})();
+
+/* ---- DEMO 6 · Slide 6 — DRM word flash + poll + verdict ----------------- */
+DEMO[5] = (() => {
+  const runBtn = $('#drm-run-btn'), verdictBtn = $('#drm-verdict-btn'), resetBtn = $('#drm-reset-btn');
+  const idle = $('#drm-idle'), showV = $('#drm-show'), pollV = $('#drm-poll'), resultV = $('#drm-result');
+  const wordEl = $('#drm-word'), chips = $('#drm-chips'), tiles = $('#drm-tiles'), dots = $('#drm-dots'), readout = $('#drm-readout');
+  if (!runBtn) return null;
+  const bank = makeTimerBank();
+  const LIST = ['BED', 'REST', 'AWAKE', 'TIRED'];   // SLEEP is the lure — never shown
+  let mode = 0;   // 0 idle · 1 flashing · 2 poll · 3 verdict · 4 done
+  for (let i = 0; i < 4; i++) dots.appendChild(mk ? Object.assign(document.createElement('span'), { className: 'drm-dot' }) : null);
+  function setDots(active) { Array.from(dots.children).forEach((d, i) => d.classList.toggle('on', i === active)); }
+  function view(v) { [idle, showV, pollV, resultV].forEach((x) => x.classList.toggle('on', x === v)); }
+  function buildChips() {
+    chips.replaceChildren();
+    [...LIST, 'SLEEP'].sort().concat(['DREAM']).forEach((w) => {
+      const b = document.createElement('button');
+      b.className = 'poll-chip neu-btn'; b.type = 'button'; b.textContent = w;
+      b.addEventListener('click', () => { AudioEngine.play('tap'); if (mode === 2) { b.classList.add('picked'); } });
+      chips.appendChild(b);
+    });
+  }
+  function flash() {
+    mode = 1; view(showV);
+    runBtn.disabled = true;
+    let i = 0;
+    const nextWord = () => {
+      if (i >= LIST.length) { bank.after(endFlash, 900); return; }
+      wordEl.textContent = LIST[i]; setDots(i);
+      AudioEngine.play('kinetic');
+      wordEl.classList.remove('pop'); void wordEl.offsetWidth; wordEl.classList.add('pop');
+      i++;
+      bank.after(nextWord, 2000);
+    };
+    nextWord();
+  }
+  function endFlash() {
+    mode = 2; view(pollV); buildChips(); setDots(-1);
+    readout.textContent = 'Four words flashed for two seconds each. Now vote — which word was on the screen?';
+    verdictBtn.disabled = false;
+    AudioEngine.play('open');
+  }
+  function verdict() {
+    mode = 3; view(resultV);
+    tiles.replaceChildren();
+    const mkTile = (word, pct, lie) => {
+      const t = document.createElement('div');
+      t.className = 'drm-tile' + (lie ? ' lie' : '');
+      t.innerHTML = `<div class="w">${word}</div><div class="bar"><i style="transform:scaleX(${pct / 100})"></i></div><div class="p">${pct}% said “yes”</div>`;
+      tiles.appendChild(t);
+    };
+    mkTile('BED', 98, false); mkTile('TIRED', 94, false); mkTile('REST', 90, false); mkTile('AWAKE', 72, false);
+    mkTile('SLEEP', 81, true);
+    Array.from(chips.querySelectorAll('.poll-chip')).forEach((b) => { if (b.textContent === 'SLEEP') b.classList.add('was-lure'); });
+    readout.textContent = 'SLEEP was never shown. ~80% of rooms confidently "remember" it — insertion by association, felt as recollection.';
+    setSteps(6, 3);
+    verdictBtn.disabled = true;
+    AudioEngine.play('reveal');
+    bank.after(() => { mode = 4; refreshActLabel(); publishState(); }, 100);
+  }
+  return {
+    act() { if (mode === 0) flash(); else if (mode === 2) verdict(); },
+    label() { return mode === 0 ? 'Run' : mode === 2 ? 'Verdict' : null; },
+    reset() {
+      bank.clear(); mode = 0; view(idle); setDots(-1);
+      runBtn.disabled = false; verdictBtn.disabled = true;
+      readout.textContent = 'No notes, no repetition. Encoding happens whether you intend it or not.';
+      tiles.replaceChildren(); chips.replaceChildren();
+      setSteps(6, 0);
+    }
+  };
+})();
+
+/* ---- DEMO 7 · Slide 7 — Loftus & Palmer verb cycle + glass reveal ------- */
+DEMO[6] = (() => {
+  const verbEl = $('#lp-verb'), tag = $('#lp-verb-tag'), glass = $('#lp-glass');
+  if (!verbEl) return null;
+  const VERBS = ['SMASHED', 'HIT', 'BUMPED', 'COLLIDED', 'CONTACTED'];
+  const MPH = { SMASHED: 40.5, HIT: 32.2, BUMPED: 34.0, COLLIDED: 36.0, CONTACTED: 30.8 };
+  let vi = 0, revealed = false;
+  function paintBars() {
+    $$('#lp-chips .lp-chip').forEach((c) => c.classList.toggle('active', c.dataset.v === VERBS[vi].toLowerCase()));
+    $$('.lp-bar-row').forEach((row) => {
+      const k = row.dataset.k;
+      const mph = { hit: 32.2, bumped: 34.0, collided: 36.0, contacted: 30.8, smashed: 40.5 }[k];
+      const fill = row.querySelector('.lp-bar-fill');
+      const on = k === VERBS[vi].toLowerCase();
+      fill.style.transform = `scaleX(${(mph / 45).toFixed(3)})`;
+      row.classList.toggle('active', on);
+    });
+    verbEl.textContent = VERBS[vi];
+    tag.textContent = 'verb: ' + VERBS[vi].toLowerCase();
+  }
+  paintBars();
+  return {
+    act() {
+      if (!revealed) {
+        vi = (vi + 1) % VERBS.length;
+        AudioEngine.play(vi === 0 ? 'reveal' : 'morph');
+        paintBars();
+        setSteps(7, 1);
+        if (vi === VERBS.length - 1) { revealed = true; glass.classList.add('shown'); setSteps(7, 3); AudioEngine.play('chime'); }
+      }
+    },
+    label() { return revealed ? null : 'Cycle Verb'; },
+    reset() { vi = 0; revealed = false; glass.classList.remove('shown'); setSteps(7, 0); paintBars(); }
+  };
+})();
+
+/* ---- DEMO 8 · Slide 8 — secret-rule sequence test ----------------------- */
+DEMO[7] = (() => {
+  const svg = $('#rule-svg'), checkBtn = $('#s8-check-btn'), clearBtn = $('#s8-clear-btn'), out = $('#rule-out');
+  if (!svg) return null;
+  const SEQ = [[1, 2, 4], [2, 4, 6], [1, 3, 5], [3, 1, 2], [1, 2, 3], [3, 17, 104]];
+  let si = 0, verdicts = 0;
+  const cardW = 340, gap = 40;
+  function drawTriplet() {
+    svg.replaceChildren();
+    SEQ[si].forEach((num, i) => {
+      const x = 80 + i * (cardW + gap) - (SEQ[si].length - 3) * 60;
+      const g = mk('g', {});
+      g.appendChild(mk('rect', { x, y: 140, width: 220, height: 300, rx: 26, fill: 'none', stroke: '#2563EB', 'stroke-width': 3, 'stroke-opacity': 0.5 }));
+      const t = mk('text', { x: x + 110, y: 310, 'text-anchor': 'middle', fill: 'var(--ink, #0F172A)', 'font-size': 96, 'font-family': 'monospace' });
+      t.textContent = num;
+      g.appendChild(t);
+      svg.appendChild(g);
+    });
+    out.textContent = `Sequence ${si + 1} of ${SEQ.length}: ${SEQ[si].join(' – ')} · Does it follow the rule? Vote yes/no, then press CHECK.`;
+  }
+  drawTriplet();
+  function check() {
+    const yes = [true, true, true, false, true, true][si];
+    const surprise = si === 5;
+    out.innerHTML = `<b>${yes ? 'YES ✓' : 'NO ✗'}</b> — ${surprise ? '3·17·104 follows the rule. The rule was never "add two" — it was simply: any three ascending numbers. You built a theory and kept testing its friends.' : 'Room agrees? Good — now notice how fast everyone stopped asking what ELSE could fit.'}`;
+    AudioEngine.play(surprise ? 'chime' : 'reveal');
+    setSteps(8, surprise ? 3 : 1);
+    si++; verdicts++;
+    if (si < SEQ.length) drawTriplet();
+    else { out.innerHTML += '<br>Press CLEAR to run the whole ladder again.'; }
+  }
+  return {
+    act() { if (si < SEQ.length) check(); },
+    label() { return si < SEQ.length ? 'Check' : null; },
+    reset() { si = 0; drawTriplet(); setSteps(8, 0); }
+  };
+})();
+
+/* Per-slide entry hooks (light-touch; demos are entry-neutral) ------------- */
+function onSlideEnter(idx) {
+  if (idx === 9) { const tm = $('#tele-mqtt'); if (tm) tm.textContent = mqttOnline ? 'ONLINE · WSS' : 'LINKING'; }
+}
+
+/* ---------------------------------------------------------------------------
+   INIT
+--------------------------------------------------------------------------- */
+function init() {
+  /* build the ten progress segments once, from TOTAL — single source of truth */
+  const track = $('#progress-track');
+  if (track && !track.children.length) {
+    for (let i = 0; i < TOTAL; i++) {
+      const s = document.createElement('span');
+      s.className = 'pseg';
+      track.appendChild(s);
+    }
+  }
+  setActiveField(0);
+  setFocusForSlide(0);
+  document.body.classList.toggle('stim-on', !IS_REMOTE);
+  bindDeckInput();
+  if (IS_REMOTE) {
+    bootRemoteUI();
+  } else {
+    slides.forEach((s, i) => {
+      if (i !== 0) s.classList.remove('is-active');
+    });
+    goTo(0, { force: true });
+  }
+  connectMQTT();
+  refreshModalLinks();
+  wireDemoButtons();
+  primeStepTexts();
+  if (window.lucide) lucide.createIcons();
+  /* re-run icon creation after dynamic innerHTML swaps */
+  setInterval(() => { if (window.lucide) lucide.createIcons(); }, 2500);
+}
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
